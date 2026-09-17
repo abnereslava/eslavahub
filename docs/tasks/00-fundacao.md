@@ -18,7 +18,7 @@ Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estã
 - backend próprio: não utilizado no MVP inicial;
 - persistência: Cloud Firestore;
 - autenticação: Firebase Authentication;
-- deploy: Firebase Hosting.
+- deploy: GitHub Pages via GitHub Actions.
 
 ### Critérios de aceite
 - [x] frontend definido;
@@ -96,7 +96,7 @@ Credenciais administrativas continuam proibidas no frontend e no Git.
 
 ### Critérios de aceite
 - [x] configuração de desenvolvimento definida;
-- [x] configuração de produção prevista através do Firebase Hosting;
+- [x] configuração de produção prevista através do GitHub Pages;
 - [x] `.gitignore` cobre arquivos locais, `.env` e service accounts;
 - [x] configuração Firebase do cliente centralizada em um único módulo;
 - [x] documentação diferencia configuração pública de credenciais privadas.
