@@ -3,6 +3,7 @@ import {
   getProjectDetails,
   restoreProject
 } from "../services/project-service.js";
+import { renderProjectDomains } from "./domains-ui.js";
 import { renderPendingItems } from "./pending-items-ui.js";
 
 function escapeHtml(value = "") {
@@ -67,11 +68,7 @@ async function renderProjectDetailPage(container, uid, projectId) {
           }
         </section>
 
-        <section class="panel">
-          <h2>Domínios</h2>
-          <p class="muted">O gerenciamento de domínios será exibido aqui no módulo correspondente.</p>
-        </section>
-
+        <section id="project-domains" class="panel"></section>
         <section id="pending-items" class="panel detail-span-2"></section>
 
         <section class="panel danger-zone detail-span-2">
@@ -84,7 +81,10 @@ async function renderProjectDetailPage(container, uid, projectId) {
       </div>
     `;
 
-    await renderPendingItems(container.querySelector("#pending-items"), uid, project.id);
+    await Promise.all([
+      renderProjectDomains(container.querySelector("#project-domains"), uid, project.id),
+      renderPendingItems(container.querySelector("#pending-items"), uid, project.id)
+    ]);
 
     container.querySelector("#archive-project").addEventListener("click", async () => {
       const action = project.archived_at ? "restaurar" : "arquivar";
