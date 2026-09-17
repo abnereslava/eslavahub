@@ -1,3 +1,4 @@
+import { DEFAULT_TECHNOLOGIES } from "../domain/constants.js";
 import { normalizedName, validateTechnology } from "../domain/validation.js";
 import { FirestoreRepository } from "./firestore-repository.js";
 import { USER_COLLECTIONS } from "./user-paths.js";
@@ -26,6 +27,17 @@ class TechnologyRepository extends FirestoreRepository {
       normalized_name: normalizedName(data.name),
       active: data.active ?? true
     });
+  }
+
+  async ensureDefaults(uid) {
+    const existing = await this.list(uid);
+    const names = new Set(existing.map((item) => item.normalized_name || normalizedName(item.name)));
+
+    for (const name of DEFAULT_TECHNOLOGIES) {
+      if (!names.has(normalizedName(name))) {
+        await this.createTechnology(uid, { name });
+      }
+    }
   }
 
   async updateTechnology(uid, id, data) {
