@@ -3,6 +3,7 @@ import {
   signInWithGoogle,
   signOutCurrentUser
 } from "./services/auth-service.js";
+import { initializeUserWorkspace } from "./services/bootstrap-service.js";
 
 const appElement = document.querySelector("#app");
 
@@ -40,14 +41,15 @@ function renderSignedOut() {
       await signInWithGoogle();
     } catch (error) {
       console.error("Google sign-in failed", error);
-      errorElement.textContent = "Não foi possível entrar com Google. Verifique a configuração do Firebase Authentication.";
+      errorElement.textContent =
+        "Não foi possível entrar com Google. Verifique a configuração do Firebase Authentication.";
     } finally {
       signInButton.disabled = false;
     }
   });
 }
 
-function renderSignedIn(user) {
+function renderSignedIn(user, bootstrapError = null) {
   const displayName = escapeHtml(user.displayName || "Usuário");
   const email = escapeHtml(user.email || "");
   const photoURL = user.photoURL ? escapeHtml(user.photoURL) : "";
@@ -65,6 +67,8 @@ function renderSignedIn(user) {
         </div>
       </div>
 
+      ${bootstrapError ? '<p class="error-message" role="alert">Não foi possível preparar os dados iniciais do workspace.</p>' : ""}
+
       <p>Próximo módulo: cadastro e listagem de projetos.</p>
 
       <div class="actions">
@@ -78,11 +82,17 @@ function renderSignedIn(user) {
   });
 }
 
-observeAuthState((user) => {
-  if (user) {
-    renderSignedIn(user);
+observeAuthState(async (user) => {
+  if (!user) {
+    renderSignedOut();
     return;
   }
 
-  renderSignedOut();
+  try {
+    await initializeUserWorkspace(user.uid);
+    renderSignedIn(user);
+  } catch (error) {
+    console.error("Workspace bootstrap failed", error);
+    renderSignedIn(user, error);
+  }
 });
