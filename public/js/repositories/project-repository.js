@@ -1,4 +1,5 @@
 import { serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { projectArchivePatch, projectRestorePatch } from "../domain/state-transitions.js";
 import { validateProject } from "../domain/validation.js";
 import { FirestoreRepository } from "./firestore-repository.js";
 import { USER_COLLECTIONS } from "./user-paths.js";
@@ -39,11 +40,11 @@ class ProjectRepository extends FirestoreRepository {
   }
 
   async archive(uid, id) {
-    await this.update(uid, id, { archived_at: serverTimestamp() });
+    await this.update(uid, id, projectArchivePatch(serverTimestamp()));
   }
 
   async restore(uid, id) {
-    await this.update(uid, id, { archived_at: null });
+    await this.update(uid, id, projectRestorePatch());
   }
 
   async setTechnologies(uid, id, technologyIds) {
