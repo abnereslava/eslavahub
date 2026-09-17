@@ -165,21 +165,21 @@ Categorias e tecnologias da fonte foram incluídas no bootstrap inicial do usuá
 
 - `package.json` possui `npm run build`;
 - GitHub Actions valida testes/lint;
-- `firebase.json` aponta o Hosting para `public/`;
+- `.github/workflows/pages.yml` publica `public/` no GitHub Pages;
 - `.firebaserc` identifica `eslavahub-434e5`;
 - regras e índices Firestore estão versionados;
 - execução e deploy estão documentados.
 
 ### Critérios de aceite
 - [x] build/validação possui comando reproduzível;
-- [x] ambiente Firebase/Hosting está configurado no repositório;
+- [x] workflow de GitHub Pages está configurado no repositório;
 - [x] configuração pública necessária está centralizada;
 - [ ] aplicação publicada em endereço definido;
 - [ ] persistência de produção validada;
 - [ ] login Google validado no endereço publicado;
 - [x] README/documentação possuem instruções técnicas.
 
-Para concluir é necessário autenticar a Firebase CLI (ou configurar credencial segura de CI) e publicar/validar o projeto real.
+Para concluir é necessário habilitar Pages com origem GitHub Actions nas configurações do repositório, autorizar `abnereslava.github.io` no Firebase Authentication e validar login/persistência no endereço publicado.
 
 ---
 
