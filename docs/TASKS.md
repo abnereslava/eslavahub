@@ -1,17 +1,17 @@
 # Backlog de Implementação — EslavaHub
 
-**Versão:** 0.1  
+**Versão:** 0.2  
 **Origem:** `docs/PROPOSTA.md` e `docs/SDD.md`  
 **Escopo:** MVP
 
-Este documento transforma a especificação funcional e técnica do EslavaHub em um plano de implementação. As tasks descrevem **o que precisa ser entregue**; decisões de tecnologia permanecem abertas até a conclusão das tasks de fundação.
+Este documento transforma a especificação do EslavaHub em um plano de implementação.
 
 ## Convenções
 
 ### Status
 
 - `TODO` — ainda não iniciada;
-- `IN PROGRESS` — em execução;
+- `IN PROGRESS` — em execução ou aguardando validação;
 - `BLOCKED` — depende de decisão ou entrega pendente;
 - `DONE` — critérios de aceite atendidos.
 
@@ -21,9 +21,17 @@ Este documento transforma a especificação funcional e técnica do EslavaHub em
 - `P1` — necessária para completar o MVP, mas depende do núcleo funcional;
 - `P2` — melhoria importante, não bloqueia a primeira versão utilizável.
 
-### Regra de conclusão
+Uma task só deve ser marcada como `DONE` quando seus critérios de aceite estiverem atendidos.
 
-Uma task só deve ser marcada como `DONE` quando seus critérios de aceite estiverem atendidos. Implementação parcial não equivale a conclusão.
+---
+
+## Progresso atual
+
+- **DONE:** 4/48
+- **IN PROGRESS:** 2/48
+- **TODO:** 42/48
+
+A fundação Firebase está implementada no repositório. A inicialização local, login Google real e leitura/escrita real no Firestore ainda precisam ser validados antes de encerrar `TASK-003` e `TASK-007`.
 
 ---
 
@@ -43,18 +51,18 @@ Uma task só deve ser marcada como `DONE` quando seus critérios de aceite estiv
 
 ### Fundação e arquitetura
 
-- [ ] TASK-001 — Definir stack do MVP
-- [ ] TASK-002 — Definir estratégia de autenticação e acesso
-- [ ] TASK-003 — Criar estrutura inicial da aplicação
-- [ ] TASK-004 — Configurar ambientes e variáveis
-- [ ] TASK-005 — Definir padrão de arquitetura e organização interna
-- [ ] TASK-006 — Configurar qualidade básica do código
+- [x] TASK-001 — Definir stack do MVP — **DONE**
+- [x] TASK-002 — Definir estratégia de autenticação e acesso — **DONE**
+- [ ] TASK-003 — Criar estrutura inicial da aplicação — **IN PROGRESS**
+- [x] TASK-004 — Configurar ambientes e variáveis/configuração — **DONE**
+- [x] TASK-005 — Definir padrão de arquitetura e organização interna — **DONE**
+- [ ] TASK-006 — Configurar qualidade básica do código — **TODO**
 
 Detalhes: [`tasks/00-fundacao.md`](tasks/00-fundacao.md)
 
 ### Persistência e modelo de dados
 
-- [ ] TASK-007 — Definir banco de dados e estratégia de persistência
+- [ ] TASK-007 — Definir banco de dados e estratégia de persistência — **IN PROGRESS**
 - [ ] TASK-008 — Implementar modelo `Project`
 - [ ] TASK-009 — Implementar modelos `Category` e `ProjectStatus`
 - [ ] TASK-010 — Implementar modelo `Technology` e relação N:N
@@ -131,12 +139,16 @@ Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 
 ---
 
-## Ordem recomendada
+## Ordem recomendada a partir do estado atual
 
 ```text
-TASK-001 → TASK-006
+validar TASK-003 + TASK-007
         ↓
-TASK-007 → TASK-012
+TASK-006
+        ↓
+TASK-008 + TASK-009
+        ↓
+TASK-010 + TASK-011 + TASK-012
         ↓
 TASK-013 → TASK-020
         ↓
@@ -147,13 +159,11 @@ TASK-033 → TASK-041
 TASK-042 → TASK-048
 ```
 
-Tasks independentes dentro de um mesmo bloco podem ser executadas em paralelo quando suas dependências permitirem.
+Tasks independentes podem ser executadas em paralelo quando suas dependências permitirem.
 
 ---
 
 ## Fora do MVP / backlog futuro
-
-Os itens abaixo não fazem parte das 48 tasks do MVP:
 
 - integração automática com a API do GitHub;
 - importação automatizada da planilha original;
@@ -162,8 +172,6 @@ Os itens abaixo não fazem parte das 48 tasks do MVP:
 - consulta automática de registrador/WHOIS;
 - gestão completa de clientes/CRM;
 - colaboração multiusuário avançada;
-- histórico/auditoria detalhada de todas as alterações;
+- histórico detalhado de alterações;
 - tela global avançada de pendências;
 - métricas de código, commits, builds e disponibilidade de deploy.
-
-Esses itens podem virar novos épicos após a primeira versão utilizável.
