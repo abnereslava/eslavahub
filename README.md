@@ -47,9 +47,10 @@ O primeiro ciclo do produto deverá contemplar:
 
 - [Proposta do produto](docs/PROPOSTA.md)
 - [Software Design Document (SDD)](docs/SDD.md)
+- [Backlog e documentação das tasks](docs/TASKS.md)
 
 ## Estado do projeto
 
-**Fase:** concepção e especificação inicial.
+**Fase:** concepção, especificação e planejamento inicial do MVP.
 
-As decisões de stack, infraestrutura, autenticação, hospedagem e persistência ainda não estão definidas nesta documentação inicial.
+As decisões de stack, infraestrutura, autenticação, hospedagem e persistência ainda não estão definidas. Essas decisões fazem parte das primeiras tasks do backlog e, quando concluídas, deverão ser refletidas no SDD.
