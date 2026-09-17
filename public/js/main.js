@@ -4,8 +4,14 @@ import {
   signOutCurrentUser
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
+import {
+  renderProjectDetails,
+  renderProjectForm,
+  renderProjectList
+} from "./ui/projects-ui.js";
 
 const appElement = document.querySelector("#app");
+let currentUser = null;
 
 function escapeHtml(value = "") {
   return String(value)
@@ -17,10 +23,12 @@ function escapeHtml(value = "") {
 }
 
 function renderSignedOut() {
+  appElement.className = "app-shell auth-shell";
   appElement.innerHTML = `
-    <section class="card">
-      <h1>EslavaHub</h1>
-      <p>Centralize seus projetos, repositórios, deploys, domínios e pendências.</p>
+    <section class="card auth-card">
+      <p class="eyebrow">EslavaHub</p>
+      <h1>Central de projetos</h1>
+      <p>Organize repositórios, deploys, domínios e pendências dos seus projetos de programação.</p>
       <div class="actions">
         <button id="google-sign-in" class="button button-primary" type="button">
           Entrar com Google
@@ -49,32 +57,27 @@ function renderSignedOut() {
   });
 }
 
-function renderSignedIn(user, bootstrapError = null) {
+function renderAuthenticatedShell(user, bootstrapError = null) {
   const displayName = escapeHtml(user.displayName || "Usuário");
   const email = escapeHtml(user.email || "");
-  const photoURL = user.photoURL ? escapeHtml(user.photoURL) : "";
 
+  appElement.className = "app-shell workspace-shell";
   appElement.innerHTML = `
-    <section class="card">
-      <h1>EslavaHub</h1>
-      <p>A fundação da aplicação está conectada ao Firebase.</p>
-
-      <div class="user-summary">
-        ${photoURL ? `<img src="${photoURL}" alt="Foto de ${displayName}" referrerpolicy="no-referrer" />` : ""}
+    <header class="topbar">
+      <a class="brand" href="#/projects">EslavaHub</a>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#/projects">Projetos</a>
+      </nav>
+      <div class="account-menu">
         <div>
           <strong>${displayName}</strong>
           <span>${email}</span>
         </div>
+        <button id="sign-out" class="button button-secondary button-small" type="button">Sair</button>
       </div>
-
-      ${bootstrapError ? '<p class="error-message" role="alert">Não foi possível preparar os dados iniciais do workspace.</p>' : ""}
-
-      <p>Próximo módulo: cadastro e listagem de projetos.</p>
-
-      <div class="actions">
-        <button id="sign-out" class="button button-secondary" type="button">Sair</button>
-      </div>
-    </section>
+    </header>
+    ${bootstrapError ? '<div class="global-alert" role="alert">Não foi possível preparar todos os dados iniciais do workspace.</div>' : ""}
+    <main id="page-content" class="page-content" aria-live="polite"></main>
   `;
 
   document.querySelector("#sign-out").addEventListener("click", async () => {
@@ -82,17 +85,75 @@ function renderSignedIn(user, bootstrapError = null) {
   });
 }
 
+async function renderAuthenticatedRoute() {
+  if (!currentUser) return;
+
+  const container = document.querySelector("#page-content");
+  if (!container) return;
+
+  const rawHash = window.location.hash || "#/projects";
+  const [path, queryString = ""] = rawHash.slice(1).split("?");
+  const query = new URLSearchParams(queryString);
+  const parts = path.split("/").filter(Boolean);
+
+  if (!parts.length) {
+    window.location.hash = "#/projects";
+    return;
+  }
+
+  if (parts[0] !== "projects") {
+    window.location.hash = "#/projects";
+    return;
+  }
+
+  if (parts.length === 1) {
+    await renderProjectList(container, currentUser.uid, {
+      archived: query.get("archived") === "1"
+    });
+    return;
+  }
+
+  if (parts[1] === "new") {
+    await renderProjectForm(container, currentUser.uid);
+    return;
+  }
+
+  const projectId = decodeURIComponent(parts[1]);
+
+  if (parts[2] === "edit") {
+    await renderProjectForm(container, currentUser.uid, { projectId });
+    return;
+  }
+
+  await renderProjectDetails(container, currentUser.uid, projectId);
+}
+
+window.addEventListener("hashchange", () => {
+  void renderAuthenticatedRoute();
+});
+
 observeAuthState(async (user) => {
+  currentUser = user;
+
   if (!user) {
     renderSignedOut();
     return;
   }
 
+  let bootstrapError = null;
+
   try {
     await initializeUserWorkspace(user.uid);
-    renderSignedIn(user);
   } catch (error) {
     console.error("Workspace bootstrap failed", error);
-    renderSignedIn(user, error);
+    bootstrapError = error;
+  }
+
+  renderAuthenticatedShell(user, bootstrapError);
+
+  if (!window.location.hash) {
+    window.location.hash = "#/projects";
+  } else {
+    await renderAuthenticatedRoute();
   }
 });
