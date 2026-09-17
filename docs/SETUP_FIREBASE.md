@@ -6,7 +6,7 @@
 - Autenticação: Firebase Authentication
 - Provedor permitido no MVP: Google
 - Persistência: Cloud Firestore
-- Hosting previsto: Firebase Hosting
+- Hosting do frontend: GitHub Pages
 
 ## Estrutura de dados
 
@@ -32,7 +32,8 @@ No Firebase Console:
 2. habilitar **Google**;
 3. configurar o e-mail de suporte solicitado pelo Firebase;
 4. em **Settings > Authorized domains**, incluir os domínios nos quais o app será executado;
-5. para desenvolvimento local, confirmar que `localhost` está autorizado.
+5. para desenvolvimento local, confirmar que `localhost` está autorizado;
+6. para produção no GitHub Pages, adicionar `abnereslava.github.io` aos domínios autorizados.
 
 Usuários não autenticados não devem acessar a aplicação privada.
 
@@ -77,31 +78,30 @@ http://localhost:5500
 
 O login Google depende de `localhost` estar autorizado no Firebase Authentication.
 
+## Deploy do frontend
+
+O frontend é publicado pelo GitHub Pages. O workflow `.github/workflows/pages.yml` publica automaticamente a pasta `public/` em pushes para `main`.
+
+No GitHub, habilitar uma única vez:
+
+```text
+Settings > Pages > Build and deployment > Source > GitHub Actions
+```
+
+A URL esperada é:
+
+```text
+https://abnereslava.github.io/eslavahub/
+```
+
 ## Firebase CLI
 
-Para utilizar Hosting e publicar rules, é necessário ter o Firebase CLI disponível e autenticar a máquina:
+A CLI é necessária apenas se você quiser publicar as Firestore Rules/índices a partir de uma máquina local:
 
 ```bash
 firebase login
 firebase use eslavahub-434e5
-```
-
-Publicar Firestore rules e índices:
-
-```bash
 firebase deploy --only firestore
-```
-
-Publicar Hosting:
-
-```bash
-firebase deploy --only hosting
-```
-
-Ou ambos:
-
-```bash
-firebase deploy --only firestore,hosting
 ```
 
 ## Arquivos de infraestrutura
