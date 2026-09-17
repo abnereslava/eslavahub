@@ -1,343 +1,287 @@
 # Software Design Document (SDD) — EslavaHub
 
-**Versão:** 0.1  
-**Estado:** especificação inicial  
+**Versão:** 0.2  
+**Estado:** arquitetura inicial definida; fundação em implementação  
 **Escopo:** MVP da aplicação web EslavaHub
 
 ---
 
 ## 1. Propósito
 
-Este documento descreve como o EslavaHub deve funcionar do ponto de vista de software, cobrindo arquitetura lógica, entidades, regras de negócio, fluxos, telas, validações, requisitos não funcionais e critérios técnicos do MVP.
+Este documento descreve a arquitetura, o modelo de domínio, as regras de negócio, os fluxos e os requisitos técnicos do EslavaHub.
 
-A stack ainda não está definida. Por isso, esta versão do SDD especifica **comportamento e responsabilidades**, sem amarrar a solução a frameworks, provedores ou banco de dados específicos.
-
----
-
-## 2. Contexto do sistema
-
-O EslavaHub será uma aplicação web para centralizar informações de projetos de programação.
-
-O sistema deverá permitir que o usuário gerencie:
-
-- projetos;
-- categorias;
-- status de projeto;
-- tecnologias;
-- links de repositório e deploy;
-- clientes associados ao projeto;
-- domínios e vencimentos;
-- observações rápidas;
-- pendências por projeto.
-
-O projeto é a entidade central do sistema.
+O EslavaHub é uma aplicação web para centralizar projetos de programação, reunindo repositório, deploy, cliente, status, tecnologias, domínios, vencimentos, observações e pendências.
 
 ---
 
-## 3. Objetivos arquiteturais
+## 2. Decisões técnicas do MVP
 
-A arquitetura deverá priorizar:
+A fundação técnica inicial está definida da seguinte forma:
 
-- simplicidade de manutenção;
-- separação clara entre interface, regras de negócio e persistência;
-- facilidade para evoluir de uso pessoal para cenários mais amplos;
-- modelo de dados que não dependa de campos preenchidos artificialmente;
-- possibilidade futura de integração com serviços externos;
-- responsividade;
-- rastreabilidade das principais alterações de dados;
-- baixo acoplamento entre módulos.
+| Área | Decisão |
+| --- | --- |
+| Frontend | HTML5, CSS3 e JavaScript com ES Modules |
+| Framework de UI | Nenhum no MVP inicial |
+| SDK Firebase | Firebase Web SDK 12.19.0 via módulos ESM oficiais |
+| Backend próprio | Não haverá backend próprio no MVP inicial |
+| Autenticação | Firebase Authentication |
+| Provedor de login | Google |
+| Persistência | Cloud Firestore |
+| Autorização dos dados | Firestore Security Rules |
+| Hosting | Firebase Hosting |
+| Projeto Firebase | `eslavahub-434e5` |
+
+A aplicação deve continuar organizada em camadas para que uma mudança futura de frontend, infraestrutura ou persistência não exija reescrever as regras de negócio.
+
+O Web SDK acessa Firebase Authentication e Firestore diretamente. Isso não significa acesso irrestrito: toda leitura e escrita do Firestore feita pelo cliente está sujeita às Security Rules.
+
+---
+
+## 3. Modelo de acesso
+
+O MVP é um sistema autenticado e preparado para múltiplos usuários isolados.
+
+### Regras
+
+- login permitido pelo Google;
+- usuário não autenticado visualiza apenas a entrada da aplicação;
+- cada usuário acessa somente seus próprios dados;
+- o UID gerado pelo Firebase Authentication é a raiz de autorização;
+- dados de um usuário não podem ser consultados ou alterados por outro usuário através do cliente;
+- acesso global é negado por padrão nas Firestore Security Rules.
+
+Estrutura raiz:
+
+```text
+users/{uid}/
+```
+
+Coleções privadas:
+
+```text
+users/{uid}/projects/
+users/{uid}/categories/
+users/{uid}/statuses/
+users/{uid}/technologies/
+users/{uid}/domains/
+users/{uid}/pendingItems/
+```
+
+As regras versionadas estão em `firestore.rules`.
 
 ---
 
 ## 4. Arquitetura lógica
 
-A solução deve ser organizada, conceitualmente, em quatro camadas.
-
-### 4.1 Camada de apresentação
+### 4.1 Apresentação
 
 Responsável por:
 
-- páginas;
-- componentes visuais;
+- páginas e componentes visuais;
 - formulários;
-- filtros;
+- filtros e pesquisa;
 - feedback de carregamento, sucesso e erro;
-- responsividade;
-- acessibilidade básica.
+- responsividade e acessibilidade.
 
-A camada de apresentação não deve concentrar regras de negócio relevantes.
+A apresentação não deve conter regras de negócio relevantes nem construir caminhos Firestore manualmente.
 
-### 4.2 Camada de aplicação
+### 4.2 Aplicação/serviços
 
-Responsável pelos casos de uso, por exemplo:
+Responsável por casos de uso como:
 
-- criar projeto;
-- editar projeto;
-- arquivar projeto;
-- cadastrar pendência;
-- alterar estado de pendência;
+- autenticar e encerrar sessão;
+- criar, editar, arquivar e restaurar projeto;
+- cadastrar e concluir pendência;
 - registrar domínio;
-- calcular situação de vencimento;
-- carregar indicadores do dashboard.
+- calcular alertas;
+- montar indicadores do dashboard.
 
-### 4.3 Camada de domínio
-
-Responsável pelas entidades e regras centrais:
-
-- projeto;
-- categoria;
-- status;
-- tecnologia;
-- domínio;
-- pendência;
-- regras de validação;
-- regras de vencimento;
-- integridade entre entidades.
-
-### 4.4 Camada de persistência/integrações
+### 4.3 Domínio
 
 Responsável por:
 
-- banco de dados;
+- validações;
+- entidades e seus estados;
+- normalização de domínio;
+- cálculo de vencimentos;
+- regras de arquivamento;
+- transições de pendências.
+
+### 4.4 Persistência/integrações
+
+Responsável por:
+
+- Firebase Authentication;
+- Cloud Firestore;
 - repositórios de dados;
-- autenticação, quando definida;
-- integrações externas;
-- serviços futuros como GitHub, calendário, e-mail ou notificações.
+- caminhos de coleção por usuário;
+- futuras integrações externas.
 
----
+A UI não deve chamar operações de persistência de forma espalhada. O acesso aos dados deve passar pela camada de repositórios/serviços.
 
-## 5. Módulos do sistema
-
-O MVP deve possuir os seguintes módulos funcionais:
-
-1. **Dashboard**
-2. **Projetos**
-3. **Pendências**
-4. **Domínios**
-5. **Cadastros auxiliares**
-6. **Configurações** — mínimo necessário
-
----
-
-# 6. Modelo de domínio
-
-## 6.1 Entidade `Project`
-
-Representa um projeto acompanhado pelo sistema.
-
-### Campos
-
-| Campo | Tipo conceitual | Obrigatório | Regra |
-| --- | --- | --- | --- |
-| `id` | identificador | Sim | Gerado pelo sistema; imutável |
-| `name` | texto | Sim | Nome do projeto |
-| `category_id` | relação | Sim | Referência a uma categoria válida |
-| `status_id` | relação | Sim | Referência a um status válido |
-| `repository_url` | URL | Não | Deve ser URL válida quando informada |
-| `deploy_url` | URL | Não | Deve ser URL válida quando informada |
-| `client_name` | texto | Não | MVP pode manter cliente como texto simples |
-| `quick_notes` | texto | Não | Observações curtas do projeto |
-| `archived_at` | data/hora | Não | Preenchido quando arquivado |
-| `created_at` | data/hora | Sim | Gerado pelo sistema |
-| `updated_at` | data/hora | Sim | Atualizado automaticamente |
-
-### Regras
-
-- `id` não pode ser alterado pelo usuário;
-- projetos arquivados não devem aparecer por padrão na listagem ativa;
-- arquivar é preferível a excluir definitivamente no fluxo normal;
-- nome vazio não é permitido;
-- categoria e status precisam existir e estar ativos;
-- URLs vazias são aceitas; URLs preenchidas precisam ser válidas.
-
----
-
-## 6.2 Entidade `Category`
-
-Representa a classificação principal de um projeto.
-
-### Campos
-
-| Campo | Tipo | Obrigatório |
-| --- | --- | --- |
-| `id` | identificador | Sim |
-| `name` | texto | Sim |
-| `active` | booleano | Sim |
-| `created_at` | data/hora | Sim |
-| `updated_at` | data/hora | Sim |
-
-### Regras
-
-- nomes devem ser únicos dentro do conjunto ativo;
-- uma categoria já utilizada não deve ser removida de forma destrutiva; deve poder ser desativada;
-- categorias desativadas permanecem visíveis em projetos antigos.
-
----
-
-## 6.3 Entidade `ProjectStatus`
-
-Representa o estado do ciclo de vida do projeto.
-
-### Campos
-
-| Campo | Tipo | Obrigatório |
-| --- | --- | --- |
-| `id` | identificador | Sim |
-| `name` | texto | Sim |
-| `code` | texto estável | Sim |
-| `active` | booleano | Sim |
-| `sort_order` | inteiro | Sim |
-
-### Sugestão inicial de registros
-
-- `IDEALIZED` — Idealizado;
-- `IN_DEVELOPMENT` — Em desenvolvimento;
-- `FUNCTIONAL` — Funcional;
-- `FINISHED` — Finalizado;
-- `PAUSED` — Pausado;
-- `ABANDONED` — Abandonado.
-
-O código interno deve permanecer estável mesmo que o texto exibido seja alterado no futuro.
-
----
-
-## 6.4 Entidade `Technology`
-
-Representa linguagem, framework, biblioteca relevante, plataforma ou outra tecnologia associada a projetos.
-
-### Campos
-
-| Campo | Tipo | Obrigatório |
-| --- | --- | --- |
-| `id` | identificador | Sim |
-| `name` | texto | Sim |
-| `active` | booleano | Sim |
-
-### Relação
-
-`Project` N:N `Technology`
-
-Um projeto pode utilizar várias tecnologias e uma tecnologia pode aparecer em vários projetos.
-
----
-
-## 6.5 Entidade `Domain`
-
-Representa o domínio associado a um projeto.
-
-### MVP
-
-O modelo deve ser preparado para suportar mais de um domínio por projeto, mesmo que a primeira interface trabalhe principalmente com um domínio principal.
-
-### Campos
-
-| Campo | Tipo | Obrigatório | Regra |
-| --- | --- | --- | --- |
-| `id` | identificador | Sim | Gerado pelo sistema |
-| `project_id` | relação | Sim | Projeto relacionado |
-| `hostname` | texto | Sim | Ex.: `exemplo.com.br` |
-| `expiration_date` | data | Não | Quando conhecida |
-| `is_primary` | booleano | Sim | Indica domínio principal |
-| `notes` | texto | Não | Informação complementar |
-| `created_at` | data/hora | Sim | Automático |
-| `updated_at` | data/hora | Sim | Automático |
-
-### Regras
-
-- `hostname` deve ser armazenado sem protocolo e sem caminho;
-- a URL pública do projeto continua separada em `deploy_url`;
-- um projeto não pode ter mais de um domínio marcado como principal;
-- domínio sem data de vencimento é permitido, mas não participa de alertas temporais.
-
----
-
-## 6.6 Entidade `Task` / `PendingItem`
-
-Representa uma pendência vinculada a um projeto.
-
-### Campos
-
-| Campo | Tipo | Obrigatório | Regra |
-| --- | --- | --- | --- |
-| `id` | identificador | Sim | Gerado pelo sistema |
-| `project_id` | relação | Sim | Projeto relacionado |
-| `status` | enum/relação | Sim | Estado da pendência |
-| `area` | texto | Não | Equivale a Onde/Área |
-| `description` | texto | Sim | O que precisa ser feito |
-| `priority` | enum | Não | Baixa, média, alta ou equivalente |
-| `due_date` | data | Não | Prazo opcional |
-| `notes` | texto | Não | Complemento opcional |
-| `completed_at` | data/hora | Não | Preenchido quando concluída |
-| `created_at` | data/hora | Sim | Automático |
-| `updated_at` | data/hora | Sim | Automático |
-
-### Estados sugeridos
-
-- `PENDING` — Pendente;
-- `IN_PROGRESS` — Em andamento;
-- `WAITING` — Aguardando;
-- `COMPLETED` — Concluída;
-- `DISCARDED` — Descartada.
-
-### Regras
-
-- toda pendência pertence a exatamente um projeto;
-- descrição é obrigatória;
-- ao entrar em `COMPLETED`, `completed_at` deve ser preenchido;
-- ao sair de `COMPLETED`, `completed_at` deve ser limpo ou substituído conforme a política definida na implementação;
-- pendências concluídas não entram, por padrão, na contagem de pendências abertas.
-
----
-
-# 7. Relacionamentos
-
-Modelo conceitual:
+Estrutura inicial do frontend:
 
 ```text
-Category 1 ─────── N Project N ─────── N Technology
-                       │
-                       ├────── 1:N Domain
-                       │
-                       └────── 1:N PendingItem
-
-ProjectStatus 1 ─── N Project
+public/
+  index.html
+  css/
+    styles.css
+  js/
+    main.js
+    config/
+      firebase.js
+    services/
+      auth-service.js
+    repositories/
+      user-paths.js
 ```
+
+A estrutura crescerá por módulos conforme projetos, domínios e pendências forem implementados.
 
 ---
 
-# 8. Regras de negócio
+## 5. Módulos funcionais
 
-## 8.1 Identificação de projetos
+O MVP contempla:
 
-- o ID é gerado automaticamente;
-- IDs não são reutilizados;
-- o usuário não informa manualmente o ID;
-- exclusão lógica/arquivamento não libera ID para reutilização.
+1. autenticação;
+2. dashboard;
+3. projetos;
+4. pendências;
+5. domínios;
+6. categorias;
+7. tecnologias;
+8. configurações mínimas.
 
-## 8.2 Campos opcionais
+---
 
-O sistema não deve exigir:
+## 6. Modelo de domínio
 
-- cliente;
-- repositório;
-- deploy;
-- domínio;
-- vencimento;
-- tecnologia;
-- observações;
-- pendências.
+### 6.1 Project
 
-A ausência desses campos não torna o projeto incompleto ou inválido.
+| Campo | Obrigatório | Observação |
+| --- | --- | --- |
+| `id` | Sim | Gerado pelo Firestore |
+| `name` | Sim | Nome do projeto |
+| `category_id` | Sim | Referência lógica à categoria |
+| `status_id` | Sim | Referência lógica ao status |
+| `repository_url` | Não | URL válida quando preenchida |
+| `deploy_url` | Não | URL válida quando preenchida |
+| `client_name` | Não | Cliente como texto no MVP |
+| `quick_notes` | Não | Observações rápidas |
+| `archived_at` | Não | Preenchido no arquivamento |
+| `created_at` | Sim | Timestamp |
+| `updated_at` | Sim | Timestamp |
 
-## 8.3 Domínio e vencimento
+Regras:
 
-Quando houver `expiration_date`, o sistema deve calcular:
+- ID não é editável nem reutilizado;
+- arquivamento é preferível à exclusão definitiva;
+- projetos arquivados ficam fora da listagem ativa padrão;
+- categoria e status precisam ser válidos;
+- campos não necessários podem permanecer vazios.
+
+### 6.2 Category
+
+Campos mínimos:
+
+- `id`;
+- `name`;
+- `active`;
+- `created_at`;
+- `updated_at`.
+
+Categorias utilizadas devem ser desativadas, e não removidas destrutivamente.
+
+### 6.3 ProjectStatus
+
+Campos mínimos:
+
+- `id`;
+- `name`;
+- `code`;
+- `active`;
+- `sort_order`.
+
+Estados iniciais:
+
+- `IDEALIZED`;
+- `IN_DEVELOPMENT`;
+- `FUNCTIONAL`;
+- `FINISHED`;
+- `PAUSED`;
+- `ABANDONED`.
+
+### 6.4 Technology
+
+Campos mínimos:
+
+- `id`;
+- `name`;
+- `active`.
+
+Um projeto pode possuir múltiplas tecnologias. Uma tecnologia pode aparecer em múltiplos projetos.
+
+No Firestore essa relação poderá ser representada por IDs no documento de projeto ou por outra representação definida pelo repositório, sem alterar o contrato de domínio.
+
+### 6.5 Domain
+
+Campos mínimos:
+
+- `id`;
+- `project_id`;
+- `hostname`;
+- `expiration_date` opcional;
+- `is_primary`;
+- `notes` opcional;
+- `created_at`;
+- `updated_at`.
+
+Regras:
+
+- hostname armazenado sem protocolo e caminho;
+- projeto pode possuir múltiplos domínios;
+- somente um domínio pode ser principal por projeto;
+- domínio sem vencimento é permitido;
+- URL de deploy não é substituída pelo hostname.
+
+### 6.6 PendingItem
+
+Campos mínimos:
+
+- `id`;
+- `project_id`;
+- `status`;
+- `area` opcional;
+- `description`;
+- `priority` opcional;
+- `due_date` opcional;
+- `notes` opcional;
+- `completed_at` opcional;
+- `created_at`;
+- `updated_at`.
+
+Estados iniciais:
+
+- `PENDING`;
+- `IN_PROGRESS`;
+- `WAITING`;
+- `COMPLETED`;
+- `DISCARDED`.
+
+Ao entrar em `COMPLETED`, `completed_at` deve ser preenchido. Pendências concluídas não entram na contagem padrão de itens abertos.
+
+---
+
+## 7. Regras de vencimento de domínio
+
+Quando houver `expiration_date`:
 
 ```text
 dias_restantes = expiration_date - data_atual
 ```
 
-Classificação inicial sugerida:
+Classificação inicial:
 
 ```text
 > 30 dias       NORMAL
@@ -347,259 +291,15 @@ Classificação inicial sugerida:
 < 0 dias        EXPIRED
 ```
 
-Os limites devem ficar centralizados em configuração/regra de domínio e não espalhados pela interface.
+Os limites devem existir em um módulo central de domínio, nunca duplicados em componentes de interface.
 
-## 8.4 Alertas
-
-No MVP, alerta significa **sinalização dentro do sistema**.
-
-Devem existir, no mínimo:
-
-- indicador no dashboard;
-- indicador na listagem de domínios;
-- indicador na página do projeto.
-
-Notificações externas não devem ser consideradas requisito obrigatório até que o canal seja definido.
-
-## 8.5 Arquivamento
-
-Projetos devem poder ser arquivados sem destruição dos dados associados.
-
-Ao arquivar:
-
-- pendências permanecem registradas;
-- domínios permanecem registrados;
-- tecnologias permanecem associadas;
-- o projeto sai das visualizações ativas padrão;
-- o usuário pode consultar projetos arquivados por filtro específico.
+No MVP, os alertas são internos à aplicação. E-mail, push e calendário ficam fora do escopo inicial.
 
 ---
 
-# 9. Casos de uso
+## 8. Contratos da camada de aplicação
 
-## UC-01 — Criar projeto
-
-### Entrada mínima
-
-- nome;
-- categoria;
-- status.
-
-### Fluxo
-
-1. usuário abre o formulário;
-2. informa os dados desejados;
-3. sistema valida obrigatórios e URLs;
-4. sistema gera ID;
-5. projeto é persistido;
-6. usuário é direcionado à página do projeto ou recebe confirmação equivalente.
-
-### Resultado
-
-Projeto disponível na listagem ativa.
-
----
-
-## UC-02 — Editar projeto
-
-1. usuário abre projeto existente;
-2. entra em modo de edição;
-3. altera campos;
-4. sistema valida os dados;
-5. sistema persiste a atualização;
-6. `updated_at` é atualizado.
-
-O ID não pode ser alterado.
-
----
-
-## UC-03 — Pesquisar e filtrar projetos
-
-Filtros mínimos:
-
-- texto;
-- categoria;
-- status;
-- cliente;
-- tecnologia;
-- possui pendência aberta;
-- arquivado/ativo.
-
-A pesquisa textual deve considerar pelo menos nome, cliente e, quando viável, observações.
-
----
-
-## UC-04 — Adicionar pendência
-
-1. usuário abre um projeto;
-2. cria uma nova pendência;
-3. informa descrição;
-4. opcionalmente define área, prioridade, prazo e observação;
-5. sistema salva vinculando a pendência ao projeto.
-
----
-
-## UC-05 — Concluir pendência
-
-1. usuário altera estado para concluída;
-2. sistema registra data/hora de conclusão;
-3. dashboard e contadores são atualizados.
-
----
-
-## UC-06 — Registrar domínio
-
-1. usuário informa hostname;
-2. opcionalmente informa data de expiração;
-3. sistema normaliza o hostname;
-4. sistema salva o domínio;
-5. quando existir vencimento, situação é calculada automaticamente.
-
----
-
-## UC-07 — Visualizar alertas de domínio
-
-1. sistema consulta domínios com data de expiração;
-2. calcula dias restantes;
-3. classifica cada domínio;
-4. destaca os domínios que exigem atenção.
-
----
-
-## UC-08 — Arquivar projeto
-
-1. usuário solicita arquivamento;
-2. sistema pede confirmação;
-3. preenche `archived_at`;
-4. projeto deixa a listagem ativa padrão.
-
----
-
-# 10. Telas
-
-## 10.1 Dashboard
-
-### Deve exibir
-
-- total de projetos ativos;
-- projetos em desenvolvimento;
-- projetos com pendências abertas;
-- quantidade de pendências abertas;
-- domínios em atenção;
-- domínios vencidos.
-
-### Blocos
-
-- projetos em andamento;
-- pendências prioritárias/recentes;
-- próximos vencimentos de domínio;
-- projetos atualizados recentemente.
-
-Cada indicador relevante deve funcionar como entrada para a listagem já filtrada correspondente.
-
----
-
-## 10.2 Projetos
-
-### Componentes
-
-- campo de pesquisa;
-- filtros;
-- ordenação;
-- botão de novo projeto;
-- tabela ou cards;
-- paginação ou carregamento progressivo quando necessário.
-
-### Informações resumidas por item
-
-- ID;
-- nome;
-- categoria;
-- status;
-- cliente, se houver;
-- tecnologias principais, se houver;
-- quantidade de pendências abertas;
-- atalhos para repositório/deploy, quando disponíveis.
-
----
-
-## 10.3 Detalhe do projeto
-
-Seções:
-
-1. resumo;
-2. links;
-3. tecnologias;
-4. domínio;
-5. pendências;
-6. observações.
-
-Ações rápidas desejáveis:
-
-- abrir repositório;
-- abrir deploy;
-- criar pendência;
-- editar projeto;
-- concluir pendência;
-- arquivar projeto.
-
----
-
-## 10.4 Domínios
-
-Deve permitir visualizar:
-
-- projeto;
-- domínio;
-- vencimento;
-- dias restantes;
-- classificação do alerta.
-
-Filtros úteis:
-
-- vencido;
-- até 7 dias;
-- até 15 dias;
-- até 30 dias;
-- sem vencimento cadastrado.
-
-Ordenação padrão recomendada: vencimento mais próximo primeiro.
-
----
-
-## 10.5 Cadastros auxiliares
-
-No mínimo:
-
-- categorias;
-- tecnologias.
-
-Status de projeto pode começar pré-configurado e receber interface administrativa posteriormente.
-
----
-
-# 11. Navegação sugerida
-
-```text
-Dashboard
-Projetos
-  ├─ Todos
-  ├─ Novo projeto
-  └─ Detalhe do projeto
-Domínios
-Cadastros
-  ├─ Categorias
-  └─ Tecnologias
-Configurações
-```
-
-Pendências podem permanecer principalmente dentro dos projetos no MVP, com uma futura tela global caso haja necessidade.
-
----
-
-# 12. Contratos de aplicação
-
-Independentemente de a implementação utilizar REST, RPC, server actions ou outro padrão, a camada de aplicação deverá oferecer operações equivalentes a:
+A implementação deve oferecer operações equivalentes a:
 
 ```text
 listProjects(filters, pagination)
@@ -630,199 +330,305 @@ updateTechnology(id, data)
 getDashboardSummary()
 ```
 
-A interface não deve acessar diretamente a persistência sem passar pelas regras de aplicação/domínio.
+Cada operação que acessa Firestore deve derivar o caminho a partir do UID da sessão autenticada.
 
 ---
 
-# 13. Validação
+## 9. Casos de uso principais
 
-## Projeto
+### Criar projeto
 
-- nome: obrigatório, após remoção de espaços laterais;
-- categoria: obrigatória e válida;
-- status: obrigatório e válido;
-- `repository_url`: URL válida ou vazio;
-- `deploy_url`: URL válida ou vazio.
+Entrada mínima:
 
-## Domínio
+- nome;
+- categoria;
+- status.
 
-- hostname não pode conter caminho arbitrário;
-- protocolo deve ser removido/normalizado caso o usuário o informe;
-- `expiration_date`, quando preenchida, deve ser uma data válida.
+O sistema valida, gera o ID pelo Firestore, grava timestamps e disponibiliza o projeto na listagem ativa.
 
-## Pendência
+### Editar projeto
 
+O usuário altera campos editáveis. O ID permanece inalterado e `updated_at` é renovado.
+
+### Pesquisar e filtrar
+
+Filtros mínimos:
+
+- texto;
+- categoria;
+- status;
+- cliente;
+- tecnologia;
+- possui pendência aberta;
+- ativo/arquivado.
+
+### Pendências
+
+O usuário pode criar, editar, priorizar, concluir e descartar pendências associadas a um projeto.
+
+### Domínios
+
+O usuário pode registrar domínio, vencimento e domínio principal. A situação temporal é calculada automaticamente na leitura/apresentação.
+
+### Arquivamento
+
+Arquivar um projeto preserva domínios, pendências e tecnologias e remove o projeto das visualizações ativas padrão.
+
+---
+
+## 10. Telas
+
+### 10.1 Login
+
+- marca EslavaHub;
+- ação Entrar com Google;
+- feedback de falha de autenticação.
+
+### 10.2 Dashboard
+
+Exibe pelo menos:
+
+- total de projetos ativos;
+- projetos em desenvolvimento;
+- projetos com pendências abertas;
+- quantidade de pendências abertas;
+- domínios em atenção;
+- domínios vencidos;
+- projetos atualizados recentemente.
+
+### 10.3 Projetos
+
+- pesquisa;
+- filtros;
+- ordenação;
+- criação;
+- tabela/cards;
+- atalhos para repositório e deploy.
+
+### 10.4 Detalhe do projeto
+
+Seções:
+
+- resumo;
+- links;
+- tecnologias;
+- domínios;
+- pendências;
+- observações.
+
+### 10.5 Domínios
+
+Deve apresentar projeto, hostname, vencimento, dias restantes e classificação de alerta.
+
+### 10.6 Cadastros auxiliares
+
+- categorias;
+- tecnologias.
+
+---
+
+## 11. Validação e integridade
+
+### Projeto
+
+- nome obrigatório após trim;
+- categoria e status obrigatórios;
+- URLs opcionais, porém válidas quando informadas.
+
+### Domínio
+
+- hostname obrigatório;
+- protocolo/caminho removidos na normalização;
+- vencimento deve ser data válida quando informado.
+
+### Pendência
+
+- projeto obrigatório;
 - descrição obrigatória;
-- projeto relacionado obrigatório;
-- estado deve pertencer ao conjunto permitido.
+- status deve pertencer ao conjunto permitido.
+
+Itens em uso devem ser desativados ou arquivados sempre que exclusão destrutiva puder quebrar referências.
 
 ---
 
-# 14. Exclusão e integridade
+## 12. Segurança
 
-## Exclusão de projeto
+### Firebase Authentication
 
-O fluxo padrão deve utilizar arquivamento.
+O MVP utiliza somente Google Sign-In.
 
-Exclusão definitiva, se implementada, deve exigir confirmação explícita e considerar dependências.
+### Firestore Security Rules
 
-## Categoria/tecnologia em uso
+A autorização deve ser aplicada também no Firestore e não apenas escondendo telas no frontend.
 
-Itens já relacionados a projetos não devem ser apagados silenciosamente. Deve-se priorizar desativação.
+Regra estrutural principal:
 
-## Pendências
+```text
+request.auth != null
+request.auth.token.firebase.sign_in_provider == "google.com"
+request.auth.uid == userId
+```
 
-Uma pendência pode ser descartada ou, se houver exclusão definitiva, a ação deve ser explícita.
+O cliente não possui credenciais administrativas.
 
----
+O `firebaseConfig` do Web SDK pode ser versionado; arquivos de service account, private keys, tokens administrativos e outros segredos não podem ser incluídos no frontend ou Git.
 
-# 15. Auditoria mínima
+### Validação de dados
 
-Todas as entidades principais devem possuir:
-
-- `created_at`;
-- `updated_at`.
-
-Projetos devem possuir também `archived_at`.
-
-Pendências concluídas devem possuir `completed_at`.
-
-Histórico detalhado de alterações não é obrigatório no MVP, mas a modelagem não deve impedir sua inclusão futura.
+A primeira versão das rules isola usuários. Conforme os modelos forem implementados, as rules deverão ganhar validação campo a campo para operações sensíveis.
 
 ---
 
-# 16. Requisitos não funcionais
+## 13. Persistência Firestore
 
-## 16.1 Responsividade
+Firestore é schemaless; portanto, não haverá migrations SQL tradicionais.
 
-A aplicação deve ser utilizável em desktop e dispositivos móveis.
+A evolução do schema será tratada por:
 
-Prioridade de uso:
+- contratos de modelo no código;
+- valores padrão;
+- versionamento quando necessário;
+- scripts de migração específicos quando uma alteração exigir transformar documentos existentes.
+
+Acesso ao Firestore deve ficar encapsulado em repositórios.
+
+O arquivo `public/js/repositories/user-paths.js` centraliza a convenção inicial de caminhos privados.
+
+---
+
+## 14. Requisitos não funcionais
+
+### Responsividade
+
+Prioridade:
 
 1. desktop;
 2. celular;
 3. tablet.
 
-A visualização em celular deve preservar ações essenciais, mesmo que tabelas precisem virar cards ou listas compactas.
+### Performance
 
-## 16.2 Performance
+- evitar leituras desnecessárias;
+- utilizar filtros/queries Firestore adequados;
+- criar índices compostos somente conforme consultas reais exigirem;
+- usar paginação ou carregamento progressivo quando a base crescer.
 
-- carregamentos comuns devem evitar buscar dados desnecessários;
-- listagens devem suportar paginação ou estratégia equivalente;
-- dashboard deve utilizar consultas agregadas adequadas;
-- filtros não devem exigir carregamento integral de toda a base quando ela crescer.
+### Acessibilidade
 
-## 16.3 Segurança
-
-Quando autenticação for implementada:
-
-- rotas privadas devem exigir sessão válida;
-- operações de escrita devem validar autorização no servidor;
-- dados recebidos do cliente devem ser validados novamente no backend;
-- segredos não podem ser armazenados no frontend;
-- credenciais de integrações externas não devem ser persistidas em texto puro.
-
-## 16.4 Acessibilidade
-
-Requisitos mínimos:
-
-- navegação por teclado nas ações principais;
+- ações principais acessíveis por teclado;
 - labels em formulários;
 - contraste adequado;
-- alertas não podem depender exclusivamente de cor;
-- estados devem possuir texto ou ícone acompanhado de descrição acessível.
+- alertas não dependem apenas de cor;
+- estados possuem texto acessível.
 
-## 16.5 Compatibilidade
+### Compatibilidade
 
-A aplicação deve priorizar navegadores modernos com suporte ativo.
-
----
-
-# 17. Tratamento de erros
-
-A interface deverá diferenciar:
-
-- erro de validação;
-- erro de autenticação/autorização;
-- recurso não encontrado;
-- erro de integração externa;
-- erro inesperado do servidor;
-- ausência de conexão, quando detectável.
-
-Mensagens devem orientar a ação possível sem expor detalhes sensíveis da implementação.
+Navegadores modernos com suporte a ES Modules.
 
 ---
 
-# 18. Estados de interface
+## 15. Tratamento de erros e estados
 
-Toda tela que dependa de dados deverá prever:
+A UI deve prever:
 
 - carregando;
 - carregado com dados;
-- carregado sem dados;
-- erro;
+- vazio;
+- erro de validação;
+- erro de autenticação/autorização;
+- erro de Firestore;
+- recurso inexistente;
+- ausência de conexão quando detectável;
 - atualização em andamento.
 
-Formulários devem evitar envios duplicados durante processamento.
+Formulários devem bloquear envios duplicados durante processamento.
 
 ---
 
-# 19. Estratégia de testes
+## 16. Auditoria mínima
 
-## 19.1 Testes unitários
+Entidades principais:
 
-Prioridade para regras de domínio:
+- `created_at`;
+- `updated_at`.
 
-- cálculo de vencimento;
+Projeto:
+
+- `archived_at`.
+
+Pendência concluída:
+
+- `completed_at`.
+
+Histórico completo de alterações fica fora do MVP.
+
+---
+
+## 17. Estratégia de testes
+
+### Unitários
+
+Prioridade:
+
+- vencimento de domínio;
 - classificação de alerta;
-- normalização de domínio;
-- transição de estado de pendência;
-- validações de projeto.
+- normalização de hostname;
+- transição de pendência;
+- validação de projeto.
 
-## 19.2 Testes de integração
+### Integração
 
-Cobrir:
-
-- criação de projeto;
-- edição;
+- autenticação e isolamento por usuário;
+- criação/edição/arquivamento de projeto;
 - filtros;
-- arquivamento;
-- criação/conclusão de pendência;
-- cadastro de domínio;
-- geração do resumo do dashboard.
+- pendências;
+- domínios;
+- dashboard.
 
-## 19.3 Testes de interface/E2E
+### E2E
 
 Fluxos mínimos:
 
-1. criar projeto;
-2. localizar projeto;
-3. editar projeto;
-4. adicionar pendência;
-5. concluir pendência;
+1. entrar com Google;
+2. criar projeto;
+3. localizar projeto;
+4. editar projeto;
+5. adicionar e concluir pendência;
 6. cadastrar domínio;
 7. visualizar alerta;
-8. arquivar projeto.
+8. arquivar projeto;
+9. sair.
+
+As Firestore Rules devem possuir testes próprios antes de regras mais restritivas serem consideradas concluídas.
 
 ---
 
-# 20. Observabilidade
+## 18. Deploy e infraestrutura
 
-A implementação deve permitir, no mínimo:
+Arquivos versionados:
 
-- registro de erros de backend;
-- registro de falhas de integração;
-- identificação do contexto da operação sem expor dados sensíveis.
+```text
+.firebaserc
+firebase.json
+firestore.rules
+firestore.indexes.json
+```
 
-Métricas e monitoramento avançados podem ser adicionados posteriormente.
+Hosting publica o conteúdo de `public/`.
+
+Projeto padrão:
+
+```text
+eslavahub-434e5
+```
+
+Procedimentos estão documentados em [`SETUP_FIREBASE.md`](SETUP_FIREBASE.md).
 
 ---
 
-# 21. Migração da planilha
+## 19. Migração da planilha
 
-A aplicação deve ser desenhada considerando que os dados atuais podem ser importados posteriormente.
-
-Uma estratégia futura de importação deve mapear pelo menos:
+A importação da planilha atual fica fora do caminho crítico do MVP, porém a modelagem deve permitir mapear:
 
 ```text
 ID antigo -> referência externa opcional
@@ -839,87 +645,72 @@ Observações -> Project.quick_notes
 Pendências -> PendingItem
 ```
 
-O ID interno novo deve continuar sendo controlado pelo sistema. Caso seja importante preservar o ID histórico da planilha, ele deverá ficar em um campo separado de referência/migração.
+IDs internos continuarão sendo gerados pelo Firestore.
 
 ---
 
-# 22. Evoluções previstas
+## 20. Evoluções previstas
 
-A arquitetura deve deixar pontos claros de extensão para:
+Fora do MVP inicial:
 
-- integração com GitHub;
-- importação automática de repositórios;
-- leitura de linguagem principal;
+- integração automática com GitHub;
+- leitura automática de linguagem/repositório;
 - sincronização de deploys;
 - notificações externas;
 - Google Calendar;
-- cadastro completo de clientes;
-- histórico de mudanças;
-- tags;
-- documentação/anexos;
-- múltiplos usuários;
-- papéis e permissões;
-- API pública/privada;
-- monitoramento de uptime.
-
-Nenhuma dessas evoluções deve aumentar a complexidade do MVP sem necessidade atual.
+- CRM de clientes;
+- histórico completo;
+- anexos;
+- papéis e permissões avançados;
+- API externa;
+- monitoramento de uptime;
+- WHOIS/renovação automática de domínio.
 
 ---
 
-# 23. Decisões técnicas pendentes
+## 21. Decisões ainda pendentes
 
-Antes da implementação, deverão ser tomadas e registradas as seguintes decisões:
+Mesmo com a fundação definida, permanecem decisões posteriores:
 
-1. framework/frontend;
-2. backend ou arquitetura full-stack;
-3. banco de dados;
-4. ORM/query layer, se aplicável;
-5. autenticação;
-6. hospedagem;
-7. estratégia de migrations;
-8. estratégia de backup;
-9. testes e CI;
-10. mecanismo de notificações futuras;
-11. estratégia de importação da planilha;
-12. modelo inicial single-user ou multi-user.
-
-Quando uma decisão tiver impacto arquitetural relevante, recomenda-se registrá-la em um ADR dentro de `docs/adr/`.
+- estratégia de backup/exportação do Firestore;
+- ferramentas de lint/formatação/testes;
+- CI;
+- política de validação campo a campo das Firestore Rules;
+- estratégia definitiva de importação da planilha.
 
 ---
 
-# 24. Critérios de aceite do MVP
+## 22. Critérios de aceite do MVP
 
-O MVP estará tecnicamente apto para uso quando:
+O MVP estará apto para uso quando:
 
-- projetos puderem ser criados com apenas nome, categoria e status;
-- campos opcionais puderem permanecer vazios sem gerar inconsistência;
-- IDs forem gerados automaticamente sem duplicidade;
-- projetos puderem ser pesquisados e filtrados;
-- múltiplas tecnologias puderem ser associadas a um projeto;
-- pendências puderem ser criadas e concluídas dentro de um projeto;
+- login Google estiver funcional;
+- usuário não autenticado não acessar os dados;
+- dados estiverem isolados por UID;
+- projetos puderem ser criados com nome, categoria e status;
+- campos opcionais puderem ficar vazios;
+- projetos puderem ser pesquisados, filtrados e arquivados;
+- múltiplas tecnologias puderem ser associadas;
+- pendências puderem ser criadas e concluídas;
 - domínios puderem ser cadastrados com vencimento opcional;
-- o sistema classificar corretamente domínios próximos do vencimento;
-- o dashboard apresentar projetos, pendências e alertas relevantes;
-- projetos puderem ser arquivados sem perda de seus dados relacionados;
-- os fluxos principais funcionarem adequadamente em desktop e celular.
+- alertas de vencimento forem calculados corretamente;
+- dashboard apresentar os principais indicadores;
+- fluxos essenciais funcionarem em desktop e celular;
+- Security Rules e fluxos principais estiverem testados.
 
 ---
 
-# 25. Próximo passo recomendado
+## 23. Estado atual da implementação
 
-Após aprovação deste SDD, o desenvolvimento deve começar pela definição da stack e por um pequeno conjunto de ADRs. Em seguida, a implementação pode seguir esta ordem:
+Já versionados:
 
-```text
-1. Modelo de dados
-2. Cadastros auxiliares
-3. CRUD de projetos
-4. Página de detalhe
-5. Pendências
-6. Domínios e regras de vencimento
-7. Busca e filtros
-8. Dashboard
-9. Responsividade e acabamento
-10. Importação dos dados existentes
-```
+- Firebase Web configuration;
+- serviço de autenticação Google;
+- tela inicial de login/sessão;
+- convenção de caminhos Firestore por UID;
+- Firestore Security Rules;
+- configuração Firebase Hosting;
+- configuração de índices Firestore;
+- documentação de setup Firebase.
 
-A [proposta do produto](PROPOSTA.md) define o que o EslavaHub pretende resolver; este SDD define a estrutura inicial de como o software deverá atender a essa proposta.
+A execução local, o login real e a conexão real com Firestore ainda precisam ser validados em ambiente executável antes das tasks correspondentes serem consideradas integralmente concluídas.
