@@ -5,11 +5,8 @@ import {
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
 import { renderCatalog } from "./ui/catalogs-ui.js";
-import {
-  renderProjectDetails,
-  renderProjectForm,
-  renderProjectList
-} from "./ui/projects-ui.js";
+import { renderProjectDetailPage } from "./ui/project-detail-ui.js";
+import { renderProjectForm, renderProjectList } from "./ui/projects-ui.js";
 
 const appElement = document.querySelector("#app");
 let currentUser = null;
@@ -132,7 +129,7 @@ async function renderAuthenticatedRoute() {
     return;
   }
 
-  await renderProjectDetails(container, currentUser.uid, projectId);
+  await renderProjectDetailPage(container, currentUser.uid, projectId);
 }
 
 window.addEventListener("hashchange", () => {
