@@ -1,54 +1,69 @@
 # Tasks — Consulta e Cadastros Auxiliares
 
-Este bloco torna o volume de projetos consultável e mantém os cadastros reutilizáveis do sistema.
+Este bloco torna o volume de projetos consultável e mantém os cadastros reutilizáveis do sistema. Busca, filtros, ordenação e paginação estão implementados na listagem de projetos e aguardam validação com dados reais.
 
 ---
 
 ## TASK-037 — Implementar busca textual de projetos
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-013
 
+### Implementado
+
+A busca textual da rota `#/projects` procura correspondência parcial, sem exigir texto exato, em nome, cliente e observações rápidas.
+
 ### Critérios de aceite
-- [ ] busca considera ao menos nome e cliente;
-- [ ] observações podem ser incluídas quando a estratégia de persistência permitir;
-- [ ] busca vazia retorna a listagem padrão;
-- [ ] busca não exige correspondência exata;
-- [ ] ausência de resultados possui estado próprio.
+- [x] busca considera nome e cliente;
+- [x] observações rápidas são incluídas;
+- [x] busca vazia retorna a listagem padrão;
+- [x] busca não exige correspondência exata;
+- [x] ausência de resultados possui estado próprio com ação para limpar filtros;
+- [ ] busca validada com dados reais em navegador.
 
 ---
 
 ## TASK-038 — Implementar filtros combináveis
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-013, TASK-018, TASK-024
 
+### Implementado
+
+Filtros são representados na própria URL, permitindo navegação direta a uma consulta e combinação entre critérios.
+
 ### Critérios de aceite
-- [ ] filtro por categoria;
-- [ ] filtro por status;
-- [ ] filtro por cliente;
-- [ ] filtro por tecnologia;
-- [ ] filtro por existência de pendência aberta;
-- [ ] filtro ativo/arquivado;
-- [ ] múltiplos filtros podem ser combinados;
-- [ ] usuário consegue limpar os filtros.
+- [x] filtro por categoria;
+- [x] filtro por status;
+- [x] filtro por cliente;
+- [x] filtro por tecnologia;
+- [x] filtro por existência de pendência aberta;
+- [x] filtro ativo/arquivado;
+- [x] múltiplos filtros podem ser combinados;
+- [x] usuário consegue limpar os filtros;
+- [ ] combinação validada com dados reais.
 
 ---
 
 ## TASK-039 — Implementar ordenação e paginação/carregamento
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P2  
 **Dependências:** TASK-013
 
+### Estratégia do MVP
+
+A consulta carrega a coleção privada do usuário e aplica busca/filtros no cliente. O resultado é paginado em grupos de 20 itens na interface. Essa estratégia atende o volume inicial esperado; caso o volume cresça significativamente, a consulta deverá migrar para índices/queries Firestore paginadas sem alterar o contrato visual.
+
 ### Critérios de aceite
-- [ ] existe estratégia definida para listas crescentes;
-- [ ] ordenação por nome e atualização é suportada;
-- [ ] paginação ou carregamento progressivo não duplica registros;
-- [ ] filtros e busca permanecem consistentes durante a navegação;
-- [ ] comportamento é adequado em telas menores.
+- [x] existe estratégia definida para listas crescentes;
+- [x] ordenação por nome e atualização é suportada;
+- [x] paginação de 20 itens não duplica registros na lógica implementada;
+- [x] filtros e busca permanecem na URL durante a paginação;
+- [x] layout da paginação possui adaptação para telas menores;
+- [ ] paginação/ordenação validadas com base real e navegador.
 
 ---
 
