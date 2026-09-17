@@ -54,29 +54,39 @@ Este bloco torna o volume de projetos consultável e mantém os cadastros reutil
 
 ## TASK-040 — Implementar gestão de categorias
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-009
 
+### Implementado
+
+A rota `#/catalogs/categories` permite criar, renomear, desativar e reativar categorias. O repositório mantém unicidade de nomes ativos e projetos antigos continuam exibindo categorias desativadas.
+
 ### Critérios de aceite
-- [ ] usuário pode criar categoria;
-- [ ] usuário pode renomear categoria respeitando unicidade;
-- [ ] categoria pode ser desativada;
-- [ ] categoria utilizada não é apagada destrutivamente no fluxo normal;
-- [ ] categoria desativada permanece legível em projetos antigos;
-- [ ] categoria desativada não aparece como opção padrão para novos projetos.
+- [x] usuário pode criar categoria pela UI implementada;
+- [x] usuário pode renomear categoria respeitando unicidade;
+- [x] categoria pode ser desativada;
+- [x] categoria utilizada não é apagada destrutivamente no fluxo normal;
+- [x] categoria desativada permanece legível em projetos antigos;
+- [x] categoria desativada não aparece como opção para novos projetos;
+- [ ] fluxo validado contra Firestore real.
 
 ---
 
 ## TASK-041 — Implementar gestão de tecnologias
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-010
 
+### Implementado
+
+A rota `#/catalogs/technologies` permite criar, renomear, desativar e reativar tecnologias usando a mesma estrutura de cadastro auxiliar.
+
 ### Critérios de aceite
-- [ ] usuário pode criar tecnologia;
-- [ ] usuário pode editar nome conforme regras de unicidade definidas;
-- [ ] tecnologia pode ser desativada;
-- [ ] tecnologia utilizada não precisa ser excluída ao ser removida de um projeto;
-- [ ] tecnologias desativadas permanecem legíveis em projetos existentes.
+- [x] usuário pode criar tecnologia pela UI implementada;
+- [x] usuário pode editar nome conforme regra de unicidade;
+- [x] tecnologia pode ser desativada;
+- [x] tecnologia utilizada não precisa ser excluída ao ser removida de um projeto;
+- [x] tecnologias desativadas permanecem legíveis em projetos existentes;
+- [ ] fluxo validado contra Firestore real.
