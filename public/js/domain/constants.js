@@ -16,6 +16,16 @@ const DEFAULT_PROJECT_STATUSES = Object.freeze([
   { code: PROJECT_STATUS_CODES.ABANDONED, name: "Abandonado", sort_order: 60 }
 ]);
 
+const DEFAULT_CATEGORIES = Object.freeze([
+  "Aplicação WEB",
+  "Jogo",
+  "Landing Page",
+  "Plataforma web",
+  "Programa"
+]);
+
+const DEFAULT_TECHNOLOGIES = Object.freeze(["Html", "Python", "Typescript"]);
+
 const PENDING_STATUS = Object.freeze({
   PENDING: "PENDING",
   IN_PROGRESS: "IN_PROGRESS",
@@ -31,7 +41,9 @@ const PENDING_PRIORITY = Object.freeze({
 });
 
 export {
+  DEFAULT_CATEGORIES,
   DEFAULT_PROJECT_STATUSES,
+  DEFAULT_TECHNOLOGIES,
   PENDING_PRIORITY,
   PENDING_STATUS,
   PROJECT_STATUS_CODES
