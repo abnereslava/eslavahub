@@ -1,6 +1,6 @@
 # Backlog de Implementação — EslavaHub
 
-**Versão:** 0.2  
+**Versão:** 0.3  
 **Origem:** `docs/PROPOSTA.md` e `docs/SDD.md`  
 **Escopo:** MVP
 
@@ -11,7 +11,7 @@ Este documento transforma a especificação do EslavaHub em um plano de implemen
 ### Status
 
 - `TODO` — ainda não iniciada;
-- `IN PROGRESS` — em execução ou aguardando validação;
+- `IN PROGRESS` — implementada parcialmente ou aguardando validação end-to-end;
 - `BLOCKED` — depende de decisão ou entrega pendente;
 - `DONE` — critérios de aceite atendidos.
 
@@ -27,11 +27,13 @@ Uma task só deve ser marcada como `DONE` quando seus critérios de aceite estiv
 
 ## Progresso atual
 
-- **DONE:** 4/48
-- **IN PROGRESS:** 2/48
-- **TODO:** 42/48
+- **DONE:** 12/48
+- **IN PROGRESS:** 22/48
+- **TODO:** 14/48
 
-A fundação Firebase está implementada no repositório. A inicialização local, login Google real e leitura/escrita real no Firestore ainda precisam ser validados antes de encerrar `TASK-003` e `TASK-007`.
+A maior parte do núcleo funcional já está implementada em código: modelos Firestore, projetos, cadastros auxiliares, pendências e domínios. O GitHub Actions executa testes e lint com sucesso.
+
+O principal ponto de validação pendente é executar a aplicação autenticada contra o projeto Firebase real para confirmar login Google, Security Rules e CRUD no Firestore. Por isso, fluxos de UI/persistência permanecem `IN PROGRESS` mesmo quando a implementação está presente no repositório.
 
 ---
 
@@ -56,110 +58,102 @@ A fundação Firebase está implementada no repositório. A inicialização loca
 - [ ] TASK-003 — Criar estrutura inicial da aplicação — **IN PROGRESS**
 - [x] TASK-004 — Configurar ambientes e variáveis/configuração — **DONE**
 - [x] TASK-005 — Definir padrão de arquitetura e organização interna — **DONE**
-- [ ] TASK-006 — Configurar qualidade básica do código — **TODO**
+- [x] TASK-006 — Configurar qualidade básica do código — **DONE**
 
 Detalhes: [`tasks/00-fundacao.md`](tasks/00-fundacao.md)
 
 ### Persistência e modelo de dados
 
 - [ ] TASK-007 — Definir banco de dados e estratégia de persistência — **IN PROGRESS**
-- [ ] TASK-008 — Implementar modelo `Project`
-- [ ] TASK-009 — Implementar modelos `Category` e `ProjectStatus`
-- [ ] TASK-010 — Implementar modelo `Technology` e relação N:N
-- [ ] TASK-011 — Implementar modelo `Domain`
-- [ ] TASK-012 — Implementar modelo `PendingItem`
+- [x] TASK-008 — Implementar modelo `Project` — **DONE**
+- [x] TASK-009 — Implementar modelos `Category` e `ProjectStatus` — **DONE**
+- [x] TASK-010 — Implementar modelo `Technology` e relação N:N — **DONE**
+- [x] TASK-011 — Implementar modelo `Domain` — **DONE**
+- [x] TASK-012 — Implementar modelo `PendingItem` — **DONE**
 
 Detalhes: [`tasks/01-modelo-de-dados.md`](tasks/01-modelo-de-dados.md)
 
 ### Projetos
 
-- [ ] TASK-013 — Implementar listagem de projetos
-- [ ] TASK-014 — Implementar cadastro de projeto
-- [ ] TASK-015 — Implementar página de detalhes do projeto
-- [ ] TASK-016 — Implementar edição de projeto
-- [ ] TASK-017 — Implementar arquivamento e restauração
-- [ ] TASK-018 — Implementar tecnologias por projeto
-- [ ] TASK-019 — Implementar links rápidos de repositório e deploy
-- [ ] TASK-020 — Implementar validações do módulo de projetos
+- [ ] TASK-013 — Implementar listagem de projetos — **IN PROGRESS**
+- [ ] TASK-014 — Implementar cadastro de projeto — **IN PROGRESS**
+- [ ] TASK-015 — Implementar página de detalhes do projeto — **IN PROGRESS**
+- [ ] TASK-016 — Implementar edição de projeto — **IN PROGRESS**
+- [ ] TASK-017 — Implementar arquivamento e restauração — **IN PROGRESS**
+- [ ] TASK-018 — Implementar tecnologias por projeto — **IN PROGRESS**
+- [ ] TASK-019 — Implementar links rápidos de repositório e deploy — **IN PROGRESS**
+- [ ] TASK-020 — Implementar validações do módulo de projetos — **IN PROGRESS**
 
 Detalhes: [`tasks/02-projetos.md`](tasks/02-projetos.md)
 
 ### Pendências
 
-- [ ] TASK-021 — Implementar listagem de pendências no projeto
-- [ ] TASK-022 — Implementar criação de pendência
-- [ ] TASK-023 — Implementar edição de pendência
-- [ ] TASK-024 — Implementar fluxo de status e conclusão
-- [ ] TASK-025 — Implementar prioridade e prazo
-- [ ] TASK-026 — Implementar descarte/exclusão controlada de pendência
+- [ ] TASK-021 — Implementar listagem de pendências no projeto — **IN PROGRESS**
+- [ ] TASK-022 — Implementar criação de pendência — **IN PROGRESS**
+- [ ] TASK-023 — Implementar edição de pendência — **IN PROGRESS**
+- [ ] TASK-024 — Implementar fluxo de status e conclusão — **IN PROGRESS**
+- [ ] TASK-025 — Implementar prioridade e prazo — **IN PROGRESS**
+- [ ] TASK-026 — Implementar descarte/exclusão controlada de pendência — **IN PROGRESS**
 
 Detalhes: [`tasks/03-pendencias.md`](tasks/03-pendencias.md)
 
 ### Domínios
 
-- [ ] TASK-027 — Implementar cadastro de domínio
-- [ ] TASK-028 — Implementar normalização e validação de hostname
-- [ ] TASK-029 — Implementar domínio principal por projeto
-- [ ] TASK-030 — Implementar cálculo de vencimento
-- [ ] TASK-031 — Implementar alertas visuais de domínio
-- [ ] TASK-032 — Implementar visão/listagem de domínios
+- [ ] TASK-027 — Implementar cadastro de domínio — **IN PROGRESS**
+- [x] TASK-028 — Implementar normalização e validação de hostname — **DONE**
+- [ ] TASK-029 — Implementar domínio principal por projeto — **IN PROGRESS**
+- [x] TASK-030 — Implementar cálculo de vencimento — **DONE**
+- [ ] TASK-031 — Implementar alertas visuais de domínio — **IN PROGRESS**
+- [ ] TASK-032 — Implementar visão/listagem de domínios — **IN PROGRESS**
 
 Detalhes: [`tasks/04-dominios.md`](tasks/04-dominios.md)
 
 ### Dashboard
 
-- [ ] TASK-033 — Implementar indicadores gerais
-- [ ] TASK-034 — Implementar bloco de projetos em andamento
-- [ ] TASK-035 — Implementar bloco de pendências relevantes
-- [ ] TASK-036 — Implementar bloco de próximos vencimentos
+- [ ] TASK-033 — Implementar indicadores gerais — **TODO**
+- [ ] TASK-034 — Implementar bloco de projetos em andamento — **TODO**
+- [ ] TASK-035 — Implementar bloco de pendências relevantes — **TODO**
+- [ ] TASK-036 — Implementar bloco de próximos vencimentos — **TODO**
 
 Detalhes: [`tasks/05-dashboard.md`](tasks/05-dashboard.md)
 
 ### Consulta e cadastros auxiliares
 
-- [ ] TASK-037 — Implementar busca textual de projetos
-- [ ] TASK-038 — Implementar filtros combináveis
-- [ ] TASK-039 — Implementar ordenação e paginação/carregamento
-- [ ] TASK-040 — Implementar gestão de categorias
-- [ ] TASK-041 — Implementar gestão de tecnologias
+- [ ] TASK-037 — Implementar busca textual de projetos — **TODO**
+- [ ] TASK-038 — Implementar filtros combináveis — **TODO**
+- [ ] TASK-039 — Implementar ordenação e paginação/carregamento — **TODO**
+- [ ] TASK-040 — Implementar gestão de categorias — **IN PROGRESS**
+- [ ] TASK-041 — Implementar gestão de tecnologias — **IN PROGRESS**
 
 Detalhes: [`tasks/06-consulta-e-cadastros.md`](tasks/06-consulta-e-cadastros.md)
 
 ### Qualidade e entrega
 
-- [ ] TASK-042 — Implementar estados de carregamento, vazio e erro
-- [ ] TASK-043 — Revisar responsividade
-- [ ] TASK-044 — Revisar acessibilidade básica
-- [ ] TASK-045 — Implementar testes das regras de negócio críticas
-- [ ] TASK-046 — Implementar testes dos fluxos principais
-- [ ] TASK-047 — Preparar dados iniciais e estratégia de migração
-- [ ] TASK-048 — Configurar build e deploy do MVP
+- [ ] TASK-042 — Implementar estados de carregamento, vazio e erro — **TODO**
+- [ ] TASK-043 — Revisar responsividade — **TODO**
+- [ ] TASK-044 — Revisar acessibilidade básica — **TODO**
+- [ ] TASK-045 — Implementar testes das regras de negócio críticas — **TODO**
+- [ ] TASK-046 — Implementar testes dos fluxos principais — **TODO**
+- [ ] TASK-047 — Preparar dados iniciais e estratégia de migração — **TODO**
+- [ ] TASK-048 — Configurar build e deploy do MVP — **TODO**
 
 Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 
 ---
 
-## Ordem recomendada a partir do estado atual
+## Próxima sequência
 
 ```text
-validar TASK-003 + TASK-007
+validar TASK-003 + TASK-007 no Firebase real
         ↓
-TASK-006
+encerrar validações TASK-013 → TASK-032 + TASK-040/041
         ↓
-TASK-008 + TASK-009
-        ↓
-TASK-010 + TASK-011 + TASK-012
-        ↓
-TASK-013 → TASK-020
-        ↓
-TASK-021 → TASK-032
-        ↓
-TASK-033 → TASK-041
+TASK-033 → TASK-039
         ↓
 TASK-042 → TASK-048
 ```
 
-Tasks independentes podem ser executadas em paralelo quando suas dependências permitirem.
+Enquanto a validação Firebase não é executada, novas tasks independentes de leitura/escrita real podem continuar sendo implementadas em paralelo.
 
 ---
 
