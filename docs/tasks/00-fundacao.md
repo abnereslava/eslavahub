@@ -1,94 +1,135 @@
 # Tasks — Fundação e Arquitetura
 
-Estas tasks definem a base técnica do EslavaHub. As escolhas feitas aqui devem ser registradas no SDD quando forem concluídas.
+Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estão registradas no SDD v0.2 e em `docs/SETUP_FIREBASE.md`.
 
 ---
 
 ## TASK-001 — Definir stack do MVP
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** nenhuma
 
-### Objetivo
-Escolher as tecnologias principais do MVP: frontend, backend/camada de aplicação, persistência e estratégia de deploy.
+### Decisão
+
+- frontend: HTML5, CSS3 e JavaScript com ES Modules;
+- framework de UI: nenhum no MVP inicial;
+- SDK: Firebase Web SDK 12.19.0;
+- backend próprio: não utilizado no MVP inicial;
+- persistência: Cloud Firestore;
+- autenticação: Firebase Authentication;
+- deploy: Firebase Hosting.
 
 ### Critérios de aceite
-- [ ] frontend definido;
-- [ ] abordagem de backend definida;
-- [ ] banco/persistência definido;
-- [ ] estratégia de deploy definida;
-- [ ] decisão registrada no `docs/SDD.md`.
+- [x] frontend definido;
+- [x] abordagem de backend definida;
+- [x] banco/persistência definido;
+- [x] estratégia de deploy definida;
+- [x] decisão registrada no `docs/SDD.md`.
 
 ---
 
 ## TASK-002 — Definir estratégia de autenticação e acesso
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-001
 
-### Objetivo
-Definir se o MVP será de uso pessoal protegido, multiusuário ou acessível por outro mecanismo controlado.
+### Decisão
+
+- autenticação via Google utilizando Firebase Authentication;
+- aplicação privada após login;
+- estrutura preparada para múltiplos usuários isolados;
+- dados armazenados sob `/users/{uid}/...`;
+- Firestore Security Rules exigem Google Sign-In e UID correspondente ao caminho.
 
 ### Critérios de aceite
-- [ ] modelo de acesso definido;
-- [ ] comportamento para usuário não autenticado definido;
-- [ ] dados não ficam expostos publicamente sem decisão explícita;
-- [ ] decisão registrada no SDD.
+- [x] modelo de acesso definido;
+- [x] comportamento para usuário não autenticado definido;
+- [x] dados não ficam expostos publicamente sem decisão explícita;
+- [x] decisão registrada no SDD.
 
 ---
 
 ## TASK-003 — Criar estrutura inicial da aplicação
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P0  
 **Dependências:** TASK-001
 
-### Objetivo
-Inicializar o projeto com a estrutura mínima necessária para desenvolvimento.
+### Implementado
+
+- `public/index.html`;
+- estrutura `public/css` e `public/js`;
+- módulo de configuração Firebase;
+- serviço de autenticação;
+- tela inicial com login Google e logout;
+- convenção inicial para repositórios/caminhos de dados;
+- instruções básicas de execução em `docs/SETUP_FIREBASE.md`.
 
 ### Critérios de aceite
-- [ ] aplicação inicializa localmente;
-- [ ] estrutura de diretórios reflete a arquitetura definida;
-- [ ] rota/tela inicial funcional;
-- [ ] dependências essenciais instaladas;
-- [ ] instruções básicas de execução documentadas.
+- [ ] aplicação inicializa localmente — **aguarda validação em ambiente executável**;
+- [x] estrutura de diretórios reflete a arquitetura definida;
+- [x] rota/tela inicial implementada;
+- [x] dependências essenciais referenciadas pelo Firebase ESM CDN;
+- [x] instruções básicas de execução documentadas.
+
+### Para concluir
+
+Executar a aplicação via HTTP local e confirmar que a tela inicial carrega sem erro de módulo.
 
 ---
 
 ## TASK-004 — Configurar ambientes e variáveis
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-001, TASK-003
 
-### Objetivo
-Separar configurações locais e de produção e impedir que segredos sejam versionados.
+### Decisão
+
+O MVP estático não depende de variável secreta para inicializar o Firebase Web SDK. O `firebaseConfig` é configuração do cliente e está versionado em `public/js/config/firebase.js`.
+
+Credenciais administrativas continuam proibidas no frontend e no Git.
 
 ### Critérios de aceite
-- [ ] arquivo de exemplo de variáveis criado;
-- [ ] segredos ignorados pelo Git;
-- [ ] configuração de desenvolvimento definida;
-- [ ] configuração de produção prevista;
-- [ ] aplicação falha de forma compreensível quando variável obrigatória estiver ausente.
+- [x] configuração de desenvolvimento definida;
+- [x] configuração de produção prevista através do Firebase Hosting;
+- [x] `.gitignore` cobre arquivos locais, `.env` e service accounts;
+- [x] configuração Firebase do cliente centralizada em um único módulo;
+- [x] documentação diferencia configuração pública de credenciais privadas.
+
+**Nota:** `.env.example` não é necessário nesta arquitetura enquanto não existir configuração privada obrigatória. Se uma integração futura exigir segredo, ela deverá usar ambiente seguro fora do frontend.
 
 ---
 
 ## TASK-005 — Definir padrão de arquitetura e organização interna
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-001
 
-### Objetivo
-Traduzir as camadas conceituais do SDD para a stack escolhida.
+### Decisão
+
+A aplicação mantém quatro responsabilidades conceituais:
+
+```text
+Apresentação
+    ↓
+Aplicação / Serviços
+    ↓
+Domínio
+    ↓
+Persistência / Integrações
+```
+
+No frontend, integrações Firebase ficam em `config`, `services` e `repositories`. Componentes/telas não devem espalhar chamadas ao SDK nem montar caminhos Firestore manualmente.
 
 ### Critérios de aceite
-- [ ] responsabilidades de apresentação, aplicação, domínio e persistência mapeadas;
-- [ ] convenção para módulos/arquivos definida;
-- [ ] regras de negócio não ficam concentradas em componentes visuais;
-- [ ] padrão documentado no SDD ou em documento arquitetural relacionado.
+- [x] responsabilidades de apresentação, aplicação, domínio e persistência mapeadas;
+- [x] convenção para módulos/arquivos definida;
+- [x] regras de negócio não ficam concentradas em componentes visuais;
+- [x] padrão documentado no SDD.
 
 ---
 
@@ -105,5 +146,9 @@ Estabelecer verificações automáticas mínimas antes do crescimento da base de
 - [ ] formatador configurado;
 - [ ] lint/verificação equivalente configurada;
 - [ ] script/comando de validação disponível;
-- [ ] build local executável;
+- [ ] build/validação local executável;
 - [ ] documentação informa como rodar as verificações.
+
+### Observação
+
+Como o MVP atual não possui pipeline Node/build, a ferramenta de lint/testes ainda precisa ser escolhida sem introduzir complexidade desnecessária.
