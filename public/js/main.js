@@ -4,6 +4,7 @@ import {
   signOutCurrentUser
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
+import { renderCatalog } from "./ui/catalogs-ui.js";
 import {
   renderProjectDetails,
   renderProjectForm,
@@ -67,6 +68,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
       <a class="brand" href="#/projects">EslavaHub</a>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="#/projects">Projetos</a>
+        <a href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
         <div>
@@ -98,6 +100,11 @@ async function renderAuthenticatedRoute() {
 
   if (!parts.length) {
     window.location.hash = "#/projects";
+    return;
+  }
+
+  if (parts[0] === "catalogs") {
+    await renderCatalog(container, currentUser.uid, parts[1] || "categories");
     return;
   }
 
