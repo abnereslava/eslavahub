@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "serve": "firebase emulators:start --only hosting",
-    "lint": "eslint public/js",
+    "test": "node --test tests/**/*.test.js",
+    "lint": "eslint public/js tests",
     "format": "prettier --write \"**/*.{js,json,md,css,html}\"",
     "format:check": "prettier --check \"**/*.{js,json,md,css,html}\"",
-    "check": "npm run lint && npm run format:check",
+    "check": "npm run test && npm run lint && npm run format:check",
     "build": "npm run check"
   },
   "devDependencies": {
