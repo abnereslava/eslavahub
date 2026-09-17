@@ -1,4 +1,9 @@
-import { serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  getDocs,
+  query,
+  serverTimestamp,
+  where
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { PENDING_STATUS } from "../domain/constants.js";
 import { validatePendingItem } from "../domain/validation.js";
 import { FirestoreRepository } from "./firestore-repository.js";
@@ -7,6 +12,13 @@ import { USER_COLLECTIONS } from "./user-paths.js";
 class PendingItemRepository extends FirestoreRepository {
   constructor() {
     super(USER_COLLECTIONS.PENDING_ITEMS);
+  }
+
+  async listByProject(uid, projectId) {
+    const snapshot = await getDocs(
+      query(this.collectionRef(uid), where("project_id", "==", projectId))
+    );
+    return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
   }
 
   async createPendingItem(uid, data) {
