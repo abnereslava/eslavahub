@@ -1,3 +1,4 @@
+import { DEFAULT_CATEGORIES } from "../domain/constants.js";
 import { normalizedName, validateCategory } from "../domain/validation.js";
 import { FirestoreRepository } from "./firestore-repository.js";
 import { USER_COLLECTIONS } from "./user-paths.js";
@@ -26,6 +27,17 @@ class CategoryRepository extends FirestoreRepository {
       normalized_name: normalizedName(data.name),
       active: data.active ?? true
     });
+  }
+
+  async ensureDefaults(uid) {
+    const existing = await this.list(uid);
+    const names = new Set(existing.map((item) => item.normalized_name || normalizedName(item.name)));
+
+    for (const name of DEFAULT_CATEGORIES) {
+      if (!names.has(normalizedName(name))) {
+        await this.createCategory(uid, { name });
+      }
+    }
   }
 
   async updateCategory(uid, id, data) {
