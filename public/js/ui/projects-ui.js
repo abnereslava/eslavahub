@@ -1,10 +1,9 @@
 import {
-  archiveProject,
   createProject,
   getProjectDetails,
   getProjectFormOptions,
-  listProjects,
-  restoreProject,
+  getProjectListOptions,
+  queryProjects,
   updateProject
 } from "../services/project-service.js";
 
@@ -30,11 +29,60 @@ function renderError(container, message) {
   `;
 }
 
-async function renderProjectList(container, uid, { archived = false } = {}) {
+function projectListHash(filters, overrides = {}) {
+  const values = { ...filters, ...overrides };
+  const params = new URLSearchParams();
+
+  if (values.archived) params.set("archived", "1");
+  if (values.search) params.set("search", values.search);
+  if (values.categoryId) params.set("categoryId", values.categoryId);
+  if (values.statusId) params.set("statusId", values.statusId);
+  if (values.client) params.set("client", values.client);
+  if (values.technologyId) params.set("technologyId", values.technologyId);
+  if (values.hasOpenPending) params.set("hasOpenPending", "1");
+  if (values.sort && values.sort !== "name-asc") params.set("sort", values.sort);
+  if (values.page && values.page > 1) params.set("page", String(values.page));
+
+  const query = params.toString();
+  return `#/projects${query ? `?${query}` : ""}`;
+}
+
+async function renderProjectList(
+  container,
+  uid,
+  {
+    archived = false,
+    search = "",
+    categoryId = "",
+    statusId = "",
+    statusCode = "",
+    client = "",
+    technologyId = "",
+    hasOpenPending = false,
+    sort = "name-asc",
+    page = 1
+  } = {}
+) {
   renderLoading(container, "Carregando projetos...");
 
   try {
-    const projects = await listProjects(uid, { archived });
+    const options = await getProjectListOptions(uid);
+    const effectiveStatusId = statusId || options.statuses.find((item) => item.code === statusCode)?.id || "";
+    const filters = {
+      archived,
+      search,
+      categoryId,
+      statusId: effectiveStatusId,
+      client,
+      technologyId,
+      hasOpenPending,
+      sort,
+      page
+    };
+    const result = await queryProjects(uid, filters);
+    const hasFilters = Boolean(
+      search || categoryId || effectiveStatusId || client || technologyId || hasOpenPending
+    );
 
     container.innerHTML = `
       <section class="page-header">
@@ -51,10 +99,66 @@ async function renderProjectList(container, uid, { archived = false } = {}) {
         </div>
       </section>
 
+      <form id="project-filters" class="panel project-filters">
+        <label class="field filter-search">
+          <span>Buscar</span>
+          <input name="search" value="${escapeHtml(search)}" placeholder="Nome, cliente ou observação" />
+        </label>
+        <label class="field">
+          <span>Categoria</span>
+          <select name="categoryId">
+            <option value="">Todas</option>
+            ${options.categories.map((item) => `<option value="${escapeHtml(item.id)}" ${categoryId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="field">
+          <span>Status</span>
+          <select name="statusId">
+            <option value="">Todos</option>
+            ${options.statuses.map((item) => `<option value="${escapeHtml(item.id)}" ${effectiveStatusId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="field">
+          <span>Cliente</span>
+          <select name="client">
+            <option value="">Todos</option>
+            ${options.clients.map((item) => `<option value="${escapeHtml(item)}" ${client === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="field">
+          <span>Tecnologia</span>
+          <select name="technologyId">
+            <option value="">Todas</option>
+            ${options.technologies.map((item) => `<option value="${escapeHtml(item.id)}" ${technologyId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+          </select>
+        </label>
+        <label class="field">
+          <span>Ordenar</span>
+          <select name="sort">
+            <option value="name-asc" ${sort === "name-asc" ? "selected" : ""}>Nome A–Z</option>
+            <option value="name-desc" ${sort === "name-desc" ? "selected" : ""}>Nome Z–A</option>
+            <option value="updated-desc" ${sort === "updated-desc" ? "selected" : ""}>Atualizados recentemente</option>
+            <option value="updated-asc" ${sort === "updated-asc" ? "selected" : ""}>Atualizados há mais tempo</option>
+          </select>
+        </label>
+        <label class="checkbox-item filter-checkbox">
+          <input name="hasOpenPending" type="checkbox" ${hasOpenPending ? "checked" : ""} />
+          <span>Com pendência aberta</span>
+        </label>
+        <div class="actions filter-actions">
+          <button class="button button-primary" type="submit">Aplicar</button>
+          <a class="button button-secondary" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar</a>
+        </div>
+      </form>
+
+      <div class="list-summary">
+        <strong>${result.total}</strong> projeto${result.total === 1 ? "" : "s"} encontrado${result.total === 1 ? "" : "s"}
+      </div>
+
       ${
-        projects.length
+        result.items.length
           ? `<div class="project-list">
-              ${projects
+              ${result.items
                 .map(
                   (project) => `
                     <a class="project-row" href="#/projects/${encodeURIComponent(project.id)}">
@@ -62,6 +166,7 @@ async function renderProjectList(container, uid, { archived = false } = {}) {
                       <div>
                         <strong>${escapeHtml(project.name)}</strong>
                         ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
+                        ${project.technologies.length ? `<span>${project.technologies.slice(0, 3).map((item) => escapeHtml(item.name)).join(" · ")}</span>` : ""}
                       </div>
                       <div>${escapeHtml(project.category?.name || "Categoria indisponível")}</div>
                       <div><span class="status-badge">${escapeHtml(project.status?.name || "Status indisponível")}</span></div>
@@ -69,14 +174,39 @@ async function renderProjectList(container, uid, { archived = false } = {}) {
                   `
                 )
                 .join("")}
-            </div>`
+            </div>
+            ${
+              result.totalPages > 1
+                ? `<nav class="pagination" aria-label="Paginação de projetos">
+                    <a class="button button-secondary button-small ${result.page === 1 ? "is-disabled" : ""}" href="${result.page === 1 ? projectListHash(filters, { page: 1 }) : projectListHash(filters, { page: result.page - 1 })}" ${result.page === 1 ? 'aria-disabled="true"' : ""}>Anterior</a>
+                    <span>Página ${result.page} de ${result.totalPages}</span>
+                    <a class="button button-secondary button-small ${result.page === result.totalPages ? "is-disabled" : ""}" href="${result.page === result.totalPages ? projectListHash(filters, { page: result.totalPages }) : projectListHash(filters, { page: result.page + 1 })}" ${result.page === result.totalPages ? 'aria-disabled="true"' : ""}>Próxima</a>
+                  </nav>`
+                : ""
+            }`
           : `<section class="empty-state">
-              <h2>${archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
-              <p>${archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
-              ${archived ? "" : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'}
+              <h2>${hasFilters ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
+              <p>${hasFilters ? "Altere ou limpe os filtros para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
+              ${hasFilters ? `<a class="button button-secondary" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar filtros</a>` : archived ? "" : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'}
             </section>`
       }
     `;
+
+    container.querySelector("#project-filters").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      window.location.hash = projectListHash({
+        archived,
+        search: data.get("search")?.trim() || "",
+        categoryId: data.get("categoryId") || "",
+        statusId: data.get("statusId") || "",
+        client: data.get("client") || "",
+        technologyId: data.get("technologyId") || "",
+        hasOpenPending: data.get("hasOpenPending") === "on",
+        sort: data.get("sort") || "name-asc",
+        page: 1
+      });
+    });
   } catch (error) {
     console.error("Project list failed", error);
     renderError(container, "Não foi possível carregar os projetos.");
@@ -242,94 +372,4 @@ async function renderProjectForm(container, uid, { projectId = null } = {}) {
   }
 }
 
-async function renderProjectDetails(container, uid, projectId) {
-  renderLoading(container, "Carregando projeto...");
-
-  try {
-    const project = await getProjectDetails(uid, projectId);
-    if (!project) {
-      renderError(container, "Projeto não encontrado.");
-      return;
-    }
-
-    container.innerHTML = `
-      <section class="page-header">
-        <div>
-          <p class="eyebrow">Projeto ${escapeHtml(project.id)}</p>
-          <h1>${escapeHtml(project.name)}</h1>
-          <p>${escapeHtml(project.category?.name || "Categoria indisponível")} · ${escapeHtml(project.status?.name || "Status indisponível")}</p>
-        </div>
-        <div class="actions">
-          <a class="button button-secondary" href="#/projects">Voltar</a>
-          <a class="button button-primary" href="#/projects/${encodeURIComponent(project.id)}/edit">Editar</a>
-        </div>
-      </section>
-
-      <div class="detail-grid">
-        <section class="panel">
-          <h2>Resumo</h2>
-          ${project.client_name ? `<dl class="definition-list"><div><dt>Cliente</dt><dd>${escapeHtml(project.client_name)}</dd></div></dl>` : '<p class="muted">Nenhum cliente informado.</p>'}
-          ${project.quick_notes ? `<h3>Observações</h3><p class="pre-wrap">${escapeHtml(project.quick_notes)}</p>` : ""}
-        </section>
-
-        <section class="panel">
-          <h2>Links</h2>
-          <div class="actions">
-            ${project.repository_url ? `<a class="button button-secondary" href="${escapeHtml(project.repository_url)}" target="_blank" rel="noopener noreferrer">Abrir repositório</a>` : ""}
-            ${project.deploy_url ? `<a class="button button-secondary" href="${escapeHtml(project.deploy_url)}" target="_blank" rel="noopener noreferrer">Abrir deploy</a>` : ""}
-          </div>
-          ${!project.repository_url && !project.deploy_url ? '<p class="muted">Nenhum link cadastrado.</p>' : ""}
-        </section>
-
-        <section class="panel">
-          <h2>Tecnologias</h2>
-          ${
-            project.technologies.length
-              ? `<div class="tag-list">${project.technologies.map((item) => `<span class="tag">${escapeHtml(item.name)}</span>`).join("")}</div>`
-              : '<p class="muted">Nenhuma tecnologia associada.</p>'
-          }
-        </section>
-
-        <section class="panel">
-          <h2>Domínios</h2>
-          <p class="muted">O gerenciamento de domínios será exibido aqui no módulo correspondente.</p>
-        </section>
-
-        <section class="panel">
-          <h2>Pendências</h2>
-          <p class="muted">As pendências do projeto serão exibidas aqui no módulo correspondente.</p>
-        </section>
-
-        <section class="panel danger-zone">
-          <h2>${project.archived_at ? "Restaurar projeto" : "Arquivar projeto"}</h2>
-          <p>${project.archived_at ? "O projeto voltará para a listagem ativa." : "Os dados relacionados serão preservados e o projeto sairá da listagem ativa."}</p>
-          <button id="archive-project" class="button ${project.archived_at ? "button-secondary" : "button-danger"}" type="button">
-            ${project.archived_at ? "Restaurar" : "Arquivar"}
-          </button>
-        </section>
-      </div>
-    `;
-
-    container.querySelector("#archive-project").addEventListener("click", async () => {
-      const action = project.archived_at ? "restaurar" : "arquivar";
-      if (!window.confirm(`Deseja realmente ${action} este projeto?`)) return;
-
-      try {
-        if (project.archived_at) {
-          await restoreProject(uid, project.id);
-        } else {
-          await archiveProject(uid, project.id);
-        }
-        window.location.hash = project.archived_at ? "#/projects" : "#/projects?archived=1";
-      } catch (error) {
-        console.error("Project archive/restore failed", error);
-        window.alert(`Não foi possível ${action} o projeto.`);
-      }
-    });
-  } catch (error) {
-    console.error("Project details failed", error);
-    renderError(container, "Não foi possível carregar o projeto.");
-  }
-}
-
-export { renderProjectDetails, renderProjectForm, renderProjectList };
+export { renderProjectForm, renderProjectList };
