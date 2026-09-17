@@ -1,6 +1,6 @@
 # Tasks — Fundação e Arquitetura
 
-Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estão registradas no SDD v0.2 e em `docs/SETUP_FIREBASE.md`.
+Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estão registradas no SDD v0.2 e na documentação de desenvolvimento/Firebase.
 
 ---
 
@@ -65,7 +65,8 @@ Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estã
 - serviço de autenticação;
 - tela inicial com login Google e logout;
 - convenção inicial para repositórios/caminhos de dados;
-- instruções básicas de execução em `docs/SETUP_FIREBASE.md`.
+- bootstrap de dados iniciais após autenticação;
+- instruções básicas de execução em `docs/SETUP_FIREBASE.md` e `docs/DEVELOPMENT.md`.
 
 ### Critérios de aceite
 - [ ] aplicação inicializa localmente — **aguarda validação em ambiente executável**;
@@ -135,20 +136,27 @@ No frontend, integrações Firebase ficam em `config`, `services` e `repositorie
 
 ## TASK-006 — Configurar qualidade básica do código
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-003
 
-### Objetivo
-Estabelecer verificações automáticas mínimas antes do crescimento da base de código.
+### Implementado
+
+- ESLint com configuração para módulos browser;
+- Prettier;
+- testes unitários com `node:test`;
+- scripts `test`, `lint`, `format:check`, `check` e `build`;
+- workflow `.github/workflows/quality.yml`;
+- instruções em `docs/DEVELOPMENT.md`.
 
 ### Critérios de aceite
-- [ ] formatador configurado;
-- [ ] lint/verificação equivalente configurada;
-- [ ] script/comando de validação disponível;
-- [ ] build/validação local executável;
-- [ ] documentação informa como rodar as verificações.
+- [x] formatador configurado;
+- [x] lint/verificação equivalente configurada;
+- [x] script/comando de validação disponível;
+- [x] build/validação local possui comando definido;
+- [x] documentação informa como rodar as verificações;
+- [ ] pipeline executado com sucesso ao menos uma vez.
 
-### Observação
+### Para concluir
 
-Como o MVP atual não possui pipeline Node/build, a ferramenta de lint/testes ainda precisa ser escolhida sem introduzir complexidade desnecessária.
+Confirmar uma execução bem-sucedida de `npm run check`, localmente ou pelo GitHub Actions.
