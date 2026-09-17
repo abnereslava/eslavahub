@@ -5,6 +5,7 @@ import {
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
 import { renderCatalog } from "./ui/catalogs-ui.js";
+import { renderDashboard } from "./ui/dashboard-ui.js";
 import { renderDomainsPage } from "./ui/domains-ui.js";
 import { renderProjectDetailPage } from "./ui/project-detail-ui.js";
 import { renderProjectForm, renderProjectList } from "./ui/projects-ui.js";
@@ -63,8 +64,9 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   appElement.className = "app-shell workspace-shell";
   appElement.innerHTML = `
     <header class="topbar">
-      <a class="brand" href="#/projects">EslavaHub</a>
+      <a class="brand" href="#/dashboard">EslavaHub</a>
       <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#/dashboard">Dashboard</a>
         <a href="#/projects">Projetos</a>
         <a href="#/domains">Domínios</a>
         <a href="#/catalogs/categories">Cadastros</a>
@@ -92,13 +94,18 @@ async function renderAuthenticatedRoute() {
   const container = document.querySelector("#page-content");
   if (!container) return;
 
-  const rawHash = window.location.hash || "#/projects";
+  const rawHash = window.location.hash || "#/dashboard";
   const [path, queryString = ""] = rawHash.slice(1).split("?");
   const query = new URLSearchParams(queryString);
   const parts = path.split("/").filter(Boolean);
 
   if (!parts.length) {
-    window.location.hash = "#/projects";
+    window.location.hash = "#/dashboard";
+    return;
+  }
+
+  if (parts[0] === "dashboard") {
+    await renderDashboard(container, currentUser.uid);
     return;
   }
 
@@ -115,13 +122,22 @@ async function renderAuthenticatedRoute() {
   }
 
   if (parts[0] !== "projects") {
-    window.location.hash = "#/projects";
+    window.location.hash = "#/dashboard";
     return;
   }
 
   if (parts.length === 1) {
     await renderProjectList(container, currentUser.uid, {
-      archived: query.get("archived") === "1"
+      archived: query.get("archived") === "1",
+      search: query.get("search") || "",
+      categoryId: query.get("categoryId") || "",
+      statusId: query.get("statusId") || "",
+      statusCode: query.get("statusCode") || "",
+      client: query.get("client") || "",
+      technologyId: query.get("technologyId") || "",
+      hasOpenPending: query.get("hasOpenPending") === "1",
+      sort: query.get("sort") || "name-asc",
+      page: Number(query.get("page") || 1)
     });
     return;
   }
@@ -165,7 +181,7 @@ observeAuthState(async (user) => {
   renderAuthenticatedShell(user, bootstrapError);
 
   if (!window.location.hash) {
-    window.location.hash = "#/projects";
+    window.location.hash = "#/dashboard";
   } else {
     await renderAuthenticatedRoute();
   }
