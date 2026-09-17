@@ -64,12 +64,13 @@ Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estã
 - módulo de configuração Firebase;
 - serviço de autenticação;
 - tela inicial com login Google e logout;
-- convenção inicial para repositórios/caminhos de dados;
+- convenção para repositórios/caminhos de dados;
 - bootstrap de dados iniciais após autenticação;
-- instruções básicas de execução em `docs/SETUP_FIREBASE.md` e `docs/DEVELOPMENT.md`.
+- módulos de projetos, cadastros, pendências e domínios;
+- instruções de execução em `docs/SETUP_FIREBASE.md` e `docs/DEVELOPMENT.md`.
 
 ### Critérios de aceite
-- [ ] aplicação inicializa localmente — **aguarda validação em ambiente executável**;
+- [ ] aplicação inicializa localmente — **aguarda validação em navegador com Firebase configurado**;
 - [x] estrutura de diretórios reflete a arquitetura definida;
 - [x] rota/tela inicial implementada;
 - [x] dependências essenciais referenciadas pelo Firebase ESM CDN;
@@ -77,7 +78,7 @@ Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estã
 
 ### Para concluir
 
-Executar a aplicação via HTTP local e confirmar que a tela inicial carrega sem erro de módulo.
+Executar a aplicação via HTTP local e confirmar que a tela inicial e o fluxo autenticado carregam sem erro de módulo.
 
 ---
 
@@ -136,16 +137,16 @@ No frontend, integrações Firebase ficam em `config`, `services` e `repositorie
 
 ## TASK-006 — Configurar qualidade básica do código
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-003
 
 ### Implementado
 
 - ESLint com configuração para módulos browser;
-- Prettier;
+- Prettier como ferramenta de formatação;
 - testes unitários com `node:test`;
-- scripts `test`, `lint`, `format:check`, `check` e `build`;
+- scripts `test`, `lint`, `format`, `format:check`, `check` e `build`;
 - workflow `.github/workflows/quality.yml`;
 - instruções em `docs/DEVELOPMENT.md`.
 
@@ -155,8 +156,8 @@ No frontend, integrações Firebase ficam em `config`, `services` e `repositorie
 - [x] script/comando de validação disponível;
 - [x] build/validação local possui comando definido;
 - [x] documentação informa como rodar as verificações;
-- [ ] pipeline executado com sucesso ao menos uma vez.
+- [x] pipeline executado com sucesso no GitHub Actions em 17/09/2026.
 
-### Para concluir
+### Observação
 
-Confirmar uma execução bem-sucedida de `npm run check`, localmente ou pelo GitHub Actions.
+O gate obrigatório (`npm run check`) executa testes e lint. O Prettier permanece disponível por `npm run format` e `npm run format:check`, sem bloquear o pipeline por arquivos históricos ainda não reformatados.
