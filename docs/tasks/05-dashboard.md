@@ -1,65 +1,77 @@
 # Tasks — Dashboard
 
-O dashboard deve oferecer uma visão operacional rápida sem duplicar toda a complexidade das telas de consulta.
+O dashboard oferece uma visão operacional rápida sem duplicar toda a complexidade das telas de consulta. A implementação está disponível em `dashboard-service.js` e `dashboard-ui.js` e aguarda validação com dados reais no Firestore.
 
 ---
 
 ## TASK-033 — Implementar indicadores gerais
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-013, TASK-024, TASK-030
 
+### Implementado
+
+A rota `#/dashboard` é a página inicial autenticada e agrega projetos, pendências e domínios utilizando as mesmas constantes/regras dos módulos correspondentes.
+
 ### Critérios de aceite
-- [ ] exibe total de projetos ativos;
-- [ ] exibe quantidade de projetos em desenvolvimento;
-- [ ] exibe projetos com pendências abertas;
-- [ ] exibe quantidade total de pendências abertas;
-- [ ] exibe domínios que exigem atenção;
-- [ ] exibe domínios vencidos;
-- [ ] indicadores usam as mesmas regras das listagens do sistema.
+- [x] exibe total de projetos ativos;
+- [x] exibe quantidade de projetos em desenvolvimento;
+- [x] exibe projetos com pendências abertas;
+- [x] exibe quantidade total de pendências abertas;
+- [x] exibe domínios que exigem atenção;
+- [x] exibe domínios vencidos;
+- [x] indicadores reutilizam as mesmas regras das listagens;
+- [ ] indicadores validados contra dados reais no Firestore.
 
 ---
 
 ## TASK-034 — Implementar bloco de projetos em andamento
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-013, TASK-033
 
 ### Critérios de aceite
-- [ ] projetos em desenvolvimento são destacados no dashboard;
-- [ ] cada item permite navegar para os detalhes;
-- [ ] quantidade exibida é limitada de forma previsível;
-- [ ] existe acesso para visualizar a lista completa correspondente;
-- [ ] ausência de projetos em andamento possui estado vazio apropriado.
+- [x] projetos em desenvolvimento são destacados no dashboard;
+- [x] cada item permite navegar para os detalhes;
+- [x] quantidade exibida é limitada a 5 itens;
+- [x] existe acesso para visualizar a lista completa já filtrada;
+- [x] ausência de projetos em andamento possui estado vazio;
+- [ ] bloco validado com dados reais em navegador.
 
 ---
 
 ## TASK-035 — Implementar bloco de pendências relevantes
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-024, TASK-025, TASK-033
 
+### Regra de seleção
+
+Somente pendências abertas entram no bloco. A ordenação prioriza `HIGH`, depois `MEDIUM`, depois `LOW` e sem prioridade; dentro da mesma prioridade, prazos mais próximos vêm primeiro. São exibidos até 6 itens.
+
 ### Critérios de aceite
-- [ ] mostra apenas pendências consideradas abertas;
-- [ ] prioridade e prazo são considerados quando existentes;
-- [ ] pendência identifica claramente seu projeto;
-- [ ] item permite navegar para o projeto relacionado;
-- [ ] regra de seleção/ordenação é consistente e documentada.
+- [x] mostra apenas pendências consideradas abertas;
+- [x] prioridade e prazo são considerados quando existentes;
+- [x] pendência identifica claramente seu projeto;
+- [x] item permite navegar para o projeto relacionado;
+- [x] regra de seleção/ordenação está centralizada e documentada;
+- [ ] resultado validado com dados reais.
 
 ---
 
 ## TASK-036 — Implementar bloco de próximos vencimentos
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1  
 **Dependências:** TASK-030, TASK-031, TASK-033
 
 ### Critérios de aceite
-- [ ] exibe domínios com vencimentos mais próximos;
-- [ ] vencidos continuam visíveis como situação prioritária;
-- [ ] mostra hostname, projeto e data de vencimento;
-- [ ] item permite navegar para o projeto relacionado;
-- [ ] domínios sem data de vencimento não são tratados como próximos de vencer.
+- [x] exibe domínios com vencimentos mais próximos;
+- [x] vencidos aparecem antes dos vencimentos futuros;
+- [x] mostra hostname, projeto e data de vencimento;
+- [x] item permite navegar para o projeto relacionado;
+- [x] domínios sem data de vencimento não são tratados como próximos de vencer;
+- [ ] bloco validado com dados reais em navegador.
