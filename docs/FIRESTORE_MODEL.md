@@ -1,6 +1,6 @@
 # Modelo de Persistência — Cloud Firestore
 
-**Versão:** 0.1  
+**Versão:** 0.2  
 **Escopo:** MVP do EslavaHub
 
 Este documento registra como o modelo conceitual do SDD é persistido no Cloud Firestore.
@@ -26,7 +26,8 @@ As Firestore Security Rules restringem o acesso ao UID autenticado via Google.
 - IDs de projetos, categorias, tecnologias, domínios e pendências são gerados pelo Firestore;
 - status padrão utilizam IDs determinísticos derivados do código estável;
 - entidades principais possuem `created_at` e `updated_at` com timestamp do servidor;
-- referências entre entidades são armazenadas como IDs, evitando dependência de caminhos globais;
+- referências entre entidades são armazenadas como IDs;
+- datas sem horário (`expiration_date` e `due_date`) são persistidas como `YYYY-MM-DD` no MVP;
 - o MVP usa exclusão lógica/desativação quando o SDD exige preservação de histórico.
 
 ## `projects`
@@ -57,7 +58,15 @@ created_at: timestamp
 updated_at: timestamp
 ```
 
-`normalized_name` é utilizado pela camada de aplicação para impedir nomes ativos duplicados.
+Categorias iniciais derivadas da planilha legada:
+
+- `Aplicação WEB`;
+- `Jogo`;
+- `Landing Page`;
+- `Plataforma web`;
+- `Programa`.
+
+São criadas automaticamente no primeiro bootstrap quando ainda não existem.
 
 ## `statuses`
 
@@ -91,6 +100,12 @@ created_at: timestamp
 updated_at: timestamp
 ```
 
+Tecnologias iniciais derivadas da planilha legada:
+
+- `Html`;
+- `Python`;
+- `Typescript`.
+
 A tecnologia não é removida ao deixar de ser associada a um projeto.
 
 ## `domains`
@@ -98,7 +113,7 @@ A tecnologia não é removida ao deixar de ser associada a um projeto.
 ```text
 project_id: string
 hostname: string
-expiration_date: date/timestamp | null
+expiration_date: YYYY-MM-DD | null
 is_primary: boolean
 notes: string | null
 created_at: timestamp
@@ -115,7 +130,7 @@ description: string
 status: PENDING | IN_PROGRESS | WAITING | COMPLETED | DISCARDED
 area: string | null
 priority: LOW | MEDIUM | HIGH | null
-due_date: date/timestamp | null
+due_date: YYYY-MM-DD | null
 notes: string | null
 completed_at: timestamp | null
 created_at: timestamp
@@ -123,6 +138,16 @@ updated_at: timestamp
 ```
 
 Ao concluir uma pendência, `completed_at` recebe timestamp do servidor. Ao reabrir ou descartar, `completed_at` volta a `null`.
+
+## Bootstrap inicial
+
+Após o primeiro login autenticado, `initializeUserWorkspace(uid)` garante a existência de:
+
+- seis status padrão;
+- cinco categorias observadas na planilha legada;
+- três tecnologias observadas na planilha legada.
+
+O bootstrap é idempotente por nome/código e não deve duplicar cadastros já existentes.
 
 ## Repositórios de dados
 
@@ -148,3 +173,5 @@ O Firestore é schema-less e não utiliza migrations SQL. Mudanças estruturais 
 2. defaults compatíveis para campos novos;
 3. scripts de migração de documentos quando uma transformação de dados existentes for necessária;
 4. testes antes de aplicar transformações em produção.
+
+A estratégia para a planilha atual está documentada em [`MIGRATION_PLAN.md`](MIGRATION_PLAN.md).
