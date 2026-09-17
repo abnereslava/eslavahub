@@ -50,10 +50,10 @@ users/{uid}/
   pendingItems/
 ```
 
-## Funcionalidades já implementadas em código
+## Funcionalidades implementadas em código
 
 - login e logout com Google;
-- bootstrap dos status padrão;
+- bootstrap de status, categorias e tecnologias iniciais;
 - CRUD/base de persistência dos modelos do MVP;
 - cadastro, listagem, detalhe, edição, arquivamento e restauração de projetos;
 - associação de tecnologias;
@@ -61,10 +61,24 @@ users/{uid}/
 - pendências por projeto, incluindo status, prioridade, prazo e descarte;
 - domínios por projeto, domínio principal e vencimento;
 - visão global de domínios com alertas e filtros;
-- testes unitários de validação e vencimento;
+- dashboard operacional com indicadores, projetos em desenvolvimento, pendências relevantes e vencimentos;
+- busca textual de projetos;
+- filtros por categoria, status, cliente, tecnologia, pendências abertas e ativo/arquivado;
+- ordenação e paginação da listagem de projetos;
+- estados de carregamento, vazio e erro nas principais telas;
+- layout responsivo preparado para desktop e celular;
+- testes unitários das regras críticas;
 - lint e CI pelo GitHub Actions.
 
 Os fluxos que dependem do Firebase real ainda precisam de validação end-to-end antes de serem considerados concluídos no backlog.
+
+## Dados iniciais
+
+O bootstrap inicial utiliza dados confirmados na planilha legada:
+
+- categorias: `Aplicação WEB`, `Jogo`, `Landing Page`, `Plataforma web` e `Programa`;
+- tecnologias: `Html`, `Python` e `Typescript`;
+- status internos: `IDEALIZED`, `IN_DEVELOPMENT`, `FUNCTIONAL`, `FINISHED`, `PAUSED` e `ABANDONED`.
 
 ## Executar localmente
 
@@ -102,11 +116,17 @@ Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 Backlog atual: **48 tasks**.
 
-- 12 concluídas;
-- 22 em progresso;
-- 14 ainda não iniciadas.
+- 14 concluídas;
+- 33 em progresso;
+- 1 ainda não iniciada.
 
-O GitHub Actions já executa testes e lint com sucesso. O principal ponto pendente para encerrar as tasks em progresso é validar autenticação, Security Rules e leitura/escrita contra o projeto Firestore real.
+A única task ainda não iniciada é a suíte de testes end-to-end dos fluxos principais. A maioria das tasks em progresso já possui implementação e aguarda validação em navegador contra Firebase Authentication e Firestore reais.
+
+## Migração da planilha
+
+A aba principal analisada possui 27 projetos. O plano de migração preserva os dados úteis sem reutilizar IDs legados como IDs internos do Firestore; isso é especialmente importante porque existe duplicidade do ID antigo `0024`.
+
+Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 
 ## Documentação
 
@@ -114,11 +134,12 @@ O GitHub Actions já executa testes e lint com sucesso. O principal ponto penden
 - [Software Design Document (SDD)](docs/SDD.md)
 - [Backlog e documentação das tasks](docs/TASKS.md)
 - [Modelo Firestore](docs/FIRESTORE_MODEL.md)
+- [Plano de migração](docs/MIGRATION_PLAN.md)
 - [Desenvolvimento local](docs/DEVELOPMENT.md)
 - [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 ## Estado do projeto
 
-**Fase:** implementação do núcleo do MVP e validação da integração Firebase.
+**Fase:** núcleo do MVP implementado; validação end-to-end e publicação pendentes.
 
-Próximo passo crítico: executar o app autenticado e validar CRUD/Security Rules no Firestore real. Em paralelo, o desenvolvimento pode avançar para dashboard, busca e filtros.
+Próximo passo crítico: executar o app autenticado em navegador, validar CRUD/Security Rules no Firestore real e então rodar os testes end-to-end antes do deploy final.
