@@ -5,6 +5,7 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { PENDING_STATUS } from "../domain/constants.js";
+import { pendingStatusPatch } from "../domain/state-transitions.js";
 import { validatePendingItem } from "../domain/validation.js";
 import { FirestoreRepository } from "./firestore-repository.js";
 import { USER_COLLECTIONS } from "./user-paths.js";
@@ -51,20 +52,25 @@ class PendingItemRepository extends FirestoreRepository {
     if (typeof data.area === "string") payload.area = data.area.trim() || null;
     if (typeof data.notes === "string") payload.notes = data.notes.trim() || null;
 
-    if (data.status === PENDING_STATUS.COMPLETED) {
-      payload.completed_at = serverTimestamp();
-    } else if (Object.hasOwn(data, "status")) {
-      payload.completed_at = null;
+    if (Object.hasOwn(data, "status")) {
+      Object.assign(
+        payload,
+        pendingStatusPatch(
+          data.status,
+          data.status === PENDING_STATUS.COMPLETED ? serverTimestamp() : null
+        )
+      );
     }
 
     await this.update(uid, id, payload);
   }
 
   async complete(uid, id) {
-    await this.update(uid, id, {
-      status: PENDING_STATUS.COMPLETED,
-      completed_at: serverTimestamp()
-    });
+    await this.update(
+      uid,
+      id,
+      pendingStatusPatch(PENDING_STATUS.COMPLETED, serverTimestamp())
+    );
   }
 
   async reopen(uid, id, status = PENDING_STATUS.PENDING) {
@@ -72,21 +78,11 @@ class PendingItemRepository extends FirestoreRepository {
       throw new Error("Use complete() para concluir uma pendência.");
     }
 
-    if (!Object.values(PENDING_STATUS).includes(status)) {
-      throw new Error("Status de pendência inválido.");
-    }
-
-    await this.update(uid, id, {
-      status,
-      completed_at: null
-    });
+    await this.update(uid, id, pendingStatusPatch(status));
   }
 
   async discard(uid, id) {
-    await this.update(uid, id, {
-      status: PENDING_STATUS.DISCARDED,
-      completed_at: null
-    });
+    await this.update(uid, id, pendingStatusPatch(PENDING_STATUS.DISCARDED));
   }
 }
 
