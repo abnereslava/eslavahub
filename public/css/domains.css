@@ -1,0 +1,103 @@
+.domain-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.domain-list {
+  display: grid;
+  gap: 10px;
+}
+
+.domain-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 0.8fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-left-width: 5px;
+  border-radius: 12px;
+}
+
+.domain-row > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.domain-row > div:nth-child(2) span,
+.domain-row > div:nth-child(2) small,
+.domain-project-link {
+  display: block;
+}
+
+.domain-row small,
+.domain-project-link {
+  color: #6b7280;
+}
+
+.domain-project-link {
+  width: 100%;
+  margin-top: 3px;
+  font-size: 0.84rem;
+}
+
+.domain-status {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.domain-normal {
+  border-left-color: #9ca3af;
+}
+
+.domain-attention {
+  border-left-color: #f59e0b;
+}
+
+.domain-warning {
+  border-left-color: #ea580c;
+}
+
+.domain-urgent,
+.domain-expired {
+  border-left-color: #b91c1c;
+}
+
+.domain-none {
+  border-left-color: #d1d5db;
+}
+
+.domain-row > p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.domain-primary-action {
+  justify-self: start;
+}
+
+.global-domain-list .domain-row {
+  grid-template-columns: minmax(220px, 1.5fr) minmax(160px, 0.8fr) auto;
+}
+
+@media (max-width: 720px) {
+  .domain-form,
+  .domain-row,
+  .global-domain-list .domain-row {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-form .field-span-2,
+  .domain-row > p {
+    grid-column: auto;
+  }
+}
