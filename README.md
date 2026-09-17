@@ -6,7 +6,7 @@ A proposta é substituir o controle disperso em planilhas e anotações por uma 
 
 ## Objetivo
 
-Permitir que cada projeto tenha uma ficha central com as informações necessárias para acompanhamento do seu ciclo de vida, sem obrigar o preenchimento de campos que não façam sentido para aquele projeto.
+Cada projeto terá uma ficha central com as informações necessárias para acompanhamento do seu ciclo de vida, sem obrigar o preenchimento de campos que não façam sentido para aquele projeto.
 
 ## Informações por projeto
 
@@ -21,36 +21,87 @@ Permitir que cada projeto tenha uma ficha central com as informações necessár
 | Status | Obrigatório |
 | Linguagens/tecnologias utilizadas | Opcional |
 | Domínio atribuído | Opcional |
-| Data de expiração do domínio | Obrigatória apenas quando houver domínio com vencimento conhecido |
+| Data de expiração do domínio | Opcional |
 | Observações rápidas | Opcional |
 | Pendências | Opcional |
 
-Quando houver domínio cadastrado, o sistema deverá destacar domínios próximos do vencimento e domínios já vencidos.
+## Stack do MVP
 
-Cada projeto também poderá manter uma lista própria de pendências. A estrutura mínima de uma pendência será **Estado**, **Onde/Área** e **O que deve ser feito**.
+- HTML5;
+- CSS3;
+- JavaScript com ES Modules;
+- Firebase Web SDK 12.19.0;
+- Firebase Authentication com Google;
+- Cloud Firestore;
+- Firestore Security Rules;
+- Firebase Hosting.
 
-## Escopo inicial
+Não há backend próprio no MVP inicial. O acesso do cliente ao Firestore é protegido pelas Security Rules e os dados são isolados por UID.
 
-O primeiro ciclo do produto deverá contemplar:
+## Estrutura inicial de dados
 
-- cadastro, edição, visualização e arquivamento de projetos;
-- busca e filtros por nome, categoria, cliente, status e tecnologia;
-- links rápidos para repositório, deploy e domínio;
-- acompanhamento dos estados dos projetos;
-- cadastro e acompanhamento de pendências por projeto;
-- controle de domínio e data de expiração;
-- alertas visuais para domínios próximos do vencimento ou vencidos;
-- dashboard com visão geral dos projetos, pendências e domínios;
-- campos opcionais para que projetos simples não fiquem sobrecarregados com informações desnecessárias.
+```text
+users/{uid}/
+  projects/
+  categories/
+  statuses/
+  technologies/
+  domains/
+  pendingItems/
+```
+
+## Executar localmente
+
+A aplicação precisa ser servida por HTTP por utilizar ES Modules.
+
+Exemplo:
+
+```bash
+python -m http.server 5500 --directory public
+```
+
+Acesse `http://localhost:5500`.
+
+Para o login funcionar, o provedor Google precisa estar habilitado no Firebase Authentication e `localhost` precisa estar entre os domínios autorizados.
+
+## Firebase
+
+Projeto configurado:
+
+```text
+eslavahub-434e5
+```
+
+Infraestrutura versionada:
+
+```text
+.firebaserc
+firebase.json
+firestore.rules
+firestore.indexes.json
+```
+
+Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
+
+## Progresso
+
+Backlog atual: **48 tasks**.
+
+- 4 concluídas;
+- 2 em progresso;
+- 42 ainda não iniciadas.
+
+A fundação Firebase e o fluxo inicial de autenticação já estão implementados no repositório. A execução local, o login real e a conexão real com Firestore ainda precisam ser validados antes de encerrar as tasks correspondentes.
 
 ## Documentação
 
 - [Proposta do produto](docs/PROPOSTA.md)
 - [Software Design Document (SDD)](docs/SDD.md)
 - [Backlog e documentação das tasks](docs/TASKS.md)
+- [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 ## Estado do projeto
 
-**Fase:** concepção, especificação e planejamento inicial do MVP.
+**Fase:** fundação técnica do MVP.
 
-As decisões de stack, infraestrutura, autenticação, hospedagem e persistência ainda não estão definidas. Essas decisões fazem parte das primeiras tasks do backlog e, quando concluídas, deverão ser refletidas no SDD.
+Próximo passo: validar a execução local e a conexão autenticada com Firestore, depois iniciar os modelos `Project` e `Category/ProjectStatus`.
