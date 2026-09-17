@@ -34,7 +34,7 @@ Cada projeto terá uma ficha central com as informações necessárias para acom
 - Firebase Authentication com Google;
 - Cloud Firestore;
 - Firestore Security Rules;
-- Firebase Hosting.
+- GitHub Pages.
 
 Não há backend próprio no MVP inicial. O acesso do cliente ao Firestore é protegido pelas Security Rules e os dados são isolados por UID.
 
@@ -101,7 +101,7 @@ Projeto configurado:
 eslavahub-434e5
 ```
 
-Infraestrutura versionada:
+Infraestrutura Firebase versionada:
 
 ```text
 .firebaserc
@@ -109,6 +109,8 @@ firebase.json
 firestore.rules
 firestore.indexes.json
 ```
+
+Deploy web: GitHub Pages via `.github/workflows/pages.yml`, publicando a pasta `public/`.
 
 Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
@@ -142,4 +144,4 @@ Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 
 **Fase:** núcleo do MVP implementado; validação end-to-end e publicação pendentes.
 
-Próximo passo crítico: executar o app autenticado em navegador, validar CRUD/Security Rules no Firestore real e então rodar os testes end-to-end antes do deploy final.
+Próximo passo crítico: habilitar GitHub Pages com origem **GitHub Actions**, autorizar `abnereslava.github.io` no Firebase Authentication e validar o app publicado contra o Firestore real.
