@@ -1,6 +1,6 @@
 # Backlog de Implementação — EslavaHub
 
-**Versão:** 0.3  
+**Versão:** 0.4  
 **Origem:** `docs/PROPOSTA.md` e `docs/SDD.md`  
 **Escopo:** MVP
 
@@ -28,12 +28,12 @@ Uma task só deve ser marcada como `DONE` quando seus critérios de aceite estiv
 ## Progresso atual
 
 - **DONE:** 12/48
-- **IN PROGRESS:** 22/48
-- **TODO:** 14/48
+- **IN PROGRESS:** 29/48
+- **TODO:** 7/48
 
-A maior parte do núcleo funcional já está implementada em código: modelos Firestore, projetos, cadastros auxiliares, pendências e domínios. O GitHub Actions executa testes e lint com sucesso.
+O núcleo funcional do MVP já está implementado em código: modelos Firestore, projetos, cadastros auxiliares, pendências, domínios, dashboard, busca, filtros, ordenação e paginação. O GitHub Actions executa testes e lint com sucesso.
 
-O principal ponto de validação pendente é executar a aplicação autenticada contra o projeto Firebase real para confirmar login Google, Security Rules e CRUD no Firestore. Por isso, fluxos de UI/persistência permanecem `IN PROGRESS` mesmo quando a implementação está presente no repositório.
+O principal ponto de validação pendente é executar a aplicação autenticada contra o projeto Firebase real para confirmar login Google, Security Rules, CRUD no Firestore e comportamento visual no navegador. Por isso, fluxos de UI/persistência permanecem `IN PROGRESS` mesmo quando a implementação está presente no repositório.
 
 ---
 
@@ -110,18 +110,18 @@ Detalhes: [`tasks/04-dominios.md`](tasks/04-dominios.md)
 
 ### Dashboard
 
-- [ ] TASK-033 — Implementar indicadores gerais — **TODO**
-- [ ] TASK-034 — Implementar bloco de projetos em andamento — **TODO**
-- [ ] TASK-035 — Implementar bloco de pendências relevantes — **TODO**
-- [ ] TASK-036 — Implementar bloco de próximos vencimentos — **TODO**
+- [ ] TASK-033 — Implementar indicadores gerais — **IN PROGRESS**
+- [ ] TASK-034 — Implementar bloco de projetos em andamento — **IN PROGRESS**
+- [ ] TASK-035 — Implementar bloco de pendências relevantes — **IN PROGRESS**
+- [ ] TASK-036 — Implementar bloco de próximos vencimentos — **IN PROGRESS**
 
 Detalhes: [`tasks/05-dashboard.md`](tasks/05-dashboard.md)
 
 ### Consulta e cadastros auxiliares
 
-- [ ] TASK-037 — Implementar busca textual de projetos — **TODO**
-- [ ] TASK-038 — Implementar filtros combináveis — **TODO**
-- [ ] TASK-039 — Implementar ordenação e paginação/carregamento — **TODO**
+- [ ] TASK-037 — Implementar busca textual de projetos — **IN PROGRESS**
+- [ ] TASK-038 — Implementar filtros combináveis — **IN PROGRESS**
+- [ ] TASK-039 — Implementar ordenação e paginação/carregamento — **IN PROGRESS**
 - [ ] TASK-040 — Implementar gestão de categorias — **IN PROGRESS**
 - [ ] TASK-041 — Implementar gestão de tecnologias — **IN PROGRESS**
 
@@ -146,14 +146,14 @@ Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 ```text
 validar TASK-003 + TASK-007 no Firebase real
         ↓
-encerrar validações TASK-013 → TASK-032 + TASK-040/041
+encerrar validações TASK-013 → TASK-041
         ↓
-TASK-033 → TASK-039
+TASK-042 → TASK-047
         ↓
-TASK-042 → TASK-048
+TASK-048 / publicação do MVP
 ```
 
-Enquanto a validação Firebase não é executada, novas tasks independentes de leitura/escrita real podem continuar sendo implementadas em paralelo.
+Enquanto a validação Firebase não é executada, as tasks de qualidade independentes podem continuar sendo trabalhadas.
 
 ---
 
