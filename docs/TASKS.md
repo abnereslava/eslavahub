@@ -1,6 +1,6 @@
 # Backlog de Implementação — EslavaHub
 
-**Versão:** 0.4  
+**Versão:** 0.5  
 **Origem:** `docs/PROPOSTA.md` e `docs/SDD.md`  
 **Escopo:** MVP
 
@@ -8,32 +8,24 @@ Este documento transforma a especificação do EslavaHub em um plano de implemen
 
 ## Convenções
 
-### Status
-
 - `TODO` — ainda não iniciada;
 - `IN PROGRESS` — implementada parcialmente ou aguardando validação end-to-end;
 - `BLOCKED` — depende de decisão ou entrega pendente;
 - `DONE` — critérios de aceite atendidos.
 
-### Prioridade
-
-- `P0` — necessária para o funcionamento básico do MVP;
-- `P1` — necessária para completar o MVP, mas depende do núcleo funcional;
-- `P2` — melhoria importante, não bloqueia a primeira versão utilizável.
-
-Uma task só deve ser marcada como `DONE` quando seus critérios de aceite estiverem atendidos.
+Prioridades: `P0` essencial, `P1` necessária ao MVP e `P2` melhoria importante.
 
 ---
 
 ## Progresso atual
 
-- **DONE:** 12/48
-- **IN PROGRESS:** 29/48
-- **TODO:** 7/48
+- **DONE:** 14/48
+- **IN PROGRESS:** 33/48
+- **TODO:** 1/48
 
-O núcleo funcional do MVP já está implementado em código: modelos Firestore, projetos, cadastros auxiliares, pendências, domínios, dashboard, busca, filtros, ordenação e paginação. O GitHub Actions executa testes e lint com sucesso.
+O núcleo funcional do MVP já está implementado em código: modelos Firestore, projetos, cadastros auxiliares, pendências, domínios, dashboard, busca, filtros, ordenação e paginação. Testes unitários e lint passam no GitHub Actions.
 
-O principal ponto de validação pendente é executar a aplicação autenticada contra o projeto Firebase real para confirmar login Google, Security Rules, CRUD no Firestore e comportamento visual no navegador. Por isso, fluxos de UI/persistência permanecem `IN PROGRESS` mesmo quando a implementação está presente no repositório.
+A única task ainda não iniciada é a suíte de testes end-to-end dos fluxos principais (`TASK-046`). A maior parte das tasks `IN PROGRESS` está nessa condição porque ainda falta executar/validar a aplicação contra Firebase Authentication e Firestore reais em navegador.
 
 ---
 
@@ -42,9 +34,9 @@ O principal ponto de validação pendente é executar a aplicação autenticada 
 | Marco | Objetivo | Tasks |
 | --- | --- | --- |
 | M0 — Fundação | Definir base técnica e persistência | TASK-001 a TASK-012 |
-| M1 — Núcleo de projetos | Permitir gerenciar projetos de ponta a ponta | TASK-013 a TASK-020 |
+| M1 — Núcleo de projetos | Gerenciar projetos de ponta a ponta | TASK-013 a TASK-020 |
 | M2 — Acompanhamento | Pendências e domínios | TASK-021 a TASK-032 |
-| M3 — Visão operacional | Dashboard, busca, filtros e cadastros auxiliares | TASK-033 a TASK-041 |
+| M3 — Visão operacional | Dashboard, consulta e cadastros | TASK-033 a TASK-041 |
 | M4 — Qualidade e entrega | Robustez, testes e disponibilização | TASK-042 a TASK-048 |
 
 ---
@@ -75,97 +67,102 @@ Detalhes: [`tasks/01-modelo-de-dados.md`](tasks/01-modelo-de-dados.md)
 
 ### Projetos
 
-- [ ] TASK-013 — Implementar listagem de projetos — **IN PROGRESS**
-- [ ] TASK-014 — Implementar cadastro de projeto — **IN PROGRESS**
-- [ ] TASK-015 — Implementar página de detalhes do projeto — **IN PROGRESS**
-- [ ] TASK-016 — Implementar edição de projeto — **IN PROGRESS**
-- [ ] TASK-017 — Implementar arquivamento e restauração — **IN PROGRESS**
-- [ ] TASK-018 — Implementar tecnologias por projeto — **IN PROGRESS**
-- [ ] TASK-019 — Implementar links rápidos de repositório e deploy — **IN PROGRESS**
-- [ ] TASK-020 — Implementar validações do módulo de projetos — **IN PROGRESS**
+- [ ] TASK-013 — Listagem de projetos — **IN PROGRESS**
+- [ ] TASK-014 — Cadastro de projeto — **IN PROGRESS**
+- [ ] TASK-015 — Página de detalhes — **IN PROGRESS**
+- [ ] TASK-016 — Edição — **IN PROGRESS**
+- [ ] TASK-017 — Arquivamento/restauração — **IN PROGRESS**
+- [ ] TASK-018 — Tecnologias por projeto — **IN PROGRESS**
+- [ ] TASK-019 — Links rápidos — **IN PROGRESS**
+- [ ] TASK-020 — Validações — **IN PROGRESS**
 
 Detalhes: [`tasks/02-projetos.md`](tasks/02-projetos.md)
 
 ### Pendências
 
-- [ ] TASK-021 — Implementar listagem de pendências no projeto — **IN PROGRESS**
-- [ ] TASK-022 — Implementar criação de pendência — **IN PROGRESS**
-- [ ] TASK-023 — Implementar edição de pendência — **IN PROGRESS**
-- [ ] TASK-024 — Implementar fluxo de status e conclusão — **IN PROGRESS**
-- [ ] TASK-025 — Implementar prioridade e prazo — **IN PROGRESS**
-- [ ] TASK-026 — Implementar descarte/exclusão controlada de pendência — **IN PROGRESS**
+- [ ] TASK-021 — Listagem — **IN PROGRESS**
+- [ ] TASK-022 — Criação — **IN PROGRESS**
+- [ ] TASK-023 — Edição — **IN PROGRESS**
+- [ ] TASK-024 — Fluxo de status/conclusão — **IN PROGRESS**
+- [ ] TASK-025 — Prioridade e prazo — **IN PROGRESS**
+- [ ] TASK-026 — Descarte controlado — **IN PROGRESS**
 
 Detalhes: [`tasks/03-pendencias.md`](tasks/03-pendencias.md)
 
 ### Domínios
 
-- [ ] TASK-027 — Implementar cadastro de domínio — **IN PROGRESS**
-- [x] TASK-028 — Implementar normalização e validação de hostname — **DONE**
-- [ ] TASK-029 — Implementar domínio principal por projeto — **IN PROGRESS**
-- [x] TASK-030 — Implementar cálculo de vencimento — **DONE**
-- [ ] TASK-031 — Implementar alertas visuais de domínio — **IN PROGRESS**
-- [ ] TASK-032 — Implementar visão/listagem de domínios — **IN PROGRESS**
+- [ ] TASK-027 — Cadastro de domínio — **IN PROGRESS**
+- [x] TASK-028 — Normalização/validação de hostname — **DONE**
+- [ ] TASK-029 — Domínio principal — **IN PROGRESS**
+- [x] TASK-030 — Cálculo de vencimento — **DONE**
+- [ ] TASK-031 — Alertas visuais — **IN PROGRESS**
+- [ ] TASK-032 — Visão global — **IN PROGRESS**
 
 Detalhes: [`tasks/04-dominios.md`](tasks/04-dominios.md)
 
 ### Dashboard
 
-- [ ] TASK-033 — Implementar indicadores gerais — **IN PROGRESS**
-- [ ] TASK-034 — Implementar bloco de projetos em andamento — **IN PROGRESS**
-- [ ] TASK-035 — Implementar bloco de pendências relevantes — **IN PROGRESS**
-- [ ] TASK-036 — Implementar bloco de próximos vencimentos — **IN PROGRESS**
+- [ ] TASK-033 — Indicadores gerais — **IN PROGRESS**
+- [ ] TASK-034 — Projetos em andamento — **IN PROGRESS**
+- [ ] TASK-035 — Pendências relevantes — **IN PROGRESS**
+- [ ] TASK-036 — Próximos vencimentos — **IN PROGRESS**
 
 Detalhes: [`tasks/05-dashboard.md`](tasks/05-dashboard.md)
 
 ### Consulta e cadastros auxiliares
 
-- [ ] TASK-037 — Implementar busca textual de projetos — **IN PROGRESS**
-- [ ] TASK-038 — Implementar filtros combináveis — **IN PROGRESS**
-- [ ] TASK-039 — Implementar ordenação e paginação/carregamento — **IN PROGRESS**
-- [ ] TASK-040 — Implementar gestão de categorias — **IN PROGRESS**
-- [ ] TASK-041 — Implementar gestão de tecnologias — **IN PROGRESS**
+- [ ] TASK-037 — Busca textual — **IN PROGRESS**
+- [ ] TASK-038 — Filtros combináveis — **IN PROGRESS**
+- [ ] TASK-039 — Ordenação/paginação — **IN PROGRESS**
+- [ ] TASK-040 — Gestão de categorias — **IN PROGRESS**
+- [ ] TASK-041 — Gestão de tecnologias — **IN PROGRESS**
 
 Detalhes: [`tasks/06-consulta-e-cadastros.md`](tasks/06-consulta-e-cadastros.md)
 
 ### Qualidade e entrega
 
-- [ ] TASK-042 — Implementar estados de carregamento, vazio e erro — **TODO**
-- [ ] TASK-043 — Revisar responsividade — **TODO**
-- [ ] TASK-044 — Revisar acessibilidade básica — **TODO**
-- [ ] TASK-045 — Implementar testes das regras de negócio críticas — **TODO**
-- [ ] TASK-046 — Implementar testes dos fluxos principais — **TODO**
-- [ ] TASK-047 — Preparar dados iniciais e estratégia de migração — **TODO**
-- [ ] TASK-048 — Configurar build e deploy do MVP — **TODO**
+- [ ] TASK-042 — Estados de loading/vazio/erro — **IN PROGRESS**
+- [ ] TASK-043 — Responsividade — **IN PROGRESS**
+- [ ] TASK-044 — Acessibilidade básica — **IN PROGRESS**
+- [x] TASK-045 — Testes das regras críticas — **DONE**
+- [ ] TASK-046 — Testes dos fluxos principais — **TODO**
+- [x] TASK-047 — Dados iniciais e estratégia de migração — **DONE**
+- [ ] TASK-048 — Build e deploy — **IN PROGRESS**
 
 Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 
 ---
 
-## Próxima sequência
+## Próximo bloqueio real
 
 ```text
-validar TASK-003 + TASK-007 no Firebase real
+Executar app em navegador
         ↓
-encerrar validações TASK-013 → TASK-041
+Login Google real
         ↓
-TASK-042 → TASK-047
+Validar Security Rules + CRUD Firestore
         ↓
-TASK-048 / publicação do MVP
+Revisar desktop/mobile/acessibilidade
+        ↓
+Executar TASK-046 (E2E)
+        ↓
+Deploy Firebase Hosting
 ```
 
-Enquanto a validação Firebase não é executada, as tasks de qualidade independentes podem continuar sendo trabalhadas.
+## Migração
+
+A estratégia para os 27 registros da planilha legada está em [`MIGRATION_PLAN.md`](MIGRATION_PLAN.md). IDs antigos não serão usados como IDs internos, inclusive porque existe duplicidade do ID legado `0024`.
 
 ---
 
 ## Fora do MVP / backlog futuro
 
 - integração automática com a API do GitHub;
-- importação automatizada da planilha original;
+- importador permanente da planilha;
 - notificações por e-mail, push ou calendário;
 - renovação automática de domínio;
 - consulta automática de registrador/WHOIS;
 - gestão completa de clientes/CRM;
 - colaboração multiusuário avançada;
 - histórico detalhado de alterações;
-- tela global avançada de pendências;
-- métricas de código, commits, builds e disponibilidade de deploy.
+- métricas de código, commits, builds e uptime.
