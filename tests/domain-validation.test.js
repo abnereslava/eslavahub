@@ -28,6 +28,21 @@ test("validateProject accepts required fields with optional fields empty", () =>
   );
 });
 
+test("validateProject rejects missing required fields", () => {
+  assert.throws(
+    () =>
+      validateProject({
+        name: "   ",
+        category_id: "",
+        status_id: ""
+      }),
+    (error) =>
+      error.message.includes("Nome do projeto é obrigatório") &&
+      error.message.includes("Categoria é obrigatória") &&
+      error.message.includes("Status é obrigatório")
+  );
+});
+
 test("validateProject rejects invalid URLs", () => {
   assert.throws(
     () =>
