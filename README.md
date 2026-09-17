@@ -38,7 +38,7 @@ Cada projeto terá uma ficha central com as informações necessárias para acom
 
 Não há backend próprio no MVP inicial. O acesso do cliente ao Firestore é protegido pelas Security Rules e os dados são isolados por UID.
 
-## Estrutura inicial de dados
+## Estrutura de dados
 
 ```text
 users/{uid}/
@@ -50,19 +50,34 @@ users/{uid}/
   pendingItems/
 ```
 
+## Funcionalidades já implementadas em código
+
+- login e logout com Google;
+- bootstrap dos status padrão;
+- CRUD/base de persistência dos modelos do MVP;
+- cadastro, listagem, detalhe, edição, arquivamento e restauração de projetos;
+- associação de tecnologias;
+- gestão de categorias e tecnologias;
+- pendências por projeto, incluindo status, prioridade, prazo e descarte;
+- domínios por projeto, domínio principal e vencimento;
+- visão global de domínios com alertas e filtros;
+- testes unitários de validação e vencimento;
+- lint e CI pelo GitHub Actions.
+
+Os fluxos que dependem do Firebase real ainda precisam de validação end-to-end antes de serem considerados concluídos no backlog.
+
 ## Executar localmente
 
-A aplicação precisa ser servida por HTTP por utilizar ES Modules.
-
-Exemplo:
-
 ```bash
-python -m http.server 5500 --directory public
+npm install
+npm run serve
 ```
 
-Acesse `http://localhost:5500`.
+Também é possível servir `public/` por qualquer servidor HTTP local compatível com ES Modules.
 
 Para o login funcionar, o provedor Google precisa estar habilitado no Firebase Authentication e `localhost` precisa estar entre os domínios autorizados.
+
+Ver comandos e verificações em [Desenvolvimento local](docs/DEVELOPMENT.md).
 
 ## Firebase
 
@@ -87,21 +102,23 @@ Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 Backlog atual: **48 tasks**.
 
-- 4 concluídas;
-- 2 em progresso;
-- 42 ainda não iniciadas.
+- 12 concluídas;
+- 22 em progresso;
+- 14 ainda não iniciadas.
 
-A fundação Firebase e o fluxo inicial de autenticação já estão implementados no repositório. A execução local, o login real e a conexão real com Firestore ainda precisam ser validados antes de encerrar as tasks correspondentes.
+O GitHub Actions já executa testes e lint com sucesso. O principal ponto pendente para encerrar as tasks em progresso é validar autenticação, Security Rules e leitura/escrita contra o projeto Firestore real.
 
 ## Documentação
 
 - [Proposta do produto](docs/PROPOSTA.md)
 - [Software Design Document (SDD)](docs/SDD.md)
 - [Backlog e documentação das tasks](docs/TASKS.md)
+- [Modelo Firestore](docs/FIRESTORE_MODEL.md)
+- [Desenvolvimento local](docs/DEVELOPMENT.md)
 - [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 ## Estado do projeto
 
-**Fase:** fundação técnica do MVP.
+**Fase:** implementação do núcleo do MVP e validação da integração Firebase.
 
-Próximo passo: validar a execução local e a conexão autenticada com Firestore, depois iniciar os modelos `Project` e `Category/ProjectStatus`.
+Próximo passo crítico: executar o app autenticado e validar CRUD/Security Rules no Firestore real. Em paralelo, o desenvolvimento pode avançar para dashboard, busca e filtros.
