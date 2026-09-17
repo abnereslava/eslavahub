@@ -28,7 +28,7 @@ A fundação técnica inicial está definida da seguinte forma:
 | Provedor de login | Google |
 | Persistência | Cloud Firestore |
 | Autorização dos dados | Firestore Security Rules |
-| Hosting | Firebase Hosting |
+| Hosting | GitHub Pages via GitHub Actions |
 | Projeto Firebase | `eslavahub-434e5` |
 
 A aplicação deve continuar organizada em camadas para que uma mudança futura de frontend, infraestrutura ou persistência não exija reescrever as regras de negócio.
@@ -605,7 +605,9 @@ As Firestore Rules devem possuir testes próprios antes de regras mais restritiv
 
 ## 18. Deploy e infraestrutura
 
-Arquivos versionados:
+O frontend é publicado no GitHub Pages através de `.github/workflows/pages.yml`, que envia a pasta `public/` como artefato do Pages a cada push no `main`.
+
+O Firebase continua responsável por Authentication e Firestore. Arquivos Firebase versionados:
 
 ```text
 .firebaserc
@@ -614,15 +616,13 @@ firestore.rules
 firestore.indexes.json
 ```
 
-Hosting publica o conteúdo de `public/`.
-
-Projeto padrão:
+Projeto Firebase padrão:
 
 ```text
 eslavahub-434e5
 ```
 
-Procedimentos estão documentados em [`SETUP_FIREBASE.md`](SETUP_FIREBASE.md).
+O domínio `abnereslava.github.io` deve constar entre os domínios autorizados do Firebase Authentication.
 
 ---
 
@@ -709,7 +709,7 @@ Já versionados:
 - tela inicial de login/sessão;
 - convenção de caminhos Firestore por UID;
 - Firestore Security Rules;
-- configuração Firebase Hosting;
+- workflow de deploy para GitHub Pages;
 - configuração de índices Firestore;
 - documentação de setup Firebase.
 
