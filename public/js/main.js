@@ -5,6 +5,7 @@ import {
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
 import { renderCatalog } from "./ui/catalogs-ui.js";
+import { renderDomainsPage } from "./ui/domains-ui.js";
 import { renderProjectDetailPage } from "./ui/project-detail-ui.js";
 import { renderProjectForm, renderProjectList } from "./ui/projects-ui.js";
 
@@ -65,6 +66,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
       <a class="brand" href="#/projects">EslavaHub</a>
       <nav class="main-nav" aria-label="Navegação principal">
         <a href="#/projects">Projetos</a>
+        <a href="#/domains">Domínios</a>
         <a href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
@@ -97,6 +99,13 @@ async function renderAuthenticatedRoute() {
 
   if (!parts.length) {
     window.location.hash = "#/projects";
+    return;
+  }
+
+  if (parts[0] === "domains") {
+    await renderDomainsPage(container, currentUser.uid, {
+      filter: query.get("filter") || "all"
+    });
     return;
   }
 
