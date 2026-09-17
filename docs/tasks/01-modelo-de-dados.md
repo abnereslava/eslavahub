@@ -1,21 +1,39 @@
 # Tasks — Persistência e Modelo de Dados
 
-Estas tasks implementam as entidades e relações definidas no SDD.
+Estas tasks implementam as entidades e relações definidas no SDD usando Cloud Firestore.
 
 ---
 
 ## TASK-007 — Definir banco de dados e estratégia de persistência
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P0  
 **Dependências:** TASK-001
 
+### Decisão
+
+- banco: Cloud Firestore;
+- isolamento: dados sob `/users/{uid}/...`;
+- autorização: Firestore Security Rules;
+- IDs: IDs de documentos gerados pelo Firestore;
+- migrations: não há migration SQL; alterações de schema serão tratadas por contratos, defaults e scripts de migração quando necessários;
+- acesso a dados: encapsulado em repositórios;
+- caminhos privados: centralizados inicialmente em `public/js/repositories/user-paths.js`;
+- regras e índices são versionados em `firestore.rules` e `firestore.indexes.json`.
+
 ### Critérios de aceite
-- [ ] tecnologia de persistência definida;
-- [ ] estratégia de migrations/schema definida;
-- [ ] conexão local funcional;
-- [ ] convenção para repositórios/acesso a dados definida;
-- [ ] decisão registrada no SDD.
+- [x] tecnologia de persistência definida;
+- [x] estratégia de migrations/schema definida;
+- [ ] conexão local funcional — **aguarda validação real em ambiente executável**;
+- [x] convenção para repositórios/acesso a dados definida;
+- [x] decisão registrada no SDD.
+
+### Para concluir
+
+Após login local, executar uma leitura/escrita controlada no caminho do UID autenticado e confirmar que:
+
+1. o próprio usuário possui acesso;
+2. acesso fora de `/users/{uid}` é negado pelas Security Rules.
 
 ---
 
@@ -30,7 +48,7 @@ Estas tasks implementam as entidades e relações definidas no SDD.
 - [ ] ID gerado automaticamente e não reutilizado;
 - [ ] `created_at`, `updated_at` e `archived_at` disponíveis;
 - [ ] relacionamentos com categoria e status preparados;
-- [ ] schema/migration aplicável em ambiente limpo.
+- [ ] contrato/modelo aplicável em base limpa.
 
 ---
 
