@@ -88,6 +88,13 @@ function validateProject(data, { partial = false } = {}) {
     errors.push("Tecnologias devem ser uma lista de IDs.");
   }
 
+  if (
+    Object.hasOwn(data, "portfolio_visible") &&
+    typeof data.portfolio_visible !== "boolean"
+  ) {
+    errors.push("Visibilidade no portfólio deve ser booleana.");
+  }
+
   if (errors.length) throw new Error(errors.join(" "));
 }
 
