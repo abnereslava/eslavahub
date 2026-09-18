@@ -221,24 +221,12 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
 
   const linksMenu = document.querySelector(".header-links-menu");
 
-  linksMenu?.addEventListener("pointerenter", () => {
+  linksMenu?.addEventListener("mouseenter", () => {
     linksMenu.setAttribute("open", "");
   });
 
-  linksMenu?.addEventListener("pointerleave", () => {
+  linksMenu?.addEventListener("mouseleave", () => {
     if (!linksMenu.matches(":focus-within")) linksMenu.removeAttribute("open");
-  });
-
-  linksMenu?.addEventListener("focusin", () => {
-    linksMenu.setAttribute("open", "");
-  });
-
-  linksMenu?.addEventListener("focusout", () => {
-    window.requestAnimationFrame(() => {
-      if (!linksMenu.matches(":hover, :focus-within")) {
-        linksMenu.removeAttribute("open");
-      }
-    });
   });
 
   document.querySelectorAll(".header-links-item").forEach((link) => {
