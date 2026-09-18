@@ -575,3 +575,58 @@ button:disabled {
     flex: 1 1 auto;
   }
 }
+
+
+/* Shared interaction primitives */
+:is(
+  .button,
+  .project-link-icon,
+  .pending-icon-button,
+  .advanced-filters-toggle,
+  .filter-chip,
+  .tag,
+  .status-badge
+) {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    opacity 120ms ease;
+}
+
+:is(
+  .field input,
+  .field select,
+  .field textarea,
+  .compact-filter-search input,
+  .compact-filter-sort select,
+  .pending-quick-add input,
+  .pending-inline-input,
+  .pending-inline-select,
+  .quick-status-select
+) {
+  font-family: var(--font-sans);
+}
+
+:is(.tag, .status-badge, .filter-chip) {
+  line-height: var(--line-height-tight);
+}
+
+:is(.project-link-icon, .pending-icon-button) {
+  flex: 0 0 auto;
+}
+
+:is(.project-link-icon, .pending-icon-button):focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+button[disabled],
+.button.is-disabled,
+.project-link-icon.is-disabled {
+  cursor: not-allowed;
+}
+
+[aria-busy="true"] {
+  cursor: progress;
+}
