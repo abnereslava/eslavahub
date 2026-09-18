@@ -282,14 +282,8 @@ async function renderAuthenticatedRoute() {
     await renderProjectList(container, currentUser.uid, {
       archived: query.get("archived") === "1",
       search: query.get("search") || "",
-      categoryId: query.get("categoryId") || "",
-      statusId: query.get("statusId") || "",
-      statusCode: query.get("statusCode") || "",
-      client: query.get("client") || "",
-      technologyId: query.get("technologyId") || "",
       hasOpenPending: query.get("hasOpenPending") === "1",
-      sort: query.has("sort") ? query.get("sort") : null,
-      page: Number(query.get("page") || 1)
+      sort: query.has("sort") ? query.get("sort") : null
     });
     return;
   }
