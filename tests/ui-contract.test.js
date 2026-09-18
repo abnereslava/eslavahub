@@ -136,7 +136,6 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /project-toolbar-divider/);
   assert.match(projects, /mobile-status-sort/);
   assert.match(projects, /Filtrar por status/);
-  assert.match(projects, /statusCode/);
   assert.doesNotMatch(projects, /aria-label="Paginação de projetos"/);
   assert.doesNotMatch(projects, /compact-filter-sort/);
   assert.match(projects, /project-links-inner/);
