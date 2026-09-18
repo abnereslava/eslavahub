@@ -23,7 +23,10 @@ class WorkspaceMetadataRepository extends FirestoreRepository {
 
     try {
       const cached = await getDocFromCache(ref);
-      if (cached.exists()) return { id: cached.id, ...cached.data() };
+      if (cached.exists()) {
+        incrementMetric("cacheDocumentReads");
+        return { id: cached.id, ...cached.data() };
+      }
     } catch {
       // First access on this browser: fetch from server through the base repository.
     }
