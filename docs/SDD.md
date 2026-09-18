@@ -86,6 +86,8 @@ Responsável por:
 
 A apresentação não deve conter regras de negócio relevantes nem construir caminhos Firestore manualmente.
 
+A evolução visual da aplicação é tratada separadamente em [`UX_REDESIGN_PLAN.md`](UX_REDESIGN_PLAN.md). O redesign não pode alterar contratos de domínio, persistência, autenticação, rotas ou regras funcionais apenas por necessidade estética.
+
 ### 4.2 Aplicação/serviços
 
 Responsável por casos de uso como:
