@@ -26,8 +26,14 @@ function formatDate(value) {
   return `${day}/${month}/${year}`;
 }
 
-function metricCard(label, value, href) {
-  return `<a class="metric-card" href="${href}"><strong>${value}</strong><span>${label}</span></a>`;
+function metricCard(label, value, href, tone = "neutral") {
+  return `
+    <a class="metric-card metric-card-${tone}" href="${href}">
+      <span class="metric-label">${label}</span>
+      <strong>${value}</strong>
+      <span class="metric-link-hint">Abrir</span>
+    </a>
+  `;
 }
 
 async function renderDashboard(container, uid) {
@@ -48,11 +54,11 @@ async function renderDashboard(container, uid) {
 
       <section class="metrics-grid" aria-label="Indicadores gerais">
         ${metricCard("Projetos ativos", data.summary.active_projects, "#/projects")}
-        ${metricCard("Em desenvolvimento", data.summary.in_development, "#/projects?statusCode=IN_DEVELOPMENT")}
-        ${metricCard("Projetos com pendências", data.summary.projects_with_open_pending, "#/projects?hasOpenPending=1")}
-        ${metricCard("Pendências abertas", data.summary.open_pending, "#/projects?hasOpenPending=1")}
-        ${metricCard("Domínios em atenção", data.summary.domains_attention, "#/domains?filter=attention")}
-        ${metricCard("Domínios vencidos", data.summary.domains_expired, "#/domains?filter=expired")}
+        ${metricCard("Em desenvolvimento", data.summary.in_development, "#/projects?statusCode=IN_DEVELOPMENT", "warning")}
+        ${metricCard("Projetos com pendências", data.summary.projects_with_open_pending, "#/projects?hasOpenPending=1", "info")}
+        ${metricCard("Pendências abertas", data.summary.open_pending, "#/projects?hasOpenPending=1", "info")}
+        ${metricCard("Domínios em atenção", data.summary.domains_attention, "#/domains?filter=attention", "warning")}
+        ${metricCard("Domínios vencidos", data.summary.domains_expired, "#/domains?filter=expired", "danger")}
       </section>
 
       <div class="dashboard-grid">
