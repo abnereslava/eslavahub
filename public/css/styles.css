@@ -719,3 +719,9 @@ button[disabled],
     min-height: var(--control-touch);
   }
 }
+
+
+.unstyled-link {
+  color: inherit;
+  text-decoration: none;
+}
