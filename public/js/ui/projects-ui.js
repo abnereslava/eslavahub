@@ -29,6 +29,101 @@ function renderError(container, message) {
   `;
 }
 
+const QUICK_STATUS_CODES = new Set([
+  "FINISHED",
+  "FUNCTIONAL",
+  "IN_DEVELOPMENT",
+  "IDEALIZED",
+  "ABANDONED"
+]);
+
+function formatDatePtBr(value) {
+  if (!value) return "";
+
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat("pt-BR").format(date);
+}
+
+function isExpirationUrgent(value) {
+  if (!value) return false;
+
+  const expiration = new Date(`${value}T23:59:59`);
+  if (Number.isNaN(expiration.getTime())) return false;
+
+  const diffMs = expiration.getTime() - Date.now();
+  const diffDays = diffMs / 86400000;
+
+  return diffDays <= 90;
+}
+
+function siteIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
+    </svg>
+  `;
+}
+
+function githubIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 9 5 12l3 3M16 9l3 3-3 3M14 7l-4 10"></path>
+    </svg>
+  `;
+}
+
+function renderProjectLinks(project) {
+  const links = [];
+
+  if (project.deploy_url) {
+    links.push(`
+      <a
+        class="project-link-icon"
+        href="${escapeHtml(project.deploy_url)}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Abrir site de ${escapeHtml(project.name)}"
+        title="Abrir site"
+      >${siteIcon()}</a>
+    `);
+  }
+
+  if (project.repository_url) {
+    links.push(`
+      <a
+        class="project-link-icon"
+        href="${escapeHtml(project.repository_url)}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Abrir GitHub de ${escapeHtml(project.name)}"
+        title="Abrir GitHub"
+      >${githubIcon()}</a>
+    `);
+  }
+
+  return links.length ? links.join("") : '<span class="muted">—</span>';
+}
+
+function renderProjectDomain(domain) {
+  if (!domain) return '<span class="muted">—</span>';
+
+  const urgent = isExpirationUrgent(domain.expiration_date);
+
+  return `
+    <strong class="project-domain-host">${escapeHtml(domain.hostname)}</strong>
+    ${
+      domain.expiration_date
+        ? `<span class="project-domain-expiry ${urgent ? "is-urgent" : ""}">
+            ${formatDatePtBr(domain.expiration_date)}
+          </span>`
+        : '<span class="project-domain-expiry muted">Sem vencimento</span>'
+    }
+  `;
+}
+
 function projectListHash(filters, overrides = {}) {
   const values = { ...filters, ...overrides };
   const params = new URLSearchParams();
@@ -157,24 +252,59 @@ async function renderProjectList(
 
       ${
         result.items.length
-          ? `<div class="project-list">
+          ? `<div class="project-list" role="table" aria-label="Projetos">
+              <div class="project-table-header" role="row">
+                <div role="columnheader">ID</div>
+                <div role="columnheader">Nome do Projeto</div>
+                <div role="columnheader">Status</div>
+                <div role="columnheader">Links</div>
+                <div role="columnheader">Domínio</div>
+              </div>
               ${result.items
                 .map(
                   (project) => `
-                    <a class="project-row" href="#/projects/${encodeURIComponent(project.id)}">
-                      <div class="project-id">${escapeHtml(project.id)}</div>
-                      <div>
-                        <strong>${escapeHtml(project.name)}</strong>
-                        ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
-                        ${project.technologies.length ? `<span>${project.technologies.slice(0, 3).map((item) => escapeHtml(item.name)).join(" · ")}</span>` : ""}
+                    <div class="project-row" role="row">
+                      <div class="project-cell project-number-cell" data-label="ID" role="cell">
+                        ${escapeHtml(project.project_number ?? "—")}
                       </div>
-                      <div>${escapeHtml(project.category?.name || "Categoria indisponível")}</div>
-                      <div><span class="status-badge">${escapeHtml(project.status?.name || "Status indisponível")}</span></div>
-                    </a>
+
+                      <div class="project-cell project-name-cell" data-label="Nome do Projeto" role="cell">
+                        <a class="project-name-link" href="#/projects/${encodeURIComponent(project.id)}">
+                          ${escapeHtml(project.name)}
+                        </a>
+                        ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
+                      </div>
+
+                      <div class="project-cell" data-label="Status" role="cell">
+                        <select
+                          class="quick-status-select"
+                          data-project-id="${escapeHtml(project.id)}"
+                          data-previous-value="${escapeHtml(project.status_id)}"
+                          aria-label="Alterar status de ${escapeHtml(project.name)}"
+                        >
+                          ${options.statuses
+                            .filter((status) => QUICK_STATUS_CODES.has(status.code))
+                            .map(
+                              (status) =>
+                                `<option value="${escapeHtml(status.id)}" ${project.status_id === status.id ? "selected" : ""}>${escapeHtml(status.name)}</option>`
+                            )
+                            .join("")}
+                        </select>
+                      </div>
+
+                      <div class="project-cell project-links-cell" data-label="Links" role="cell">
+                        ${renderProjectLinks(project)}
+                      </div>
+
+                      <div class="project-cell project-domain-cell" data-label="Domínio" role="cell">
+                        ${renderProjectDomain(project.domain)}
+                      </div>
+                    </div>
                   `
                 )
                 .join("")}
             </div>
+            <p id="project-list-error" class="error-message list-inline-error" role="alert"></p>
             ${
               result.totalPages > 1
                 ? `<nav class="pagination" aria-label="Paginação de projetos">
@@ -191,6 +321,32 @@ async function renderProjectList(
             </section>`
       }
     `;
+
+    const listErrorElement = container.querySelector("#project-list-error");
+
+    container.querySelectorAll(".quick-status-select").forEach((select) => {
+      select.addEventListener("change", async () => {
+        const previousValue = select.dataset.previousValue;
+        const projectId = select.dataset.projectId;
+
+        select.disabled = true;
+        if (listErrorElement) listErrorElement.textContent = "";
+
+        try {
+          await updateProject(uid, projectId, { status_id: select.value });
+          select.dataset.previousValue = select.value;
+        } catch (error) {
+          console.error("Quick status update failed", error);
+          select.value = previousValue;
+          if (listErrorElement) {
+            listErrorElement.textContent =
+              error.message || "Não foi possível alterar o status do projeto.";
+          }
+        } finally {
+          select.disabled = false;
+        }
+      });
+    });
 
     container.querySelector("#project-filters").addEventListener("submit", (event) => {
       event.preventDefault();
