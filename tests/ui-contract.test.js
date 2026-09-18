@@ -25,7 +25,12 @@ test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
   assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
   assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
+  assert.match(main, /class="header-links-menu"/);
+  assert.match(main, /class="header-links-trigger"/);
+  assert.match(main, /header-links-arrow/);
   assert.match(main, /id="refresh-workspace"/);
+  assert.match(main, /header-refresh-icon/);
+  assert.match(main, /is-refreshing/);
   assert.match(main, /id="connection-state"/);
   assert.match(main, /Sincronizando/);
   assert.match(main, /formatMetrics/);
@@ -43,6 +48,8 @@ test("Eslava branding is reused in shell and loading states", () => {
   assert.match(styles, /--color-brand:/);
   assert.match(styles, /\.brand-logo/);
   assert.match(styles, /\.app-loading-logo/);
+  assert.match(styles, /\.header-links-popover/);
+  assert.match(styles, /header-refresh-spin/);
 });
 
 test("authenticated shell exposes keyboard skip navigation", () => {
