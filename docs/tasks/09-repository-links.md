@@ -2,7 +2,7 @@
 
 ## TASK-061 — Localizar repositórios no GitHub e vincular aos projetos
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1
 
 ### Objetivo
@@ -97,4 +97,4 @@ O vínculo `RPG Educacional 2.0 → abnereslava/rpg_animais` foi confirmado expl
 - [x] atualização idempotente foi implementada para URLs confirmadas;
 - [x] projetos sem correspondência ficaram explicitamente registrados;
 - [x] nenhum projeto recebeu repository URL sem evidência suficiente;
-- [ ] execução confirmada no Firestore real após bootstrap da conta principal.
+- [x] execução confirmada no Firestore real após bootstrap da conta principal.
