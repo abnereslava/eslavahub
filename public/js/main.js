@@ -288,7 +288,7 @@ async function renderAuthenticatedRoute() {
       client: query.get("client") || "",
       technologyId: query.get("technologyId") || "",
       hasOpenPending: query.get("hasOpenPending") === "1",
-      sort: query.get("sort") || "project-name-asc",
+      sort: query.has("sort") ? query.get("sort") : null,
       page: Number(query.get("page") || 1)
     });
     return;
