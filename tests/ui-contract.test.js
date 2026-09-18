@@ -53,6 +53,9 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /quick-status-select/);
   assert.match(projects, /toggle-advanced-filters/);
   assert.match(projects, /project-links-inner/);
+  assert.match(projects, /search_console_url/);
+  assert.match(projects, /github-mark/);
+  assert.match(projects, /search-console-mark/);
   assert.match(projects, /renderProjectDomain/);
   assert.match(projects, /status-cycle/);
   assert.match(projects, /class="unstyled-link"/);
