@@ -6,8 +6,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 .section-heading h2,
@@ -20,29 +20,32 @@
 }
 
 .pending-sheet-heading {
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
 }
 
 .pending-quick-add {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
 }
 
 .pending-quick-add input {
   width: 100%;
-  min-height: 38px;
-  padding: 8px 10px;
-  color: #111827;
-  background: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  min-height: var(--control-default);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text-strong);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
   outline: none;
 }
 
-.pending-quick-add input:focus {
-  border-color: #6b7280;
+.pending-quick-add input:focus,
+.pending-inline-input:focus,
+.pending-inline-select:focus {
+  background: var(--color-surface);
+  border-color: var(--color-focus);
   box-shadow: 0 0 0 3px rgb(107 114 128 / 12%);
 }
 
@@ -50,14 +53,14 @@
   grid-column: 1 / -1;
   min-height: 0;
   margin: 0;
-  font-size: 0.82rem;
+  font-size: var(--font-size-label);
 }
 
 .pending-sheet {
   overflow-x: auto;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 }
 
 .pending-sheet-header,
@@ -77,10 +80,10 @@
 }
 
 .pending-sheet-header {
-  color: #6b7280;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  background: var(--color-surface-subtle);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-caption);
   font-weight: 800;
   letter-spacing: 0.035em;
   text-transform: uppercase;
@@ -89,9 +92,9 @@
 .pending-sheet-header > div {
   display: flex;
   align-items: center;
-  min-height: 34px;
-  padding: 7px 8px;
-  border-right: 1px solid #eef0f2;
+  min-height: var(--control-compact);
+  padding: var(--space-2);
+  border-right: 1px solid var(--color-border-subtle);
 }
 
 .pending-sheet-header > div:last-child {
@@ -99,7 +102,7 @@
 }
 
 .pending-sheet-row {
-  border-bottom: 1px solid #eef0f2;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .pending-sheet-row:last-child {
@@ -107,11 +110,11 @@
 }
 
 .pending-sheet-row:hover {
-  background: #fcfcfd;
+  background: var(--color-surface-subtle);
 }
 
 .pending-sheet-row.is-closed {
-  background: #f9fafb;
+  background: var(--color-surface-subtle);
 }
 
 .pending-sheet-cell {
@@ -119,9 +122,9 @@
   display: flex;
   align-items: center;
   min-width: 0;
-  min-height: 42px;
-  padding: 4px;
-  border-right: 1px solid #f0f1f3;
+  min-height: var(--control-default);
+  padding: var(--space-1);
+  border-right: 1px solid var(--color-border-subtle);
 }
 
 .pending-sheet-cell:last-child {
@@ -136,7 +139,7 @@
   width: 18px;
   height: 18px;
   margin: 0;
-  accent-color: #166534;
+  accent-color: var(--color-success);
   cursor: pointer;
 }
 
@@ -144,27 +147,20 @@
 .pending-inline-select {
   width: 100%;
   min-width: 0;
-  min-height: 34px;
-  padding: 6px 7px;
-  color: #1f2937;
+  min-height: var(--control-compact);
+  padding: 6px var(--space-2);
+  color: var(--color-text);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   outline: none;
-  font-size: 0.82rem;
+  font-size: var(--font-size-label);
 }
 
 .pending-inline-input:hover,
 .pending-inline-select:hover {
-  background: #f9fafb;
-  border-color: #e5e7eb;
-}
-
-.pending-inline-input:focus,
-.pending-inline-select:focus {
-  background: #fff;
-  border-color: #9ca3af;
-  box-shadow: 0 0 0 2px rgb(107 114 128 / 10%);
+  background: var(--color-surface-subtle);
+  border-color: var(--color-border);
 }
 
 .pending-description-input {
@@ -172,7 +168,7 @@
 }
 
 .pending-sheet-row.is-closed .pending-description-input {
-  color: #6b7280;
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -185,56 +181,56 @@
 }
 
 .pending-tone-pending {
-  color: #4b5563;
-  background: #f3f4f6;
-  border-color: #d1d5db;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-muted);
+  border-color: var(--color-border-strong);
 }
 
 .pending-tone-progress {
-  color: #1d4ed8;
-  background: #eff6ff;
-  border-color: #bfdbfe;
+  color: var(--color-info);
+  background: var(--color-info-surface);
+  border-color: var(--color-info-border);
 }
 
 .pending-tone-waiting {
-  color: #92400e;
-  background: #fffbeb;
-  border-color: #fde68a;
+  color: var(--color-warning);
+  background: var(--color-warning-surface);
+  border-color: var(--color-warning-border);
 }
 
 .pending-tone-completed {
-  color: #166534;
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  color: var(--color-success);
+  background: var(--color-success-surface);
+  border-color: var(--color-success-border);
 }
 
 .pending-tone-discarded {
-  color: #991b1b;
-  background: #fef2f2;
-  border-color: #fecaca;
+  color: var(--color-danger);
+  background: var(--color-danger-surface);
+  border-color: var(--color-danger-border);
 }
 
 .pending-actions-cell {
   justify-content: center;
-  gap: 5px;
+  gap: var(--space-1);
 }
 
 .pending-icon-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--control-compact);
+  height: var(--control-compact);
   padding: 0;
-  color: #6b7280;
+  color: var(--color-text-muted);
   background: transparent;
   border: 0;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
 }
 
 .pending-icon-button:hover:not(:disabled) {
-  color: #991b1b;
-  background: #fef2f2;
+  color: var(--color-danger);
+  background: var(--color-danger-surface);
 }
 
 .pending-icon-button:disabled {
@@ -254,40 +250,38 @@
 
 .pending-save-state {
   position: absolute;
-  right: 4px;
+  right: var(--space-1);
   bottom: 1px;
   min-height: 12px;
-  font-size: 0.62rem;
+  font-size: var(--font-size-caption);
   line-height: 1;
 }
 
 .pending-save-state.is-saving {
-  color: #6b7280;
+  color: var(--color-text-muted);
 }
 
 .pending-save-state.is-saved {
-  color: #166534;
+  color: var(--color-success);
 }
 
 .pending-save-state.is-error {
-  color: #b91c1c;
+  color: var(--color-danger-strong);
   font-weight: 700;
 }
 
 .pending-empty {
-  padding: 8px 0;
+  padding: var(--space-2) 0;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 768px) {
   .detail-span-2 {
     grid-column: auto;
   }
-}
 
-@media (max-width: 760px) {
   .pending-sheet {
     display: grid;
-    gap: 10px;
+    gap: var(--space-3);
     overflow: visible;
     background: transparent;
     border: 0;
@@ -301,24 +295,24 @@
     display: grid;
     grid-template-columns: 1fr;
     min-width: 0;
-    padding: 6px 12px;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
   }
 
   .pending-sheet-row:last-child {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .pending-sheet-cell {
     display: grid;
     grid-template-columns: 92px minmax(0, 1fr);
-    gap: 9px;
+    gap: var(--space-2);
     min-height: 0;
-    padding: 7px 0;
+    padding: var(--space-2) 0;
     border-right: 0;
-    border-bottom: 1px solid #f0f1f3;
+    border-bottom: 1px solid var(--color-border-subtle);
   }
 
   .pending-sheet-cell:last-child {
@@ -327,8 +321,8 @@
 
   .pending-sheet-cell::before {
     content: attr(data-label);
-    color: #6b7280;
-    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-caption);
     font-weight: 800;
     letter-spacing: 0.03em;
     text-transform: uppercase;
@@ -347,7 +341,7 @@
 
   .pending-inline-input,
   .pending-inline-select {
-    min-height: 38px;
+    min-height: var(--control-default);
   }
 
   .pending-actions-cell {
@@ -360,7 +354,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .pending-quick-add {
     grid-template-columns: 1fr;
   }
@@ -370,11 +364,10 @@
   }
 
   .pending-sheet-row {
-    padding-inline: 10px;
+    padding-inline: var(--space-2);
   }
 
   .pending-sheet-cell {
     grid-template-columns: 78px minmax(0, 1fr);
-    gap: 7px;
   }
 }
