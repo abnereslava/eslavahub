@@ -22,10 +22,16 @@
   border-radius: var(--radius-lg);
   text-decoration: none;
   box-shadow: var(--shadow-sm);
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
 }
 
 .metric-card:hover {
-  border-color: var(--color-border-strong);
+  border-color: var(--color-brand-border);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .metric-card strong {
@@ -53,6 +59,15 @@
 .metric-card:hover .metric-link-hint,
 .metric-card:focus-visible .metric-link-hint {
   opacity: 1;
+}
+
+.metric-card-neutral {
+  background: var(--color-brand-surface);
+  border-color: var(--color-brand-border);
+}
+
+.metric-card-neutral .metric-label {
+  color: var(--color-brand-strong);
 }
 
 .metric-card-info {
