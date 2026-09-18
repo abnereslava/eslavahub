@@ -103,7 +103,8 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /project-hide-menu/);
   assert.match(projects, /Ocultar/);
   assert.match(projects, /clear-hidden-statuses/);
-  assert.match(projects, /hiddenStatusCodes: \[\]/);
+  assert.match(projects, /syncHideMenuState/);
+  assert.match(projects, /input\.checked = false/);
   assert.match(projects, /hideStatus/);
   assert.match(projects, /hiddenStatusCodes/);
   assert.match(projects, /applyHiddenStatusSelection/);
