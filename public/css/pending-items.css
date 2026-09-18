@@ -101,6 +101,33 @@
   border-right: 0;
 }
 
+.pending-sort-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.pending-sort-header:hover,
+.pending-sort-header.is-active {
+  color: var(--color-brand-strong);
+}
+
+.pending-sort-indicator {
+  min-width: 9px;
+  font-size: 0.9em;
+}
+
 .pending-sheet-row {
   border-bottom: 1px solid var(--color-border-subtle);
 }
@@ -201,6 +228,43 @@
 
 .pending-date-input {
   font-variant-numeric: tabular-nums;
+}
+
+.pending-priority-cell {
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.pending-priority-cell.pending-priority-low {
+  background: #f0fdf4;
+}
+
+.pending-priority-cell.pending-priority-medium {
+  background: #fffbeb;
+}
+
+.pending-priority-cell.pending-priority-high {
+  background: #fef2f2;
+}
+
+.pending-priority-cell.pending-priority-none {
+  background: transparent;
+}
+
+.pending-priority-low .pending-priority-select {
+  color: #166534;
+  font-weight: 800;
+}
+
+.pending-priority-medium .pending-priority-select {
+  color: #92400e;
+  font-weight: 800;
+}
+
+.pending-priority-high .pending-priority-select {
+  color: #b91c1c;
+  font-weight: 800;
 }
 
 .pending-status-select {
