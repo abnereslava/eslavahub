@@ -28,8 +28,13 @@ const pendingStyles = readFileSync(
 test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
   assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
+  assert.match(main, /Google Search Console/);
   assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
+  assert.match(main, /Eslava Soluções Digitais/);
   assert.match(main, /class="header-links-menu"/);
+  assert.match(main, /github\.githubassets\.com\/favicons\/favicon\.svg/);
+  assert.match(main, /www\.google\.com\/favicon\.ico/);
+  assert.match(main, /header-links-favicon/);
   assert.match(main, /header-links-trigger/);
   assert.match(main, /header-links-arrow/);
   assert.match(main, /mouseenter/);
