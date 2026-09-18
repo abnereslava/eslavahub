@@ -50,6 +50,7 @@ test("Eslava branding is reused in shell and loading states", () => {
   assert.match(styles, /\.app-loading-logo/);
   assert.match(styles, /\.header-links-popover/);
   assert.match(styles, /header-refresh-spin/);
+  assert.match(styles, /\.connection-state\[hidden\]/);
 });
 
 test("authenticated shell exposes keyboard skip navigation", () => {
@@ -79,6 +80,8 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /status-cycle/);
   assert.match(projects, /portfolio_visible/);
   assert.match(projects, /portfolio-seal/);
+  assert.match(projects, /project-pending-dot/);
+  assert.match(projects, /has_open_pending/);
   assert.match(projects, /PAUSED/);
   assert.match(projects, /class="unstyled-link"/);
 });
