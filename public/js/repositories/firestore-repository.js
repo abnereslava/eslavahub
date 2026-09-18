@@ -43,6 +43,27 @@ function snapshotItems(snapshot) {
   return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
 }
 
+function valuesEqual(currentValue, nextValue) {
+  if (Array.isArray(currentValue) && Array.isArray(nextValue)) {
+    return (
+      currentValue.length === nextValue.length &&
+      currentValue.every((value, index) => value === nextValue[index])
+    );
+  }
+
+  return currentValue === nextValue;
+}
+
+function cachedDocumentMatches(uid, collectionName, id, data) {
+  const cached = listCache.get(cacheKey(uid, collectionName));
+  if (!cached || cached.expiresAt <= Date.now()) return false;
+
+  const item = cached.items.find((candidate) => candidate.id === id);
+  if (!item) return false;
+
+  return Object.entries(data).every(([field, value]) => valuesEqual(item[field], value));
+}
+
 function clearFirestoreSessionCache(uid = null) {
   if (!uid) {
     listCache.clear();
@@ -198,14 +219,21 @@ class FirestoreRepository {
   }
 
   async update(uid, id, data) {
+    const cleanData = removeUndefinedValues(data);
+
+    if (cachedDocumentMatches(uid, this.collectionName, id, cleanData)) {
+      return false;
+    }
+
     await updateDoc(
       this.documentRef(uid, id),
-      removeUndefinedValues({
-        ...data,
+      {
+        ...cleanData,
         updated_at: serverTimestamp()
-      })
+      }
     );
     this.invalidateCache(uid);
+    return true;
   }
 
   async remove(uid, id) {
