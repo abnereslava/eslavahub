@@ -117,11 +117,11 @@ Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 ## Progresso
 
-Backlog atual: **48 tasks**.
+Backlog atual: **60 tasks**, sendo 48 do MVP funcional e 12 do marco separado de redesign visual.
 
 - 14 concluídas;
 - 33 em progresso;
-- 1 ainda não iniciada.
+- 13 ainda não iniciadas.
 
 A única task ainda não iniciada é a suíte de testes end-to-end dos fluxos principais. A maioria das tasks em progresso já possui implementação e aguarda validação em navegador contra Firebase Authentication e Firestore reais.
 
@@ -140,6 +140,8 @@ Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 - [Plano de migração](docs/MIGRATION_PLAN.md)
 - [Desenvolvimento local](docs/DEVELOPMENT.md)
 - [Configuração Firebase](docs/SETUP_FIREBASE.md)
+- [Plano de redesign visual](docs/UX_REDESIGN_PLAN.md)
+- [Tasks do redesign visual](docs/tasks/08-redesign-visual.md)
 
 ## Estado do projeto
 
