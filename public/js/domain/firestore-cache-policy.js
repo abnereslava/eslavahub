@@ -51,6 +51,19 @@ function clearCollectionSync(uid, collectionName) {
   }
 }
 
+function clearUserSyncState(uid) {
+  try {
+    const prefix = `${STORAGE_PREFIX}:${uid}:`;
+
+    for (let index = window.localStorage.length - 1; index >= 0; index -= 1) {
+      const key = window.localStorage.key(index);
+      if (key?.startsWith(prefix)) window.localStorage.removeItem(key);
+    }
+  } catch {
+    // No-op when localStorage is unavailable.
+  }
+}
+
 function collectionTtlMs(collectionName) {
   return COLLECTION_TTL_MS[collectionName] ?? DEFAULT_TTL_MS;
 }
@@ -73,6 +86,7 @@ function isCachedCollectionComplete(uid, collectionName, count) {
 
 export {
   clearCollectionSync,
+  clearUserSyncState,
   collectionTtlMs,
   isCachedCollectionComplete,
   isCollectionSyncFresh,
