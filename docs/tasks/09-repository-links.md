@@ -2,43 +2,99 @@
 
 ## TASK-061 — Localizar repositórios no GitHub e vincular aos projetos
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P1
 
 ### Objetivo
 
 Pesquisar, na conta GitHub conectada, quais repositórios correspondem aos projetos cadastrados no EslavaHub e preencher o campo `repository_url` dos projetos corretos.
 
-### Escopo
+## Resultado do inventário
 
-- listar os repositórios acessíveis da conta;
-- comparar nomes de repositório com nomes e aliases dos projetos;
-- confirmar correspondências por README, descrição, deploy/homepage ou conteúdo quando o nome sozinho for ambíguo;
-- cadastrar a URL canônica do repositório em cada projeto correspondente;
-- preservar links já cadastrados quando corretos;
-- não inventar correspondências quando houver dúvida.
+Foram inventariados os repositórios pertencentes à conta GitHub conectada e cruzados com os 27 projetos legados.
 
-### Estratégia
+### Já possuíam vínculo
 
-1. coletar os projetos atuais do EslavaHub;
-2. listar repositórios GitHub acessíveis;
-3. gerar correspondências exatas e prováveis;
-4. validar correspondências ambíguas;
-5. aplicar atualização idempotente no usuário dono dos projetos;
-6. registrar quais projetos continuam sem repositório localizado.
+| Projeto | Repositório |
+| --- | --- |
+| Galeria da Fé TCG | `abnereslava/galeria_da_fe_tcg` |
+| DrakenBlood RPG | `abnereslava/DarkenbloodRPG` |
+| Tabletop Educativo | `abnereslava/TabletopEducativo` |
+| Bloqueador de teclas | `abnereslava/BloqueadorTeclas` |
+| VisualStudioMaker | `abnereslava/VisualStudioMaker` |
 
-### Restrições
+### Novos vínculos confirmados
 
-- não alterar `deploy_url`;
-- não substituir repository URL já correta;
-- não associar forks/repositórios de terceiros sem confirmação;
-- não usar semelhança de nome como única evidência em casos ambíguos;
-- a atualização deve poder ser executada mais de uma vez sem duplicar nem corromper dados.
+| Projeto | Repositório |
+| --- | --- |
+| Eslava Soluções Digitais | `abnereslava/eslava_solucoes_digitais` |
+| Liscano Faz•Tudo | `abnereslava/Liscano-Faz-Tudo` |
+| Cristalizando | `abnereslava/landingpage_cristalizando` |
+| RPG Educacional | `abnereslava/rpg_perguntasv3` |
+| Corrida Educacional | `abnereslava/race_gamev2` |
+| Duelo Educacional | `abnereslava/duel_game` |
+| Festa de Aniversário Vicente | `abnereslava/festa-vicente` |
+| Gerenciador RPG Policial | `abnereslava/gerenciador_rpg_policial` |
+| IBV Pinhais | `abnereslava/LandingPageIBVPinhais` |
+| AvaliaTrilhas | `abnereslava/avaliatrilhas` |
+| Blizpay | `abnereslava/Blizpay` |
+| Dostais | `abnereslava/appdobb` |
+| Selah | `abnereslava/SelahApp` |
+| To doOS | `abnereslava/RotinaOS` |
+| Vallor.nest | `abnereslava/Gest-o-Financeira` |
+| Teacher Invest | `abnereslava/landingpage_teacherinvest` |
+| Recreaeduca | `abnereslava/recreaeduca` |
+| Sara Santos Nutricionista | `abnereslava/landingpage_sara_nutricionista` |
 
-### Critérios de aceite
+### Sem vínculo automático
 
-- [ ] repositórios acessíveis foram inventariados;
-- [ ] correspondências foram documentadas;
-- [ ] URLs confirmadas foram cadastradas nos projetos corretos;
-- [ ] projetos sem correspondência ficaram explicitamente registrados;
-- [ ] nenhum projeto recebeu repository URL sem evidência suficiente.
+| Projeto | Motivo |
+| --- | --- |
+| Gerenciador Manutenções Carro | nenhum repositório correspondente localizado |
+| Klein Holtz | nenhum repositório correspondente localizado |
+| RPG Educacional 2.0 | `rpg_animais` é plausível, mas não há evidência suficiente para assumir que é o mesmo projeto |
+| Teacher Chell | nenhum repositório correspondente localizado |
+
+## Implementação
+
+Arquivos:
+
+```text
+public/js/data/project-repository-links.js
+public/js/services/repository-link-enrichment-service.js
+```
+
+O enriquecimento roda durante `initializeUserWorkspace()`, depois da migração legada.
+
+Regras:
+
+- executa apenas para o UID dono dos projetos migrados;
+- localiza o projeto pela chave de migração e possui fallback por nome;
+- preenche somente `repository_url` vazio;
+- nunca sobrescreve um repository URL já cadastrado;
+- pode ser executado repetidamente sem duplicar ou corromper dados.
+
+Após o próximo bootstrap bem-sucedido da conta principal, o resultado esperado é:
+
+- **23 projetos com repository URL**;
+- **4 projetos sem repository URL confirmado**.
+
+## Evidências usadas
+
+Foram utilizadas, conforme o projeto:
+
+- correspondência exata do nome do repositório;
+- caminho do deploy GitHub Pages, que identifica diretamente o repositório;
+- homepage do repositório igual ao deploy cadastrado;
+- descrição do repositório coerente com a finalidade do projeto.
+
+Não foi usada semelhança de nome isolada para o caso ambíguo `RPG Educacional 2.0`.
+
+## Critérios de aceite
+
+- [x] repositórios acessíveis foram inventariados;
+- [x] correspondências foram documentadas;
+- [x] atualização idempotente foi implementada para URLs confirmadas;
+- [x] projetos sem correspondência ficaram explicitamente registrados;
+- [x] nenhum projeto recebeu repository URL sem evidência suficiente;
+- [ ] execução confirmada no Firestore real após bootstrap da conta principal.
