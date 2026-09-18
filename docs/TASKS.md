@@ -19,8 +19,8 @@ Prioridades: `P0` essencial, `P1` necessária ao MVP e `P2` melhoria importante.
 
 ## Progresso atual
 
-- **DONE:** 23/61
-- **IN PROGRESS:** 37/61
+- **DONE:** 24/61
+- **IN PROGRESS:** 36/61
 - **TODO:** 1/61
 
 O núcleo funcional do MVP já está implementado em código: modelos Firestore, projetos, cadastros auxiliares, pendências, domínios, dashboard, busca, filtros, ordenação e paginação. Testes unitários e lint passam no GitHub Actions.
@@ -142,7 +142,7 @@ Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 - [x] TASK-053 — Unificar componentes de interação — **DONE**
 - [x] TASK-054 — Redesenhar shell e navegação — **DONE**
 - [x] TASK-055 — Redesenhar visualmente Dashboard — **DONE**
-- [ ] TASK-056 — Refinar tabela e toolbar de Projetos — **IN PROGRESS**
+- [x] TASK-056 — Refinar tabela e toolbar de Projetos — **DONE**
 - [x] TASK-057 — Refinar Detalhe do Projeto — **DONE**
 - [x] TASK-058 — Harmonizar Pendências, Domínios e Cadastros — **DONE**
 - [ ] TASK-059 — Revisão responsiva e acessibilidade visual — **IN PROGRESS**
