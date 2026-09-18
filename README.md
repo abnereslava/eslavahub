@@ -71,7 +71,7 @@ users/{uid}/
 - testes unitários das regras críticas;
 - lint e CI pelo GitHub Actions.
 
-Os fluxos que dependem do Firebase real ainda precisam de validação end-to-end antes de serem considerados concluídos no backlog.
+Os fluxos principais foram validados manualmente em navegador contra Firebase Authentication e Cloud Firestore reais.
 
 ## Dados iniciais
 
@@ -119,11 +119,11 @@ Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 Backlog atual: **61 tasks**, sendo 48 do MVP funcional, 12 do marco separado de redesign visual e 1 de enriquecimento de dados.
 
-- 24 concluídas;
-- 36 em progresso;
+- 60 concluídas;
+- 0 em progresso;
 - 1 ainda não iniciada.
 
-O redesign visual já concluiu auditoria, tokens, tipografia, spacing, componentes-base, shell, Dashboard, Projetos, Detalhe e harmonização de Pendências/Domínios/Cadastros. Responsividade/acessibilidade e QA permanecem em validação final. O enriquecimento de repositórios está implementado para 24 dos 27 projetos e aguarda confirmação no Firestore real.
+O MVP funcional, o redesign visual, a validação responsiva e o enriquecimento de repositórios foram validados manualmente. A única task restante no backlog atual é a suíte E2E automatizada (`TASK-046`).
 
 ## Migração da planilha
 
@@ -150,6 +150,6 @@ Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 
 ## Estado do projeto
 
-**Fase:** núcleo do MVP publicado; migração e validação end-to-end em andamento.
+**Fase:** MVP publicado e validado manualmente.
 
-Próximo passo crítico: validar a migração no Firestore real, finalizar a allowlist das duas contas autorizadas e concluir a revisão visual mobile/end-to-end.
+Próximo passo técnico: implementar a suíte E2E automatizada dos fluxos principais (`TASK-046`).
