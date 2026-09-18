@@ -11,6 +11,7 @@ import { ensureProjectNumbers } from "./project-number-service.js";
 import { enrichProjectRepositoryLinks } from "./repository-link-enrichment-service.js";
 import { enrichProjectSearchConsoleLinks } from "./search-console-enrichment-service.js";
 import { enrichProjectPortfolioFlags } from "./portfolio-enrichment-service.js";
+import { importRepositoryPendingItems } from "./repository-pending-import-service.js";
 
 async function runFullBootstrap(uid) {
   await Promise.all([
@@ -23,6 +24,7 @@ async function runFullBootstrap(uid) {
   await enrichProjectRepositoryLinks(uid);
   await enrichProjectSearchConsoleLinks(uid);
   await enrichProjectPortfolioFlags(uid);
+  await importRepositoryPendingItems(uid);
   await ensureProjectNumbers(uid);
 }
 
@@ -61,6 +63,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "portfolio_flags_version")) {
     await enrichProjectPortfolioFlags(uid);
+  }
+
+  if (needsVersion(metadata, "repository_pending_import_version")) {
+    await importRepositoryPendingItems(uid);
   }
 
   if (needsVersion(metadata, "project_numbers_version")) {
