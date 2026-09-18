@@ -54,6 +54,7 @@ users/{uid}/
 
 - login e logout com Google;
 - bootstrap de status, categorias e tecnologias iniciais;
+- migração idempotente dos 27 projetos da planilha legada para o usuário de destino;
 - CRUD/base de persistência dos modelos do MVP;
 - cadastro, listagem, detalhe, edição, arquivamento e restauração de projetos;
 - associação de tecnologias;
@@ -126,7 +127,7 @@ A única task ainda não iniciada é a suíte de testes end-to-end dos fluxos pr
 
 ## Migração da planilha
 
-A aba principal analisada possui 27 projetos. O plano de migração preserva os dados úteis sem reutilizar IDs legados como IDs internos do Firestore; isso é especialmente importante porque existe duplicidade do ID antigo `0024`.
+A aba principal analisada possui 27 projetos. A migração está implementada no bootstrap do usuário de destino. Ela preserva dados úteis, hyperlinks, domínios e pendências estruturadas sem reutilizar IDs legados como IDs internos do Firestore; isso é especialmente importante porque existe duplicidade do ID antigo `0024`.
 
 Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 
@@ -142,6 +143,6 @@ Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 
 ## Estado do projeto
 
-**Fase:** núcleo do MVP implementado; validação end-to-end e publicação pendentes.
+**Fase:** núcleo do MVP publicado; migração e validação end-to-end em andamento.
 
-Próximo passo crítico: habilitar GitHub Pages com origem **GitHub Actions**, autorizar `abnereslava.github.io` no Firebase Authentication e validar o app publicado contra o Firestore real.
+Próximo passo crítico: validar a migração no Firestore real, finalizar a allowlist das duas contas autorizadas e concluir a revisão visual mobile/end-to-end.
