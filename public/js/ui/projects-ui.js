@@ -154,7 +154,7 @@ function isExpirationUrgent(value) {
 }
 
 const WEB_LINK_ICON_DATA_URI =
-  "data:image/webp;base64,UklGRo4AAABXRUJQVlA4TIEAAAAvL8ALEGDURpKjpTb8YcXuuvicm4mafwZuGykqLB4s7x8OfjHjnWCKTMR3gt9BErVZvWnZBlOl4FT8GC1QgwUNxncM3gl9BEjVZvWnZBlOl4FT8GC1QgwUNxncM3gkA";
+  "data:image/webp;base64,UklGRo4AAABXRUJQVlA4TIEAAAAvL8ALEGDURpKjpTb8YcXuuvicm4mafwZuGykqLB4s7x8OfjHjnWCKTMR3gt9BErVZvWnZBlOlTdVdtTGWd1QZFuBostQU1RqaeGgW0eXFRBQHELfySvYGsHl7POMRft7xdcWv29vvI3xf8+cGfi7h5x5+ruLn9hX3ApnA77UfxgMA";
 const GITHUB_FAVICON_URL = "https://github.githubassets.com/favicons/favicon.svg";
 const SEARCH_CONSOLE_ICON_URL =
   "https://www.gstatic.com/search-console/scfe/logo_search_console.svg";
