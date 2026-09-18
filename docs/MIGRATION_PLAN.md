@@ -1,47 +1,43 @@
-# Plano de Migração da Planilha — EslavaHub
+# Migração da Planilha — EslavaHub
 
-**Fonte analisada:** `Sites e aplicativos criados.xlsx`  
+**Fonte:** `Sites e aplicativos criados.xlsx`  
 **Aba principal:** `Todos`  
-**Registros encontrados:** 27 projetos
+**Projetos:** 27  
+**Estado:** implementada como migração idempotente no bootstrap do usuário-alvo
 
-Este documento define como os dados atuais da planilha deverão chegar ao EslavaHub sem transformar os identificadores e convenções legados em regras estruturais do novo sistema.
+## Estratégia implementada
 
-## 1. Estratégia escolhida
+A migração é executada automaticamente após o bootstrap de categorias, status e tecnologias, exclusivamente para o UID autorizado como destinatário dos dados.
 
-A migração inicial será feita por **script único assistido**, executado somente depois que Authentication, Security Rules e CRUD do Firestore forem validados no ambiente real.
+Arquivos:
 
-O importador automático permanente não faz parte do MVP.
+```text
+public/js/data/legacy-projects.js
+public/js/services/legacy-migration-service.js
+```
 
-Antes da execução definitiva, o script deverá gerar uma prévia/relatório com:
+A migração:
 
-- projetos reconhecidos;
-- linhas com informação incompleta;
-- IDs legados duplicados;
-- datas que não puderam ser interpretadas;
-- campos sem mapeamento automático;
-- registros que exigem revisão manual.
+- cria os 27 projetos com IDs internos gerados pelo Firestore;
+- preserva o número antigo em `legacy_id`;
+- utiliza `legacy_import_key` para impedir duplicações;
+- reaproveita projeto já existente quando houver correspondência exata de nome;
+- preserva a plataforma de deploy em `legacy_deploy_provider`;
+- migra hyperlinks confirmados como `repository_url` ou `deploy_url`;
+- cria domínios e datas de vencimento quando disponíveis;
+- importa as pendências estruturadas encontradas na aba individual do projeto Sara Santos Nutricionista;
+- não transforma observações rápidas genericamente em pendências.
 
-## 2. Dados iniciais extraídos da planilha
+## IDs legados
 
-### Categorias
+Há dois projetos com o ID legado `0024`:
 
-- `Aplicação WEB`
-- `Jogo`
-- `Landing Page`
-- `Plataforma web`
-- `Programa`
+- Recreaeduca;
+- Teacher Chell.
 
-Essas categorias são inicializadas automaticamente no primeiro bootstrap do usuário.
+Esse número não é usado como document ID. Os dois projetos recebem IDs Firestore independentes e mantêm `legacy_id = "0024"` apenas como metadado.
 
-### Tecnologias encontradas
-
-- `Html`
-- `Python`
-- `Typescript`
-
-Essas tecnologias também são inicializadas automaticamente.
-
-### Status legados
+## Status
 
 | Planilha | EslavaHub |
 | --- | --- |
@@ -51,98 +47,44 @@ Essas tecnologias também são inicializadas automaticamente.
 | `Finalizada` | `FINISHED` |
 | `Abandonada` | `ABANDONED` |
 
-`PAUSED` existe no EslavaHub, mas não foi encontrado como status na planilha analisada.
+## Valores vazios
 
-## 3. IDs
+Células vazias e o marcador `-` não são gravados como texto nos campos opcionais. Eles viram `null` ou lista vazia conforme o campo.
 
-O número da planilha é **ID legado**, não ID interno do EslavaHub.
+## Hyperlinks
 
-Foi identificada duplicidade do ID legado `0024`. Por isso:
+Os hyperlinks incorporados no arquivo original foram analisados separadamente do texto visível da célula.
 
-- o ID interno continua sendo gerado automaticamente pelo Firestore;
-- o importador nunca deve usar o número antigo como `documentId`;
-- o número legado pode ser mantido no relatório de migração ou em metadado auxiliar do importador;
-- duplicidades de ID antigo não bloqueiam a criação de projetos distintos.
+Regras aplicadas:
 
-## 4. Mapeamento de colunas
+- URLs `github.com` confirmadas como repositório são armazenadas em `repository_url`;
+- URLs públicas de GitHub Pages, Vercel, Cloudflare Workers/Pages e domínios confirmados são armazenadas em `deploy_url`;
+- a plataforma indicada pela coluna `Deploy` é preservada como metadado legado;
+- nenhum nome de plataforma é convertido artificialmente em URL.
 
-| Planilha | Destino no EslavaHub | Regra |
-| --- | --- | --- |
-| `Nº` | referência legada de migração | nunca usar como ID Firestore |
-| `Categoria` | `Project.category_id` | resolver pelo nome em `categories` |
-| `Nome/link` | `Project.name` | nome visível; eventual hyperlink deve ser tratado separadamente |
-| `Cliente` | `Project.client_name` | `-` e vazio viram `null` |
-| `Status` | `Project.status_id` | mapear pela tabela de status deste documento |
-| `Deploy` | revisão de migração | valores atuais representam principalmente plataforma, não URL pública |
-| `Ling.` | `Project.technology_ids` | resolver/criar tecnologia correspondente |
-| `Domínio` | `Domain.hostname` | criar somente quando houver domínio válido |
-| `Vencimeto` | `Domain.expiration_date` | converter para `YYYY-MM-DD`; revisar valores numéricos Excel |
-| `Observação rápida` | `Project.quick_notes` | `-` e vazio viram `null` |
+## Datas de domínio
 
-## 5. Repositório e deploy
+Datas foram normalizadas para `YYYY-MM-DD`. O valor serial Excel presente em Teacher Chell foi convertido de forma determinística antes de ser incluído no dataset.
 
-A estrutura atual da aba `Todos` não fornece em texto simples uma coluna separada de URL de repositório e URL pública de deploy.
+## Pendências
 
-O processo de migração deverá:
+Somente pendências estruturadas no formato `Estado / Onde / O que` foram importadas automaticamente.
 
-1. verificar se `Nome/link` contém hyperlink no arquivo original;
-2. somente preencher `repository_url` quando uma URL de repositório puder ser confirmada;
-3. não transformar valores como `Vercel`, `Github Pages`, `Cloudflare Pages` ou `Greatpages` em `deploy_url`;
-4. manter `deploy_url = null` quando a URL pública não puder ser confirmada;
-5. permitir complementação posterior pela interface do EslavaHub.
+Na fonte analisada, a aba individual de Sara Santos Nutricionista contém esse conjunto estruturado. Estados foram convertidos para os códigos internos do EslavaHub, incluindo `COMPLETED` e `WAITING`.
 
-## 6. Datas de domínio
+## Idempotência
 
-Datas devem ser convertidas para uma representação de data sem horário (`YYYY-MM-DD`).
+Cada projeto, domínio e pendência migrados recebe uma chave de origem estável. Antes de criar um registro, a migração verifica se a chave já existe.
 
-O importador deve aceitar:
+Isso permite recarregar o app ou repetir o bootstrap sem criar duplicatas.
 
-- texto no formato apresentado pela planilha;
-- número serial de data do Excel;
-- campo vazio.
+## Validação pós-migração
 
-Qualquer valor que não puder ser convertido de forma inequívoca deve ser sinalizado no relatório, sem inventar uma data.
+Após o primeiro login do usuário-alvo no ambiente publicado:
 
-## 7. Valores vazios
-
-Os valores abaixo devem ser tratados como ausência de informação:
-
-- célula vazia;
-- `-` quando usado apenas como marcador de ausência.
-
-Não devem ser gravados `"-"` nos campos opcionais do Firestore.
-
-## 8. Pendências
-
-A aba `Todos` possui observações rápidas, mas nem toda observação representa necessariamente uma pendência estruturada.
-
-Por isso, a migração automática não deve transformar todas as observações em `PendingItem`.
-
-Pendências existentes em abas individuais poderão ser importadas em uma etapa específica, usando a estrutura `Estado / Onde / O que` quando disponível.
-
-## 9. Ordem da migração
-
-```text
-1. autenticar usuário
-2. inicializar categorias, status e tecnologias
-3. ler planilha
-4. normalizar valores vazios
-5. validar/marcar IDs legados duplicados
-6. resolver categoria, status e tecnologia
-7. criar Project com ID Firestore automático
-8. criar Domain quando aplicável
-9. gerar relatório de itens pendentes de revisão
-10. validar contagem e amostra dos dados no EslavaHub
-```
-
-## 10. Critério de sucesso
-
-A migração estará pronta para execução quando:
-
-- o CRUD real no Firestore estiver validado;
-- as Security Rules estiverem confirmadas com o usuário autenticado;
-- o script possuir modo de prévia sem escrita;
-- nenhuma linha for descartada silenciosamente;
-- IDs legados duplicados não colidirem;
-- datas ambíguas forem sinalizadas;
-- a quantidade de projetos importados puder ser confrontada com os 27 registros da fonte.
+1. confirmar que aparecem 27 projetos migrados;
+2. conferir amostras de projeto com repositório, deploy, domínio e tecnologia;
+3. conferir os dois projetos de ID legado `0024`;
+4. conferir o domínio de Teacher Chell;
+5. conferir as pendências de Sara Santos Nutricionista;
+6. validar que um segundo carregamento não cria registros adicionais.
