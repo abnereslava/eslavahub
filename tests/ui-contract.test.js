@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { URL } from "node:url";
 
 const main = readFileSync(new URL("../public/js/main.js", import.meta.url), "utf8");
 const projects = readFileSync(
