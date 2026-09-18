@@ -124,6 +124,14 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
           >
             Search Console
           </a>
+          <a
+            class="button button-secondary button-small header-tool-link"
+            href="https://eslavasolucoesdigitais.com.br"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Eslava
+          </a>
         </nav>
         <div class="account-identity">
           <strong>${displayName}</strong>
