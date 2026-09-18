@@ -153,35 +153,48 @@ function isExpirationUrgent(value) {
   return expiration <= threeMonthsFromNow;
 }
 
+const WEB_LINK_ICON_DATA_URI =
+  "data:image/webp;base64,UklGRo4AAABXRUJQVlA4TIEAAAAvL8ALEGDURpKjpTb8YcXuuvicm4mafwZuGykqLB4s7x8OfjHjnWCKTMR3gt9BErVZvWnZBlOl4FT8GC1QgwUNxncM3gl9BEjVZvWnZBlOl4FT8GC1QgwUNxncM3gkA";
+const GITHUB_FAVICON_URL = "https://github.githubassets.com/favicons/favicon.svg";
+const SEARCH_CONSOLE_ICON_URL =
+  "https://www.gstatic.com/search-console/scfe/logo_search_console.svg";
+
 function siteIcon() {
   return `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="9"></circle>
-      <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
-    </svg>
+    <img
+      class="project-link-image project-link-web-image"
+      src="${WEB_LINK_ICON_DATA_URI}"
+      alt=""
+      width="20"
+      height="20"
+      aria-hidden="true"
+    />
   `;
 }
 
 function githubIcon() {
   return `
-    <svg class="github-mark" viewBox="0 0 16 16" aria-hidden="true">
-      <path
-        fill="currentColor"
-        stroke="none"
-        d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.71.4.08.55-.18.55-.39 0-.19-.01-.84-.01-1.52-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.53-.01-.54.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.21-3.64-.91-3.64-4.01 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.5 7.5 0 0 1 8 3.89c.68 0 1.36.09 2 .27 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.11-1.87 3.8-3.65 4.01.29.25.54.74.54 1.51 0 1.09-.01 1.97-.01 2.24 0 .22.15.47.55.39A8.02 8.02 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z"
-      ></path>
-    </svg>
+    <img
+      class="project-link-image project-link-github-image"
+      src="${GITHUB_FAVICON_URL}"
+      alt=""
+      width="20"
+      height="20"
+      aria-hidden="true"
+    />
   `;
 }
 
 function searchConsoleIcon() {
   return `
-    <svg class="search-console-mark" viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="16" rx="3" fill="#4285f4" stroke="none"></rect>
-      <path d="M7 15.5 10 12.5l2.3 2.1L17 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-      <circle cx="17" cy="9.5" r="1.5" fill="#fff" stroke="none"></circle>
-      <rect x="7" y="7" width="5" height="1.6" rx=".8" fill="#fff" stroke="none" opacity=".9"></rect>
-    </svg>
+    <img
+      class="project-link-image project-link-console-image"
+      src="${SEARCH_CONSOLE_ICON_URL}"
+      alt=""
+      width="20"
+      height="20"
+      aria-hidden="true"
+    />
   `;
 }
 
@@ -537,6 +550,39 @@ async function renderProjectList(
     });
 
     const hideMenu = container.querySelector(".project-hide-menu");
+    const hideTrigger = hideMenu?.querySelector(".project-hide-trigger");
+    const clearHiddenButton = container.querySelector("#clear-hidden-statuses");
+    let pendingHiddenStatusCodes = [...hiddenStatusCodes];
+
+    function selectedHiddenStatusCodes() {
+      return [...(hideMenu?.querySelectorAll('input[type="checkbox"]:checked') || [])]
+        .map((input) => input.value)
+        .filter(Boolean);
+    }
+
+    function syncHideMenuState() {
+      pendingHiddenStatusCodes = selectedHiddenStatusCodes();
+      hideTrigger?.classList.toggle("is-active", pendingHiddenStatusCodes.length > 0);
+      if (clearHiddenButton) clearHiddenButton.disabled = pendingHiddenStatusCodes.length === 0;
+    }
+
+    function hiddenStatusSelectionChanged() {
+      const before = [...hiddenStatusCodes].sort().join("|");
+      const after = [...pendingHiddenStatusCodes].sort().join("|");
+      return before !== after;
+    }
+
+    function applyHiddenStatusSelection() {
+      if (!hiddenStatusSelectionChanged()) return;
+
+      const searchValue =
+        container.querySelector('#project-search input[name="search"]')?.value.trim() || "";
+
+      window.location.hash = projectListHash(filters, {
+        search: searchValue,
+        hiddenStatusCodes: pendingHiddenStatusCodes
+      });
+    }
 
     hideMenu?.addEventListener("pointerenter", () => {
       hideMenu.setAttribute("open", "");
@@ -558,27 +604,22 @@ async function renderProjectList(
       });
     });
 
-    container.querySelector("#clear-hidden-statuses")?.addEventListener("click", () => {
-      const searchValue =
-        container.querySelector('#project-search input[name="search"]')?.value.trim() || "";
-
-      window.location.hash = projectListHash(filters, {
-        search: searchValue,
-        hiddenStatusCodes: []
-      });
+    hideMenu?.addEventListener("toggle", () => {
+      if (!hideMenu.open) applyHiddenStatusSelection();
     });
 
-    hideMenu?.addEventListener("change", () => {
-      const searchValue =
-        container.querySelector('#project-search input[name="search"]')?.value.trim() || "";
-      const nextHiddenStatusCodes = [...hideMenu.querySelectorAll('input[type="checkbox"]:checked')]
-        .map((input) => input.value)
-        .filter(Boolean);
+    clearHiddenButton?.addEventListener("click", () => {
+      hideMenu
+        ?.querySelectorAll('input[type="checkbox"]')
+        .forEach((input) => {
+          input.checked = false;
+        });
+      syncHideMenuState();
+    });
 
-      window.location.hash = projectListHash(filters, {
-        search: searchValue,
-        hiddenStatusCodes: nextHiddenStatusCodes
-      });
+    hideMenu?.addEventListener("change", (event) => {
+      if (!event.target.matches('input[type="checkbox"]')) return;
+      syncHideMenuState();
     });
 
     const sentinel = container.querySelector("#project-infinite-sentinel");
