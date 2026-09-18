@@ -8,18 +8,30 @@ function isOptionalString(value) {
   return value === undefined || value === null || typeof value === "string";
 }
 
-function isValidHttpUrl(value) {
-  if (value === undefined || value === null || value === "") {
-    return true;
+function normalizeExternalUrl(value) {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string") throw new Error("Link deve ser texto.");
+
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  const hasProtocol = /^[a-z][a-z0-9+.-]*:/i.test(trimmed);
+  const candidate = hasProtocol ? trimmed : `https://${trimmed}`;
+  const url = new URL(candidate);
+
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new Error("Link deve usar HTTP ou HTTPS.");
   }
 
-  if (typeof value !== "string") {
-    return false;
-  }
+  return url.href;
+}
+
+function isValidHttpUrl(value) {
+  if (value === undefined || value === null || value === "") return true;
 
   try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    normalizeExternalUrl(value);
+    return true;
   } catch {
     return false;
   }
@@ -129,6 +141,7 @@ function normalizedName(value) {
 
 export {
   isValidHttpUrl,
+  normalizeExternalUrl,
   normalizeHostname,
   normalizedName,
   validateCategory,
