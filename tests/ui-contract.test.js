@@ -28,6 +28,8 @@ test("primary application routes remain available", () => {
   assert.match(main, /class="header-links-menu"/);
   assert.match(main, /header-links-trigger/);
   assert.match(main, /header-links-arrow/);
+  assert.match(main, /pointerenter/);
+  assert.match(main, /pointerleave/);
   assert.match(main, /id="refresh-workspace"/);
   assert.match(main, /header-refresh-icon/);
   assert.match(main, /M21 12a9 9/);
