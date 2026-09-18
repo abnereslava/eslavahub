@@ -807,3 +807,144 @@
   color: #9ca3af;
   background: #f9fafb;
 }
+
+
+/* Project status palette and row tint refinements */
+.status-tone-idealized {
+  color: #4b5563;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.status-tone-development {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.status-tone-functional {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.status-tone-finished {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.status-tone-abandoned {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.project-row.status-row-idealized {
+  background: #fbfbfc;
+}
+
+.project-row.status-row-development {
+  background: #fffdf7;
+}
+
+.project-row.status-row-functional {
+  background: #f8fbff;
+}
+
+.project-row.status-row-finished {
+  background: #f8fcf9;
+}
+
+.project-row.status-row-abandoned {
+  background: #fff9f9;
+}
+
+.project-row.status-row-paused {
+  background: #fffdf8;
+}
+
+.project-row.status-row-idealized:hover {
+  background: #f6f7f8;
+}
+
+.project-row.status-row-development:hover {
+  background: #fff9e8;
+}
+
+.project-row.status-row-functional:hover {
+  background: #f0f7ff;
+}
+
+.project-row.status-row-finished:hover {
+  background: #f1faf4;
+}
+
+.project-row.status-row-abandoned:hover {
+  background: #fff1f1;
+}
+
+.project-row.status-row-paused:hover {
+  background: #fff8e8;
+}
+
+/* Stable side-by-side link buttons */
+.project-links-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.project-links-inner {
+  display: grid;
+  grid-template-columns: repeat(2, 36px);
+  align-items: center;
+  gap: 8px;
+  width: 80px;
+  min-width: 80px;
+  flex: 0 0 80px;
+}
+
+.project-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0;
+  line-height: 0;
+}
+
+.project-link-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: 0 0 18px;
+}
+
+@media (max-width: 760px) {
+  .project-links-cell {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-links-cell::before {
+    grid-column: 1;
+  }
+
+  .project-links-inner {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 420px) {
+  .project-links-cell {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 8px;
+  }
+}
