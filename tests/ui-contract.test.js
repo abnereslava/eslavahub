@@ -71,6 +71,8 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /@media \(max-width: 768px\)/);
   assert.match(projectStyles, /@media \(max-width: 480px\)/);
   assert.match(projectStyles, /project-name-link:hover \.project-name-text/);
+  assert.match(projectStyles, /\.project-hide-popover/);
+  assert.match(projectStyles, /\.project-toolbar-archive/);
 });
 
 test("consolidated project interactions remain present", () => {
@@ -85,7 +87,12 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /IntersectionObserver/);
   assert.match(projects, /project-infinite-sentinel/);
   assert.match(projects, /toggle-pending-projects/);
-  assert.match(projects, /Apenas com pendências/);
+  assert.match(projects, /Com pendências/);
+  assert.match(projects, /project-hide-menu/);
+  assert.match(projects, /Ocultar/);
+  assert.match(projects, /hideStatus/);
+  assert.match(projects, /hiddenStatusCodes/);
+  assert.match(projects, /\+ Novo projeto/);
   assert.match(projects, /project-toolbar-divider/);
   assert.doesNotMatch(projects, /aria-label="Paginação de projetos"/);
   assert.doesNotMatch(projects, /compact-filter-sort/);
