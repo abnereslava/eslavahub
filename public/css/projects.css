@@ -292,17 +292,13 @@
   background: var(--color-surface-subtle);
 }
 
-.project-row .project-links-inner > .project-link-icon svg {
+.project-row .project-links-inner > .project-link-icon .project-link-image {
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin: 0;
-  flex: 0 0 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
+  flex: 0 0 20px;
+  object-fit: contain;
 }
 
 /* Compact filters */
@@ -436,6 +432,12 @@
 .project-hide-option input {
   margin: 0;
   accent-color: var(--color-brand);
+}
+
+.project-hide-option input:checked + span {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
 }
 
 .project-hide-clear {
@@ -983,16 +985,6 @@
   }
 }
 
-
-.project-row .project-links-inner > .project-link-icon .github-mark {
-  width: 19px;
-  height: 19px;
-}
-
-.project-row .project-links-inner > .project-link-icon .search-console-mark {
-  width: 20px;
-  height: 20px;
-}
 
 .project-row .project-links-inner > .project-link-console:hover {
   background: #eef6ff;
