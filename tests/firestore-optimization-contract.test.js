@@ -7,6 +7,10 @@ const firebaseConfig = readFileSync(
   new URL("../public/js/config/firebase.js", import.meta.url),
   "utf8"
 );
+const firestoreMetrics = readFileSync(
+  new URL("../public/js/domain/firestore-metrics.js", import.meta.url),
+  "utf8"
+);
 const repository = readFileSync(
   new URL("../public/js/repositories/firestore-repository.js", import.meta.url),
   "utf8"
@@ -34,6 +38,16 @@ test("repository uses cache-first reads and invalidates memory after writes", ()
   assert.match(repository, /this\.invalidateCache\(uid\)/);
   assert.match(repository, /cachedDocumentMatches/);
   assert.match(repository, /return false/);
+});
+
+test("local Firestore instrumentation tracks reads, writes and pending sync", () => {
+  assert.match(firestoreMetrics, /serverDocumentReads/);
+  assert.match(firestoreMetrics, /cacheDocumentReads/);
+  assert.match(firestoreMetrics, /writesSkipped/);
+  assert.match(firestoreMetrics, /beginPendingWrite/);
+  assert.match(firestoreMetrics, /eslavahub:firestore-write-state/);
+  assert.match(repository, /incrementMetric\("serverDocumentReads"/);
+  assert.match(repository, /incrementMetric\("writesSkipped"/);
 });
 
 test("bootstrap reads workspace metadata before legacy scans", () => {
