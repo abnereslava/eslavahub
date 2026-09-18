@@ -751,3 +751,59 @@
     gap: 4px;
   }
 }
+
+
+/* Status color system */
+.quick-status-select,
+.status-tone-neutral {
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.status-tone-idealized {
+  color: #4b5563;
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.status-tone-development {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.status-tone-functional {
+  color: #0f766e;
+  background: #f0fdfa;
+  border-color: #99f6e4;
+}
+
+.status-tone-finished {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.status-tone-paused {
+  color: #92400e;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.status-tone-abandoned {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.project-link-icon.is-disabled {
+  color: #9ca3af;
+  background: #f9fafb;
+  border-color: #eef0f2;
+  cursor: default;
+  opacity: 0.5;
+}
+
+.project-link-icon.is-disabled:hover {
+  color: #9ca3af;
+  background: #f9fafb;
+}
