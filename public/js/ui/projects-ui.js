@@ -272,6 +272,9 @@ function projectListHash(filters, overrides = {}) {
   if (values.archived) params.set("archived", "1");
   if (values.search) params.set("search", values.search);
   if (values.hasOpenPending) params.set("hasOpenPending", "1");
+  for (const code of values.hiddenStatusCodes || []) {
+    if (code) params.append("hideStatus", code);
+  }
   if (values.sort) params.set("sort", normalizedSort(values.sort));
 
   const query = params.toString();
@@ -340,6 +343,7 @@ async function renderProjectList(
     archived = false,
     search = "",
     hasOpenPending = false,
+    hiddenStatusCodes = [],
     sort = null
   } = {}
 ) {
@@ -355,6 +359,7 @@ async function renderProjectList(
       archived,
       search,
       hasOpenPending,
+      hiddenStatusCodes,
       sort: effectiveSort
     };
     const result = await queryProjects(uid, {
@@ -392,19 +397,43 @@ async function renderProjectList(
             type="button"
             aria-pressed="${hasOpenPending ? "true" : "false"}"
           >
-            Apenas com pendências
+            Com pendências
           </button>
+
+          <details class="project-hide-menu">
+            <summary class="button button-secondary project-hide-trigger">
+              <span>Ocultar</span>
+              <span class="project-hide-arrow" aria-hidden="true">▾</span>
+            </summary>
+            <div class="project-hide-popover" aria-label="Ocultar projetos por status">
+              ${result.statuses
+                .filter((status) => QUICK_STATUS_CODES.has(status.code))
+                .map(
+                  (status) => `
+                    <label class="project-hide-option">
+                      <input
+                        type="checkbox"
+                        value="${escapeHtml(status.code)}"
+                        ${hiddenStatusCodes.includes(status.code) ? "checked" : ""}
+                      />
+                      <span>${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}</span>
+                    </label>
+                  `
+                )
+                .join("")}
+            </div>
+          </details>
 
           <span class="project-toolbar-divider" aria-hidden="true">|</span>
 
           <a
-            class="button button-secondary project-toolbar-archive"
+            class="button project-toolbar-archive"
             href="${projectListHash(filters, { archived: !archived })}"
           >
             ${archived ? "Ver ativos" : "Ver arquivados"}
           </a>
 
-          <a class="button button-primary project-toolbar-new" href="#/projects/new">Novo projeto</a>
+          <a class="button button-primary project-toolbar-new" href="#/projects/new">+ Novo projeto</a>
         </div>
       </form>
 
@@ -496,6 +525,41 @@ async function renderProjectList(
       window.location.hash = projectListHash(filters, {
         search: searchValue,
         hasOpenPending: !hasOpenPending
+      });
+    });
+
+    const hideMenu = container.querySelector(".project-hide-menu");
+
+    hideMenu?.addEventListener("pointerenter", () => {
+      hideMenu.setAttribute("open", "");
+    });
+
+    hideMenu?.addEventListener("pointerleave", () => {
+      if (!hideMenu.matches(":focus-within")) hideMenu.removeAttribute("open");
+    });
+
+    hideMenu?.addEventListener("focusin", () => {
+      hideMenu.setAttribute("open", "");
+    });
+
+    hideMenu?.addEventListener("focusout", () => {
+      window.requestAnimationFrame(() => {
+        if (!hideMenu.matches(":hover, :focus-within")) {
+          hideMenu.removeAttribute("open");
+        }
+      });
+    });
+
+    hideMenu?.addEventListener("change", () => {
+      const searchValue =
+        container.querySelector('#project-search input[name="search"]')?.value.trim() || "";
+      const nextHiddenStatusCodes = [...hideMenu.querySelectorAll('input[type="checkbox"]:checked')]
+        .map((input) => input.value)
+        .filter(Boolean);
+
+      window.location.hash = projectListHash(filters, {
+        search: searchValue,
+        hiddenStatusCodes: nextHiddenStatusCodes
       });
     });
 
