@@ -50,7 +50,9 @@ function renderSignedOut() {
     } catch (error) {
       console.error("Google sign-in failed", error);
       errorElement.textContent =
-        "Não foi possível entrar com Google. Verifique a configuração do Firebase Authentication.";
+        error?.code === "auth/not-authorized"
+          ? "Esta conta Google não está autorizada a acessar o EslavaHub."
+          : "Não foi possível entrar com Google. Verifique a configuração do Firebase Authentication.";
     } finally {
       signInButton.disabled = false;
     }
