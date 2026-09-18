@@ -310,7 +310,7 @@ const LEGACY_PROJECTS = Object.freeze([
     category: "Aplicação WEB",
     name: "RPG Educacional 2.0",
     status_code: "IN_DEVELOPMENT",
-    repository_url: null,
+    repository_url: "https://github.com/abnereslava/rpg_animais",
     deploy_url: null,
     deploy_provider: null,
     client_name: null,
