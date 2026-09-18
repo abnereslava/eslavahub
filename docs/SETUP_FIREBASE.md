@@ -47,7 +47,7 @@ As rules atuais:
 - exigem que o token tenha sido obtido via Google Sign-In;
 - exigem que o UID autenticado esteja na allowlist das duas contas autorizadas;
 - permitem que cada conta autorizada acesse somente o próprio UID;
-- permitem acesso apenas às coleções usadas pelo EslavaHub: `projects`, `categories`, `statuses`, `technologies`, `domains` e `pendingItems`;
+- permitem acesso apenas às coleções usadas pelo EslavaHub: `projects`, `categories`, `statuses`, `technologies`, `domains`, `pendingItems` e `meta`;
 - negam qualquer outro caminho por padrão.
 
 O frontend e as rules aplicam a mesma allowlist de UIDs.
