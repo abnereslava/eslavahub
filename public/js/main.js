@@ -4,6 +4,7 @@ import {
   signOutCurrentUser
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
+import { clearWorkspaceSessionCache } from "./services/workspace-cache-service.js";
 import { renderCatalog } from "./ui/catalogs-ui.js";
 import { renderDashboard } from "./ui/dashboard-ui.js";
 import { renderDomainsPage } from "./ui/domains-ui.js";
@@ -219,9 +220,11 @@ window.addEventListener("hashchange", () => {
 renderAppLoading();
 
 observeAuthState(async (user) => {
+  const previousUid = currentUser?.uid || null;
   currentUser = user;
 
   if (!user) {
+    if (previousUid) clearWorkspaceSessionCache(previousUid);
     renderSignedOut();
     return;
   }
