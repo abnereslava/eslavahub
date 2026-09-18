@@ -1,6 +1,6 @@
 import { serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { projectArchivePatch, projectRestorePatch } from "../domain/state-transitions.js";
-import { validateProject } from "../domain/validation.js";
+import { normalizeExternalUrl, validateProject } from "../domain/validation.js";
 import { FirestoreRepository } from "./firestore-repository.js";
 import { USER_COLLECTIONS } from "./user-paths.js";
 
@@ -16,8 +16,8 @@ class ProjectRepository extends FirestoreRepository {
       name: data.name.trim(),
       category_id: data.category_id,
       status_id: data.status_id,
-      repository_url: data.repository_url?.trim() || null,
-      deploy_url: data.deploy_url?.trim() || null,
+      repository_url: normalizeExternalUrl(data.repository_url),
+      deploy_url: normalizeExternalUrl(data.deploy_url),
       client_name: data.client_name?.trim() || null,
       quick_notes: data.quick_notes?.trim() || null,
       technology_ids: [...new Set(data.technology_ids || [])],
@@ -31,8 +31,12 @@ class ProjectRepository extends FirestoreRepository {
 
     const payload = { ...data };
     if (typeof payload.name === "string") payload.name = payload.name.trim();
-    if (typeof payload.repository_url === "string") payload.repository_url = payload.repository_url.trim() || null;
-    if (typeof payload.deploy_url === "string") payload.deploy_url = payload.deploy_url.trim() || null;
+    if (Object.hasOwn(payload, "repository_url")) {
+      payload.repository_url = normalizeExternalUrl(payload.repository_url);
+    }
+    if (Object.hasOwn(payload, "deploy_url")) {
+      payload.deploy_url = normalizeExternalUrl(payload.deploy_url);
+    }
     if (typeof payload.client_name === "string") payload.client_name = payload.client_name.trim() || null;
     if (typeof payload.quick_notes === "string") payload.quick_notes = payload.quick_notes.trim() || null;
     if (Array.isArray(payload.technology_ids)) payload.technology_ids = [...new Set(payload.technology_ids)];
