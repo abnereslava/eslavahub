@@ -33,7 +33,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /Eslava Soluções Digitais/);
   assert.match(main, /class="header-links-menu"/);
   assert.match(main, /github\.githubassets\.com\/favicons\/favicon\.svg/);
-  assert.match(main, /www\.gstatic\.com\/search-console\/scfe\/logo_search_console\.svg/);
+  assert.match(main, /images\\.seeklogo\\.com\\/logo-png\\/62\\/1\\/google-search-console-icon-logo-png_seeklogo-624699\\.png/);
   assert.match(main, /header-links-favicon/);
   assert.match(main, /header-links-trigger/);
   assert.match(main, /header-links-arrow/);
