@@ -38,6 +38,15 @@ function renderAppLoading(message = "Carregando EslavaHub…") {
   `;
 }
 
+function updateConnectionState() {
+  const indicator = document.querySelector("#connection-state");
+  if (!indicator) return;
+
+  const offline = !navigator.onLine;
+  indicator.hidden = !offline;
+  indicator.textContent = offline ? "Offline" : "";
+}
+
 function updateActiveNavigation() {
   const section = (window.location.hash || "#/dashboard").replace(/^#\//, "").split(/[/?]/)[0] || "dashboard";
 
@@ -136,6 +145,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
             Eslava
           </a>
         </nav>
+        <span id="connection-state" class="connection-state" hidden>Offline</span>
         <button
           id="refresh-workspace"
           class="button button-secondary button-small header-refresh"
@@ -244,6 +254,9 @@ async function renderAuthenticatedRoute() {
 
   await renderProjectDetailPage(container, currentUser.uid, projectId);
 }
+
+window.addEventListener("online", updateConnectionState);
+window.addEventListener("offline", updateConnectionState);
 
 window.addEventListener("hashchange", () => {
   updateActiveNavigation();
