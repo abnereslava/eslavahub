@@ -1,7 +1,7 @@
 # Plano de otimização de leituras e escritas — Firestore
 
 **Estado:** em execução  
-**Implementação:** bootstrap versionado e cache de sessão implementados  
+**Implementação:** bootstrap versionado, cache em memória, IndexedDB persistente, cache-first e redução de writes implementados  
 **Objetivo:** reduzir leituras/escritas desnecessárias no Cloud Firestore mantendo simplicidade, consistência e funcionamento offline.
 
 ---
@@ -195,14 +195,82 @@ Isso já elimina boa parte das leituras repetidas entre Dashboard, Projetos, Det
 
 A verificação de status padrão passou a listar a coleção uma vez, alimentando também o cache da sessão, em vez de buscar cada status isoladamente.
 
+### Cache persistente oficial
+
+O Firestore agora é inicializado com:
+
+```js
+initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager()
+  })
+})
+```
+
+Os documentos ficam no IndexedDB e podem ser reutilizados entre sessões e abas.
+
+### Cache-first com TTL
+
+As coleções usam os seguintes TTLs iniciais:
+
+| Coleção | TTL |
+| --- | ---: |
+| categorias | 60 min |
+| status | 60 min |
+| tecnologias | 60 min |
+| projetos | 5 min |
+| domínios | 10 min |
+| pendências | 5 min |
+| metadata do workspace | 24 h |
+
+O `localStorage` guarda somente:
+
+```text
+timestamp da última sincronização + quantidade de documentos
+```
+
+Os dados de negócio permanecem exclusivamente no cache oficial do Firestore/IndexedDB.
+
+Antes de confiar no cache persistente, o app compara a quantidade esperada de documentos com a quantidade disponível no IndexedDB. Se estiver incompleto, volta ao servidor.
+
+### Fallback offline
+
+Quando uma leitura de servidor falha:
+
+1. tenta o IndexedDB;
+2. devolve os dados disponíveis;
+3. mantém o app utilizável offline.
+
+### Refresh manual
+
+O header possui uma ação `Atualizar`.
+
+Ela:
+
+- limpa o cache em memória;
+- invalida os timestamps locais;
+- força a próxima leitura a consultar o servidor;
+- não apaga o IndexedDB.
+
+### Indicador offline
+
+Quando `navigator.onLine` indica ausência de rede, o header mostra `Offline`.
+
+### Redução de writes
+
+`updateDoc` é ignorado quando:
+
+- a coleção está no cache de sessão;
+- o documento está presente;
+- todos os campos enviados já possuem exatamente os mesmos valores.
+
+Nenhuma leitura adicional é feita apenas para descobrir se uma escrita pode ser evitada.
+
 ## Ainda não implementado
 
-- cache persistente IndexedDB do SDK;
-- estratégia cache-first;
-- TTL persistido entre sessões;
-- indicador offline/sincronização;
-- refresh manual;
-- métricas reais de consumo.
+- métricas reais de consumo;
+- medição comparativa antes/depois no console do Firebase;
+- sincronização visual de writes pendentes além do indicador simples de offline.
 
 ---
 
@@ -606,23 +674,29 @@ Ainda poderá evoluir para um `WorkspaceStore` com snapshot explícito, caso a c
 
 Create/update/delete invalidam a coleção correspondente. Operações batch de domínio também invalidam o cache.
 
-## OTIM-05 — Persistent Firestore cache
+## OTIM-05 — Persistent Firestore cache — CONCLUÍDO
 
-Ativar `persistentLocalCache` com estratégia multi-tab.
+`persistentLocalCache` com `persistentMultipleTabManager` está ativo.
 
-## OTIM-06 — Cache-first
+## OTIM-06 — Cache-first — CONCLUÍDO
 
-Usar cache persistente antes de consultar servidor.
+Implementados:
 
-Adicionar TTL e refresh explícito.
+- TTL por coleção;
+- validação de completude do cache;
+- fallback offline;
+- refresh manual;
+- timestamps de sincronização sem duplicar dados no localStorage.
 
-## OTIM-07 — Estado offline
+## OTIM-07 — Estado offline — PARCIALMENTE CONCLUÍDO
 
-Mostrar conexão/sincronização ao usuário.
+O header indica quando o navegador está offline.
 
-## OTIM-08 — Medir novamente
+Ainda pode evoluir para mostrar writes pendentes/sincronizando.
 
-Comparar consumo antes/depois.
+## OTIM-08 — Medir novamente — PENDENTE
+
+Comparar consumo real antes/depois usando as métricas do Firebase.
 
 ---
 
@@ -630,7 +704,14 @@ Comparar consumo antes/depois.
 
 Com a base atual, uma sessão login → Dashboard → Projetos pode ficar na ordem de **~300 leituras** devido às releituras.
 
-A meta inicial razoável é reduzir esse fluxo para **menos de 100 leituras de servidor na primeira sessão** e muito menos navegação adicional dentro da mesma sessão.
+Com bootstrap versionado, cache em memória e IndexedDB cache-first, a expectativa é:
+
+- **primeiro acesso sem cache:** uma leitura inicial de cada coleção necessária;
+- **navegação adicional dentro do TTL:** zero novas leituras de servidor para as coleções já sincronizadas;
+- **reabertura do app dentro do TTL:** reutilização do IndexedDB sem nova leitura de servidor para as coleções elegíveis;
+- **bootstrap após cache aquecido:** pode ser atendido pelo metadata persistente sem nova leitura do servidor.
+
+A meta continua sendo **menos de 100 leituras de servidor na primeira sessão fria**, seguida de forte redução nas navegações e reaberturas subsequentes.
 
 Essa é uma estimativa de engenharia e deverá ser validada com métricas reais.
 
