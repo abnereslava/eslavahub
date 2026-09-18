@@ -45,6 +45,84 @@ const QUICK_STATUS_LABELS = Object.freeze({
   ABANDONED: "Abandonado"
 });
 
+const PROJECT_SORT_OPTIONS = Object.freeze([
+  ["project-name-asc", "Projeto A–Z"],
+  ["project-name-desc", "Projeto Z–A"],
+  ["client-asc", "Cliente A–Z"],
+  ["client-desc", "Cliente Z–A"],
+  ["status-asc", "Status (ordem)"],
+  ["status-desc", "Status (ordem inversa)"],
+  ["expiration-asc", "Vencimento mais próximo"],
+  ["expiration-desc", "Vencimento mais distante"],
+  ["updated-desc", "Modificado recentemente"],
+  ["updated-asc", "Modificado há mais tempo"],
+  ["number-asc", "ID crescente"],
+  ["number-desc", "ID decrescente"]
+]);
+
+function normalizedSort(sort) {
+  if (!sort || sort === "name-asc") return "project-name-asc";
+  if (sort === "name-desc") return "project-name-desc";
+  return sort;
+}
+
+function renderSortOptions(sort) {
+  const current = normalizedSort(sort);
+
+  return PROJECT_SORT_OPTIONS.map(
+    ([value, label]) =>
+      `<option value="${value}" ${current === value ? "selected" : ""}>${label}</option>`
+  ).join("");
+}
+
+function renderSortableHeader(label, filters, ascending, descending) {
+  const current = normalizedSort(filters.sort);
+  const activeAsc = current === ascending;
+  const activeDesc = current === descending;
+  const next = activeAsc ? descending : ascending;
+  const indicator = activeAsc ? "↑" : activeDesc ? "↓" : "";
+
+  return `
+    <a
+      class="project-sort-header ${activeAsc || activeDesc ? "is-active" : ""}"
+      href="${projectListHash(filters, { sort: next, page: 1 })}"
+      aria-label="Ordenar por ${escapeHtml(label)}"
+    >
+      <span>${escapeHtml(label)}</span>
+      <span class="sort-indicator" aria-hidden="true">${indicator}</span>
+    </a>
+  `;
+}
+
+function renderAppliedFilters(filters, options) {
+  const chips = [];
+  const category = options.categories.find((item) => item.id === filters.categoryId);
+  const status = options.statuses.find((item) => item.id === filters.statusId);
+  const technology = options.technologies.find((item) => item.id === filters.technologyId);
+
+  const addChip = (label, overrides) => {
+    chips.push(
+      `<a class="filter-chip" href="${projectListHash(filters, { ...overrides, page: 1 })}">${escapeHtml(label)} <span aria-hidden="true">×</span></a>`
+    );
+  };
+
+  if (filters.search) addChip(`Busca: ${filters.search}`, { search: "" });
+  if (category) addChip(`Categoria: ${category.name}`, { categoryId: "" });
+  if (status) addChip(`Status: ${status.name}`, { statusId: "" });
+  if (filters.client) addChip(`Cliente: ${filters.client}`, { client: "" });
+  if (technology) addChip(`Tecnologia: ${technology.name}`, { technologyId: "" });
+  if (filters.hasOpenPending) addChip("Com pendência aberta", { hasOpenPending: false });
+
+  if (!chips.length) return "";
+
+  return `
+    <div class="applied-filters" aria-label="Filtros aplicados">
+      ${chips.join("")}
+      <a class="filter-clear-link" href="${filters.archived ? "#/projects?archived=1" : "#/projects"}">Limpar filtros</a>
+    </div>
+  `;
+}
+
 function formatDatePtBr(value) {
   if (!value) return "";
 
@@ -146,7 +224,9 @@ function projectListHash(filters, overrides = {}) {
   if (values.client) params.set("client", values.client);
   if (values.technologyId) params.set("technologyId", values.technologyId);
   if (values.hasOpenPending) params.set("hasOpenPending", "1");
-  if (values.sort && values.sort !== "name-asc") params.set("sort", values.sort);
+  if (values.sort && !["name-asc", "project-name-asc"].includes(values.sort)) {
+    params.set("sort", values.sort);
+  }
   if (values.page && values.page > 1) params.set("page", String(values.page));
 
   const query = params.toString();
@@ -165,7 +245,7 @@ async function renderProjectList(
     client = "",
     technologyId = "",
     hasOpenPending = false,
-    sort = "name-asc",
+    sort = "project-name-asc",
     page = 1
   } = {}
 ) {
@@ -189,6 +269,13 @@ async function renderProjectList(
     const hasFilters = Boolean(
       search || categoryId || effectiveStatusId || client || technologyId || hasOpenPending
     );
+    const secondaryFilterCount = [
+      categoryId,
+      effectiveStatusId,
+      client,
+      technologyId,
+      hasOpenPending
+    ].filter(Boolean).length;
 
     container.innerHTML = `
       <section class="page-header">
@@ -205,56 +292,80 @@ async function renderProjectList(
         </div>
       </section>
 
-      <form id="project-filters" class="panel project-filters">
-        <label class="field filter-search">
-          <span>Buscar</span>
-          <input name="search" value="${escapeHtml(search)}" placeholder="Nome, cliente ou observação" />
-        </label>
-        <label class="field">
-          <span>Categoria</span>
-          <select name="categoryId">
-            <option value="">Todas</option>
-            ${options.categories.map((item) => `<option value="${escapeHtml(item.id)}" ${categoryId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-          </select>
-        </label>
-        <label class="field">
-          <span>Status</span>
-          <select name="statusId">
-            <option value="">Todos</option>
-            ${options.statuses.map((item) => `<option value="${escapeHtml(item.id)}" ${effectiveStatusId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-          </select>
-        </label>
-        <label class="field">
-          <span>Cliente</span>
-          <select name="client">
-            <option value="">Todos</option>
-            ${options.clients.map((item) => `<option value="${escapeHtml(item)}" ${client === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
-          </select>
-        </label>
-        <label class="field">
-          <span>Tecnologia</span>
-          <select name="technologyId">
-            <option value="">Todas</option>
-            ${options.technologies.map((item) => `<option value="${escapeHtml(item.id)}" ${technologyId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-          </select>
-        </label>
-        <label class="field">
-          <span>Ordenar</span>
-          <select name="sort">
-            <option value="name-asc" ${sort === "name-asc" ? "selected" : ""}>Nome A–Z</option>
-            <option value="name-desc" ${sort === "name-desc" ? "selected" : ""}>Nome Z–A</option>
-            <option value="updated-desc" ${sort === "updated-desc" ? "selected" : ""}>Atualizados recentemente</option>
-            <option value="updated-asc" ${sort === "updated-asc" ? "selected" : ""}>Atualizados há mais tempo</option>
-          </select>
-        </label>
-        <label class="checkbox-item filter-checkbox">
-          <input name="hasOpenPending" type="checkbox" ${hasOpenPending ? "checked" : ""} />
-          <span>Com pendência aberta</span>
-        </label>
-        <div class="actions filter-actions">
-          <button class="button button-primary" type="submit">Aplicar</button>
-          <a class="button button-secondary" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar</a>
+      <form id="project-filters" class="panel project-filter-panel">
+        <div class="project-filter-toolbar">
+          <label class="compact-filter-search">
+            <span class="sr-only">Buscar projetos</span>
+            <input
+              name="search"
+              type="search"
+              value="${escapeHtml(search)}"
+              placeholder="Buscar projeto, cliente ou observação"
+            />
+          </label>
+
+          <label class="compact-filter-sort">
+            <span class="sr-only">Ordenar projetos</span>
+            <select name="sort" aria-label="Ordenar projetos">
+              ${renderSortOptions(sort)}
+            </select>
+          </label>
+
+          <button class="button button-primary compact-filter-apply" type="submit">Aplicar</button>
+
+          <details class="advanced-filters" ${secondaryFilterCount ? "open" : ""}>
+            <summary>
+              <span>Mais filtros</span>
+              ${secondaryFilterCount ? `<span class="filter-count">${secondaryFilterCount}</span>` : ""}
+            </summary>
+
+            <div class="advanced-filter-grid">
+              <label class="field">
+                <span>Categoria</span>
+                <select name="categoryId">
+                  <option value="">Todas</option>
+                  ${options.categories.map((item) => `<option value="${escapeHtml(item.id)}" ${categoryId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Status</span>
+                <select name="statusId">
+                  <option value="">Todos</option>
+                  ${options.statuses.map((item) => `<option value="${escapeHtml(item.id)}" ${effectiveStatusId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Cliente</span>
+                <select name="client">
+                  <option value="">Todos</option>
+                  ${options.clients.map((item) => `<option value="${escapeHtml(item)}" ${client === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Tecnologia</span>
+                <select name="technologyId">
+                  <option value="">Todas</option>
+                  ${options.technologies.map((item) => `<option value="${escapeHtml(item.id)}" ${technologyId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+                </select>
+              </label>
+
+              <label class="checkbox-item compact-pending-filter">
+                <input name="hasOpenPending" type="checkbox" ${hasOpenPending ? "checked" : ""} />
+                <span>Com pendência aberta</span>
+              </label>
+
+              <div class="actions advanced-filter-actions">
+                <button class="button button-primary button-small" type="submit">Aplicar filtros</button>
+                <a class="button button-secondary button-small" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar</a>
+              </div>
+            </div>
+          </details>
         </div>
+
+        ${renderAppliedFilters(filters, options)}
       </form>
 
       <div class="list-summary">
@@ -265,11 +376,11 @@ async function renderProjectList(
         result.items.length
           ? `<div class="project-list" role="table" aria-label="Projetos">
               <div class="project-table-header" role="row">
-                <div role="columnheader">ID</div>
-                <div role="columnheader">Nome do Projeto</div>
-                <div role="columnheader">Status</div>
+                <div role="columnheader">${renderSortableHeader("ID", filters, "number-asc", "number-desc")}</div>
+                <div role="columnheader">${renderSortableHeader("Nome do Projeto", filters, "project-name-asc", "project-name-desc")}</div>
+                <div role="columnheader">${renderSortableHeader("Status", filters, "status-asc", "status-desc")}</div>
                 <div role="columnheader">Links</div>
-                <div role="columnheader">Domínio</div>
+                <div role="columnheader">${renderSortableHeader("Domínio", filters, "expiration-asc", "expiration-desc")}</div>
               </div>
               ${result.items
                 .map(
@@ -359,6 +470,11 @@ async function renderProjectList(
       });
     });
 
+    const sortSelect = container.querySelector('#project-filters select[name="sort"]');
+    sortSelect?.addEventListener("change", () => {
+      container.querySelector("#project-filters").requestSubmit();
+    });
+
     container.querySelector("#project-filters").addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -370,7 +486,7 @@ async function renderProjectList(
         client: data.get("client") || "",
         technologyId: data.get("technologyId") || "",
         hasOpenPending: data.get("hasOpenPending") === "on",
-        sort: data.get("sort") || "name-asc",
+        sort: data.get("sort") || "project-name-asc",
         page: 1
       });
     });
