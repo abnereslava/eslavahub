@@ -1,6 +1,6 @@
 # Backlog de Implementação — EslavaHub
 
-**Versão:** 0.5  
+**Versão:** 0.6  
 **Origem:** `docs/PROPOSTA.md` e `docs/SDD.md`  
 **Escopo:** MVP
 
@@ -19,9 +19,9 @@ Prioridades: `P0` essencial, `P1` necessária ao MVP e `P2` melhoria importante.
 
 ## Progresso atual
 
-- **DONE:** 14/48
-- **IN PROGRESS:** 33/48
-- **TODO:** 1/48
+- **DONE:** 14/60
+- **IN PROGRESS:** 33/60
+- **TODO:** 13/60
 
 O núcleo funcional do MVP já está implementado em código: modelos Firestore, projetos, cadastros auxiliares, pendências, domínios, dashboard, busca, filtros, ordenação e paginação. Testes unitários e lint passam no GitHub Actions.
 
@@ -38,6 +38,7 @@ A única task ainda não iniciada é a suíte de testes end-to-end dos fluxos pr
 | M2 — Acompanhamento | Pendências e domínios | TASK-021 a TASK-032 |
 | M3 — Visão operacional | Dashboard, consulta e cadastros | TASK-033 a TASK-041 |
 | M4 — Qualidade e entrega | Robustez, testes e disponibilização | TASK-042 a TASK-048 |
+| M5 — Redesign visual | Reestruturar aparência sem alterar o comportamento consolidado | TASK-049 a TASK-060 |
 
 ---
 
@@ -130,6 +131,24 @@ Detalhes: [`tasks/06-consulta-e-cadastros.md`](tasks/06-consulta-e-cadastros.md)
 - [ ] TASK-048 — Build e deploy — **IN PROGRESS**
 
 Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
+
+### Redesign visual
+
+- [ ] TASK-049 — Auditoria visual do sistema — **TODO**
+- [ ] TASK-050 — Criar design tokens do EslavaHub — **TODO**
+- [ ] TASK-051 — Padronizar tipografia e hierarquia — **TODO**
+- [ ] TASK-052 — Padronizar spacing, radius, bordas e elevação — **TODO**
+- [ ] TASK-053 — Unificar componentes de interação — **TODO**
+- [ ] TASK-054 — Redesenhar shell e navegação — **TODO**
+- [ ] TASK-055 — Redesenhar visualmente Dashboard — **TODO**
+- [ ] TASK-056 — Refinar tabela e toolbar de Projetos — **TODO**
+- [ ] TASK-057 — Refinar Detalhe do Projeto — **TODO**
+- [ ] TASK-058 — Harmonizar Pendências, Domínios e Cadastros — **TODO**
+- [ ] TASK-059 — Revisão responsiva e acessibilidade visual — **TODO**
+- [ ] TASK-060 — QA visual e regressão funcional do redesign — **TODO**
+
+Plano: [`UX_REDESIGN_PLAN.md`](UX_REDESIGN_PLAN.md)  
+Detalhes: [`tasks/08-redesign-visual.md`](tasks/08-redesign-visual.md)
 
 ---
 
