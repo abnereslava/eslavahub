@@ -3,7 +3,11 @@ import {
   getAuth,
   GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 // Firebase Web configuration is client-side configuration, not an admin credential.
 const firebaseConfig = {
@@ -17,7 +21,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager()
+  })
+});
 const googleProvider = new GoogleAuthProvider();
 
 googleProvider.setCustomParameters({
