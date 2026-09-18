@@ -22,6 +22,22 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+
+function updateActiveNavigation() {
+  const section = (window.location.hash || "#/dashboard").replace(/^#\//, "").split(/[/?]/)[0] || "dashboard";
+
+  document.querySelectorAll(".main-nav a[data-section]").forEach((link) => {
+    const active = link.dataset.section === section;
+    link.classList.toggle("is-active", active);
+
+    if (active) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+}
+
 function renderSignedOut() {
   appElement.className = "app-shell auth-shell";
   appElement.innerHTML = `
@@ -66,12 +82,15 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   appElement.className = "app-shell workspace-shell";
   appElement.innerHTML = `
     <header class="topbar">
-      <a class="brand" href="#/dashboard">EslavaHub</a>
+      <a class="brand" href="#/dashboard" aria-label="EslavaHub — Dashboard">
+        <span class="brand-mark" aria-hidden="true">E</span>
+        <span>EslavaHub</span>
+      </a>
       <nav class="main-nav" aria-label="Navegação principal">
-        <a href="#/dashboard">Dashboard</a>
-        <a href="#/projects">Projetos</a>
-        <a href="#/domains">Domínios</a>
-        <a href="#/catalogs/categories">Cadastros</a>
+        <a data-section="dashboard" href="#/dashboard">Dashboard</a>
+        <a data-section="projects" href="#/projects">Projetos</a>
+        <a data-section="domains" href="#/domains">Domínios</a>
+        <a data-section="catalogs" href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
         <div>
@@ -84,6 +103,8 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
     ${bootstrapError ? '<div class="global-alert" role="alert">Não foi possível preparar todos os dados iniciais do workspace.</div>' : ""}
     <main id="page-content" class="page-content" aria-live="polite"></main>
   `;
+
+  updateActiveNavigation();
 
   document.querySelector("#sign-out").addEventListener("click", async () => {
     await signOutCurrentUser();
@@ -160,6 +181,7 @@ async function renderAuthenticatedRoute() {
 }
 
 window.addEventListener("hashchange", () => {
+  updateActiveNavigation();
   void renderAuthenticatedRoute();
 });
 
