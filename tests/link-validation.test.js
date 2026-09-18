@@ -10,6 +10,7 @@ test("bare domains are accepted and normalized to https", () => {
   assert.equal(normalizeExternalUrl("lp.teacherchell.com.br"), "https://lp.teacherchell.com.br/");
   assert.equal(normalizeExternalUrl("github.com/abnereslava/eslavahub"), "https://github.com/abnereslava/eslavahub");
   assert.equal(isValidHttpUrl("site-que-nao-existe.invalid"), true);
+  assert.equal(normalizeExternalUrl("localhost:3000"), "https://localhost:3000/");
 });
 
 test("http and https links are preserved as navigable web links", () => {
