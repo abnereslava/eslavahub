@@ -43,9 +43,10 @@ O MVP é um sistema autenticado e preparado para múltiplos usuários isolados.
 
 ### Regras
 
-- login permitido pelo Google;
+- login permitido pelo Google apenas para os dois UIDs explicitamente autorizados;
 - usuário não autenticado visualiza apenas a entrada da aplicação;
-- cada usuário acessa somente seus próprios dados;
+- qualquer Google fora da allowlist é desconectado pelo frontend e bloqueado pelas Firestore Security Rules;
+- cada usuário autorizado acessa somente seus próprios dados;
 - o UID gerado pelo Firebase Authentication é a raiz de autorização;
 - dados de um usuário não podem ser consultados ou alterados por outro usuário através do cliente;
 - acesso global é negado por padrão nas Firestore Security Rules.
@@ -455,7 +456,7 @@ Itens em uso devem ser desativados ou arquivados sempre que exclusão destrutiva
 
 ### Firebase Authentication
 
-O MVP utiliza somente Google Sign-In.
+O MVP utiliza somente Google Sign-In e uma allowlist fixa de dois UIDs. Os e-mails correspondentes não são necessários nas regras versionadas.
 
 ### Firestore Security Rules
 
@@ -466,6 +467,7 @@ Regra estrutural principal:
 ```text
 request.auth != null
 request.auth.token.firebase.sign_in_provider == "google.com"
+request.auth.uid in [UID_AUTORIZADO_1, UID_AUTORIZADO_2]
 request.auth.uid == userId
 ```
 
