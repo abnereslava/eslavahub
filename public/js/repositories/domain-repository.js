@@ -2,6 +2,11 @@ import {
   serverTimestamp,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  beginPendingWrite,
+  endPendingWrite,
+  incrementMetric
+} from "../domain/firestore-metrics.js";
 import { normalizeHostname, validateDomain } from "../domain/validation.js";
 import { db } from "../config/firebase.js";
 import { FirestoreRepository } from "./firestore-repository.js";
@@ -59,8 +64,15 @@ class DomainRepository extends FirestoreRepository {
       });
     }
 
-    await batch.commit();
-    this.invalidateCache(uid);
+    beginPendingWrite();
+
+    try {
+      await batch.commit();
+      incrementMetric("writes", domains.length);
+      this.invalidateCache(uid);
+    } finally {
+      endPendingWrite();
+    }
   }
 }
 
