@@ -22,6 +22,7 @@ class ProjectRepository extends FirestoreRepository {
       quick_notes: data.quick_notes?.trim() || null,
       technology_ids: [...new Set(data.technology_ids || [])],
       project_number: data.project_number ?? null,
+      portfolio_visible: Boolean(data.portfolio_visible),
       archived_at: null
     });
   }
@@ -40,6 +41,9 @@ class ProjectRepository extends FirestoreRepository {
     if (typeof payload.client_name === "string") payload.client_name = payload.client_name.trim() || null;
     if (typeof payload.quick_notes === "string") payload.quick_notes = payload.quick_notes.trim() || null;
     if (Array.isArray(payload.technology_ids)) payload.technology_ids = [...new Set(payload.technology_ids)];
+    if (Object.hasOwn(payload, "portfolio_visible")) {
+      payload.portfolio_visible = Boolean(payload.portfolio_visible);
+    }
 
     await this.update(uid, id, payload);
   }
