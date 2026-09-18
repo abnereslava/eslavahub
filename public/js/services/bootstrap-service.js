@@ -10,6 +10,7 @@ import { migrateLegacySpreadsheet } from "./legacy-migration-service.js";
 import { ensureProjectNumbers } from "./project-number-service.js";
 import { enrichProjectRepositoryLinks } from "./repository-link-enrichment-service.js";
 import { enrichProjectSearchConsoleLinks } from "./search-console-enrichment-service.js";
+import { enrichProjectPortfolioFlags } from "./portfolio-enrichment-service.js";
 
 async function runFullBootstrap(uid) {
   await Promise.all([
@@ -21,6 +22,7 @@ async function runFullBootstrap(uid) {
   await migrateLegacySpreadsheet(uid);
   await enrichProjectRepositoryLinks(uid);
   await enrichProjectSearchConsoleLinks(uid);
+  await enrichProjectPortfolioFlags(uid);
   await ensureProjectNumbers(uid);
 }
 
@@ -55,6 +57,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "search_console_links_version")) {
     await enrichProjectSearchConsoleLinks(uid);
+  }
+
+  if (needsVersion(metadata, "portfolio_flags_version")) {
+    await enrichProjectPortfolioFlags(uid);
   }
 
   if (needsVersion(metadata, "project_numbers_version")) {
