@@ -220,6 +220,7 @@ async function queryProjects(
 
   return {
     items: filtered.slice(start, start + pageSize),
+    statuses: statuses.slice().sort(bySortOrder),
     total,
     page: currentPage,
     pageSize,
