@@ -55,6 +55,8 @@ const PROJECT_STATUS_TONES = Object.freeze({
   ABANDONED: "status-tone-abandoned"
 });
 
+const PROJECT_LIST_BATCH_SIZE = 30;
+
 const PROJECT_ROW_TONES = Object.freeze({
   IDEALIZED: "status-row-idealized",
   IN_DEVELOPMENT: "status-row-development",
@@ -269,11 +271,66 @@ function projectListHash(filters, overrides = {}) {
 
   if (values.archived) params.set("archived", "1");
   if (values.search) params.set("search", values.search);
+  if (values.hasOpenPending) params.set("hasOpenPending", "1");
   if (values.sort) params.set("sort", normalizedSort(values.sort));
-  if (values.page && values.page > 1) params.set("page", String(values.page));
 
   const query = params.toString();
   return `#/projects${query ? `?${query}` : ""}`;
+}
+
+function renderProjectRow(project, statuses) {
+  return `
+    <div class="project-row ${projectRowTone(project.status?.code)}" role="row">
+      <div class="project-cell project-number-cell" data-label="ID" role="cell">
+        ${escapeHtml(project.project_number ?? "—")}
+      </div>
+
+      <div class="project-cell project-name-cell" data-label="Nome do Projeto" role="cell">
+        <a class="project-name-link" href="#/projects/${encodeURIComponent(project.id)}">
+          <span class="project-name-text">${escapeHtml(project.name)}</span>
+          ${
+            project.has_open_pending
+              ? '<span class="project-pending-asterisk" aria-hidden="true" title="Possui pendências não concluídas">*</span><span class="sr-only">Possui pendências não concluídas</span>'
+              : ""
+          }
+        </a>
+        ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
+      </div>
+
+      <div class="project-cell" data-label="Status" role="cell">
+        <select
+          class="quick-status-select ${projectStatusTone(project.status?.code)}"
+          data-project-id="${escapeHtml(project.id)}"
+          data-previous-value="${escapeHtml(project.status_id)}"
+          aria-label="Alterar status de ${escapeHtml(project.name)}"
+        >
+          ${statuses
+            .filter((status) => QUICK_STATUS_CODES.has(status.code))
+            .map(
+              (status) =>
+                `<option
+                  value="${escapeHtml(status.id)}"
+                  data-code="${escapeHtml(status.code)}"
+                  ${project.status_id === status.id ? "selected" : ""}
+                >${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}</option>`
+            )
+            .join("")}
+        </select>
+      </div>
+
+      <div class="project-cell project-portfolio-cell" data-label="Portfólio" role="cell">
+        ${renderPortfolioSeal(project)}
+      </div>
+
+      <div class="project-cell project-links-cell" data-label="Links" role="cell">
+        ${renderProjectLinks(project)}
+      </div>
+
+      <div class="project-cell project-domain-cell" data-label="Domínio" role="cell">
+        ${renderProjectDomain(project.domain)}
+      </div>
+    </div>
+  `;
 }
 
 async function renderProjectList(
@@ -282,8 +339,8 @@ async function renderProjectList(
   {
     archived = false,
     search = "",
-    sort = null,
-    page = 1
+    hasOpenPending = false,
+    sort = null
   } = {}
 ) {
   renderLoading(container, "Carregando projetos...");
@@ -297,10 +354,14 @@ async function renderProjectList(
     const filters = {
       archived,
       search,
-      sort: effectiveSort,
-      page
+      hasOpenPending,
+      sort: effectiveSort
     };
-    const result = await queryProjects(uid, filters);
+    const result = await queryProjects(uid, {
+      ...filters,
+      page: 1,
+      pageSize: PROJECT_LIST_BATCH_SIZE
+    });
     const hasSearch = Boolean(search);
 
     container.innerHTML = `
@@ -325,9 +386,20 @@ async function renderProjectList(
 
           <button class="button button-secondary compact-filter-apply" type="submit">Buscar</button>
 
+          <button
+            id="toggle-pending-projects"
+            class="button button-secondary project-pending-toggle ${hasOpenPending ? "is-active" : ""}"
+            type="button"
+            aria-pressed="${hasOpenPending ? "true" : "false"}"
+          >
+            Apenas com pendências
+          </button>
+
+          <span class="project-toolbar-divider" aria-hidden="true">|</span>
+
           <a
             class="button button-secondary project-toolbar-archive"
-            href="${projectListHash(filters, { archived: !archived, page: 1 })}"
+            href="${projectListHash(filters, { archived: !archived })}"
           >
             ${archived ? "Ver ativos" : "Ver arquivados"}
           </a>
@@ -351,119 +423,132 @@ async function renderProjectList(
                 <div role="columnheader">Links</div>
                 <div role="columnheader">${renderSortableHeader("Domínio", filters, "expiration-asc", "expiration-desc")}</div>
               </div>
-              ${result.items
-                .map(
-                  (project) => `
-                    <div class="project-row ${projectRowTone(project.status?.code)}" role="row">
-                      <div class="project-cell project-number-cell" data-label="ID" role="cell">
-                        ${escapeHtml(project.project_number ?? "—")}
-                      </div>
-
-                      <div class="project-cell project-name-cell" data-label="Nome do Projeto" role="cell">
-                        <a class="project-name-link" href="#/projects/${encodeURIComponent(project.id)}">
-                          <span class="project-name-text">${escapeHtml(project.name)}</span>
-                          ${
-                            project.has_open_pending
-                              ? '<span class="project-pending-asterisk" aria-hidden="true" title="Possui pendências não concluídas">*</span><span class="sr-only">Possui pendências não concluídas</span>'
-                              : ""
-                          }
-                        </a>
-                        ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
-                      </div>
-
-                      <div class="project-cell" data-label="Status" role="cell">
-                        <select
-                          class="quick-status-select ${projectStatusTone(project.status?.code)}"
-                          data-project-id="${escapeHtml(project.id)}"
-                          data-previous-value="${escapeHtml(project.status_id)}"
-                          aria-label="Alterar status de ${escapeHtml(project.name)}"
-                        >
-                          ${result.statuses
-                            .filter((status) => QUICK_STATUS_CODES.has(status.code))
-                            .map(
-                              (status) =>
-                                `<option
-                                  value="${escapeHtml(status.id)}"
-                                  data-code="${escapeHtml(status.code)}"
-                                  ${project.status_id === status.id ? "selected" : ""}
-                                >${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}</option>`
-                            )
-                            .join("")}
-                        </select>
-                      </div>
-
-                      <div class="project-cell project-portfolio-cell" data-label="Portfólio" role="cell">
-                        ${renderPortfolioSeal(project)}
-                      </div>
-
-                      <div class="project-cell project-links-cell" data-label="Links" role="cell">
-                        ${renderProjectLinks(project)}
-                      </div>
-
-                      <div class="project-cell project-domain-cell" data-label="Domínio" role="cell">
-                        ${renderProjectDomain(project.domain)}
-                      </div>
-                    </div>
-                  `
-                )
-                .join("")}
+              <div id="project-list-rows">
+                ${result.items.map((project) => renderProjectRow(project, result.statuses)).join("")}
+              </div>
             </div>
             <p id="project-list-error" class="error-message list-inline-error" role="alert"></p>
-            ${
-              result.totalPages > 1
-                ? `<nav class="pagination" aria-label="Paginação de projetos">
-                    <a class="button button-secondary button-small ${result.page === 1 ? "is-disabled" : ""}" href="${result.page === 1 ? projectListHash(filters, { page: 1 }) : projectListHash(filters, { page: result.page - 1 })}" ${result.page === 1 ? 'aria-disabled="true"' : ""}>Anterior</a>
-                    <span>Página ${result.page} de ${result.totalPages}</span>
-                    <a class="button button-secondary button-small ${result.page === result.totalPages ? "is-disabled" : ""}" href="${result.page === result.totalPages ? projectListHash(filters, { page: result.totalPages }) : projectListHash(filters, { page: result.page + 1 })}" ${result.page === result.totalPages ? 'aria-disabled="true"' : ""}>Próxima</a>
-                  </nav>`
-                : ""
-            }`
+            <div
+              id="project-infinite-sentinel"
+              class="project-infinite-sentinel"
+              aria-hidden="true"
+              ${result.page >= result.totalPages ? "hidden" : ""}
+            ></div>
+            <p id="project-load-more-status" class="project-load-more-status" aria-live="polite"></p>`
           : `<section class="empty-state">
-              <h2>${hasSearch ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
-              <p>${hasSearch ? "Altere ou limpe a busca para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
-              ${hasSearch ? `<a class="button button-secondary" href="${projectListHash(filters, { search: "", page: 1 })}">Limpar busca</a>` : archived ? "" : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'}
+              <h2>${hasSearch || hasOpenPending ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
+              <p>${hasSearch || hasOpenPending ? "Altere a busca ou o filtro de pendências para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
+              ${
+                hasSearch || hasOpenPending
+                  ? `<a class="button button-secondary" href="${projectListHash(filters, { search: "", hasOpenPending: false })}">Limpar busca e filtro</a>`
+                  : archived
+                    ? ""
+                    : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'
+              }
             </section>`
       }
     `;
 
     const listErrorElement = container.querySelector("#project-list-error");
+    const projectList = container.querySelector(".project-list");
 
-    container.querySelectorAll(".quick-status-select").forEach((select) => {
-      select.addEventListener("change", async () => {
-        const previousValue = select.dataset.previousValue;
-        const projectId = select.dataset.projectId;
+    projectList?.addEventListener("change", async (event) => {
+      const select = event.target.closest(".quick-status-select");
+      if (!select) return;
 
-        select.disabled = true;
-        if (listErrorElement) listErrorElement.textContent = "";
+      const previousValue = select.dataset.previousValue;
+      const projectId = select.dataset.projectId;
 
-        try {
-          await updateProject(uid, projectId, { status_id: select.value });
-          select.dataset.previousValue = select.value;
+      select.disabled = true;
+      if (listErrorElement) listErrorElement.textContent = "";
 
-          const selectedCode = select.selectedOptions[0]?.dataset.code;
-          select.className = `quick-status-select ${projectStatusTone(selectedCode)}`;
-          applyProjectRowTone(select.closest(".project-row"), selectedCode);
-        } catch (error) {
-          console.error("Quick status update failed", error);
-          select.value = previousValue;
-          if (listErrorElement) {
-            listErrorElement.textContent =
-              error.message || "Não foi possível alterar o status do projeto.";
-          }
-        } finally {
-          select.disabled = false;
+      try {
+        await updateProject(uid, projectId, { status_id: select.value });
+        select.dataset.previousValue = select.value;
+
+        const selectedCode = select.selectedOptions[0]?.dataset.code;
+        select.className = `quick-status-select ${projectStatusTone(selectedCode)}`;
+        applyProjectRowTone(select.closest(".project-row"), selectedCode);
+      } catch (error) {
+        console.error("Quick status update failed", error);
+        select.value = previousValue;
+        if (listErrorElement) {
+          listErrorElement.textContent =
+            error.message || "Não foi possível alterar o status do projeto.";
         }
-      });
+      } finally {
+        select.disabled = false;
+      }
     });
 
     container.querySelector("#project-search").addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
       window.location.hash = projectListHash(filters, {
-        search: data.get("search")?.trim() || "",
-        page: 1
+        search: data.get("search")?.trim() || ""
       });
     });
+
+    container.querySelector("#toggle-pending-projects")?.addEventListener("click", () => {
+      const searchValue =
+        container.querySelector('#project-search input[name="search"]')?.value.trim() || "";
+
+      window.location.hash = projectListHash(filters, {
+        search: searchValue,
+        hasOpenPending: !hasOpenPending
+      });
+    });
+
+    const sentinel = container.querySelector("#project-infinite-sentinel");
+    const rows = container.querySelector("#project-list-rows");
+    const loadStatus = container.querySelector("#project-load-more-status");
+    let currentPage = 1;
+    let loadingMore = false;
+
+    if (sentinel && !sentinel.hasAttribute("hidden") && rows) {
+      const observer = new IntersectionObserver(
+        async (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting) || loadingMore) return;
+
+          loadingMore = true;
+          if (loadStatus) loadStatus.textContent = "Carregando mais projetos…";
+
+          try {
+            const next = await queryProjects(uid, {
+              ...filters,
+              page: currentPage + 1,
+              pageSize: PROJECT_LIST_BATCH_SIZE
+            });
+
+            rows.insertAdjacentHTML(
+              "beforeend",
+              next.items.map((project) => renderProjectRow(project, next.statuses)).join("")
+            );
+            currentPage = next.page;
+
+            if (currentPage >= next.totalPages || !next.items.length) {
+              observer.disconnect();
+              sentinel.setAttribute("hidden", "");
+            }
+          } catch (error) {
+            console.error("Project infinite load failed", error);
+            observer.disconnect();
+            sentinel.setAttribute("hidden", "");
+            if (loadStatus) {
+              loadStatus.textContent = "Não foi possível carregar mais projetos.";
+            }
+          } finally {
+            loadingMore = false;
+            if (loadStatus && !loadStatus.textContent.startsWith("Não foi")) {
+              loadStatus.textContent = "";
+            }
+          }
+        },
+        { rootMargin: "160px 0px", threshold: 0.01 }
+      );
+
+      observer.observe(sentinel);
+    }
   } catch (error) {
     console.error("Project list failed", error);
     renderError(container, "Não foi possível carregar os projetos.");
