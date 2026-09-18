@@ -15,6 +15,23 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+function formatTimestamp(value) {
+  if (!value) return "—";
+
+  let date = null;
+
+  if (typeof value.toDate === "function") date = value.toDate();
+  else if (value instanceof Date) date = value;
+  else if (typeof value === "string" || typeof value === "number") date = new Date(value);
+
+  if (!date || Number.isNaN(date.getTime())) return "—";
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short"
+  }).format(date);
+}
+
 async function renderProjectDetailPage(container, uid, projectId) {
   container.innerHTML = '<section class="panel"><p>Carregando projeto...</p></section>';
 
@@ -22,62 +39,86 @@ async function renderProjectDetailPage(container, uid, projectId) {
     const project = await getProjectDetails(uid, projectId);
     if (!project) {
       container.innerHTML = `
-        <section class="panel">
-          <p class="error-message">Projeto não encontrado.</p>
-          <a class="button button-secondary" href="#/projects">Voltar aos projetos</a>
-        </section>
-      `;
-      return;
-    }
+      <section class="panel project-overview">
+        <div class="project-overview-top">
+          <div class="project-overview-title">
+            <p class="eyebrow">Projeto #${escapeHtml(project.project_number ?? "—")}</p>
+            <h1>${escapeHtml(project.name)}</h1>
+            <div class="project-overview-tags">
+              <span class="tag">${escapeHtml(project.category?.name || "Categoria indisponível")}</span>
+              <span class="tag">${escapeHtml(project.status?.name || "Status indisponível")}</span>
+            </div>
+          </div>
 
-    container.innerHTML = `
-      <section class="page-header">
-        <div>
-          <p class="eyebrow">Projeto ${escapeHtml(project.id)}</p>
-          <h1>${escapeHtml(project.name)}</h1>
-          <p>${escapeHtml(project.category?.name || "Categoria indisponível")} · ${escapeHtml(project.status?.name || "Status indisponível")}</p>
+          <div class="actions project-overview-actions">
+            <a class="button button-secondary button-small" href="#/projects">Voltar</a>
+            <a class="button button-primary button-small" href="#/projects/${encodeURIComponent(project.id)}/edit">Editar</a>
+          </div>
         </div>
-        <div class="actions">
-          <a class="button button-secondary" href="#/projects">Voltar</a>
-          <a class="button button-primary" href="#/projects/${encodeURIComponent(project.id)}/edit">Editar</a>
-        </div>
+
+        <dl class="project-overview-meta">
+          <div>
+            <dt>Cliente</dt>
+            <dd>${escapeHtml(project.client_name || "—")}</dd>
+          </div>
+
+          <div>
+            <dt>Tecnologias</dt>
+            <dd>
+              ${
+                project.technologies.length
+                  ? project.technologies.map((item) => `<span class="tag compact-tag">${escapeHtml(item.name)}</span>`).join("")
+                  : "—"
+              }
+            </dd>
+          </div>
+
+          <div>
+            <dt>Última modificação</dt>
+            <dd>${escapeHtml(formatTimestamp(project.updated_at))}</dd>
+          </div>
+
+          <div class="project-overview-links">
+            <dt>Links</dt>
+            <dd class="actions">
+              ${
+                project.repository_url
+                  ? `<a class="button button-secondary button-small" href="${escapeHtml(project.repository_url)}" target="_blank" rel="noopener noreferrer">GitHub</a>`
+                  : ""
+              }
+              ${
+                project.deploy_url
+                  ? `<a class="button button-secondary button-small" href="${escapeHtml(project.deploy_url)}" target="_blank" rel="noopener noreferrer">Site</a>`
+                  : ""
+              }
+              ${!project.repository_url && !project.deploy_url ? "—" : ""}
+            </dd>
+          </div>
+        </dl>
+
+        ${
+          project.quick_notes
+            ? `<div class="project-overview-note">
+                <strong>Observações</strong>
+                <p class="pre-wrap">${escapeHtml(project.quick_notes)}</p>
+              </div>`
+            : ""
+        }
       </section>
 
-      <div class="detail-grid">
-        <section class="panel">
-          <h2>Resumo</h2>
-          ${project.client_name ? `<dl class="definition-list"><div><dt>Cliente</dt><dd>${escapeHtml(project.client_name)}</dd></div></dl>` : '<p class="muted">Nenhum cliente informado.</p>'}
-          ${project.quick_notes ? `<h3>Observações</h3><p class="pre-wrap">${escapeHtml(project.quick_notes)}</p>` : ""}
-        </section>
-
-        <section class="panel">
-          <h2>Links</h2>
-          <div class="actions">
-            ${project.repository_url ? `<a class="button button-secondary" href="${escapeHtml(project.repository_url)}" target="_blank" rel="noopener noreferrer">Abrir repositório</a>` : ""}
-            ${project.deploy_url ? `<a class="button button-secondary" href="${escapeHtml(project.deploy_url)}" target="_blank" rel="noopener noreferrer">Abrir deploy</a>` : ""}
-          </div>
-          ${!project.repository_url && !project.deploy_url ? '<p class="muted">Nenhum link cadastrado.</p>' : ""}
-        </section>
-
-        <section class="panel">
-          <h2>Tecnologias</h2>
-          ${
-            project.technologies.length
-              ? `<div class="tag-list">${project.technologies.map((item) => `<span class="tag">${escapeHtml(item.name)}</span>`).join("")}</div>`
-              : '<p class="muted">Nenhuma tecnologia associada.</p>'
-          }
-        </section>
-
+      <div class="detail-grid project-detail-sections">
         <section id="project-domains" class="panel"></section>
         <section id="pending-items" class="panel detail-span-2"></section>
 
-        <section class="panel danger-zone detail-span-2">
-          <h2>${project.archived_at ? "Restaurar projeto" : "Arquivar projeto"}</h2>
-          <p>${project.archived_at ? "O projeto voltará para a listagem ativa." : "Os dados relacionados serão preservados e o projeto sairá da listagem ativa."}</p>
-          <button id="archive-project" class="button ${project.archived_at ? "button-secondary" : "button-danger"}" type="button">
-            ${project.archived_at ? "Restaurar" : "Arquivar"}
-          </button>
-        </section>
+        <details class="panel danger-zone detail-span-2 compact-danger">
+          <summary>${project.archived_at ? "Restaurar projeto" : "Arquivar projeto"}</summary>
+          <div class="compact-danger-content">
+            <p>${project.archived_at ? "O projeto voltará para a listagem ativa." : "Os dados relacionados serão preservados e o projeto sairá da listagem ativa."}</p>
+            <button id="archive-project" class="button ${project.archived_at ? "button-secondary" : "button-danger"}" type="button">
+              ${project.archived_at ? "Restaurar" : "Arquivar"}
+            </button>
+          </div>
+        </details>
       </div>
     `;
 
