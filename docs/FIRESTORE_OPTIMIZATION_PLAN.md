@@ -266,11 +266,32 @@ Quando `navigator.onLine` indica ausência de rede, o header mostra `Offline`.
 
 Nenhuma leitura adicional é feita apenas para descobrir se uma escrita pode ser evitada.
 
+### Instrumentação local
+
+O app agora mede, somente na sessão do navegador:
+
+- documentos lidos do servidor;
+- documentos atendidos pelo IndexedDB;
+- documentos atendidos pelo cache em memória;
+- writes executados;
+- writes evitados por não haver mudança;
+- deletes.
+
+Nenhuma métrica é enviada ao Firebase ou a outro serviço.
+
+O botão `Atualizar` expõe esse resumo no tooltip/title, permitindo comparar uma sessão fria com uma sessão já cacheada.
+
+### Estado de sincronização
+
+O header agora possui três estados:
+
+- nenhum badge quando está online e sem writes pendentes;
+- `Sincronizando…` durante writes aguardando confirmação;
+- `Offline` ou `Offline · pendente` quando a rede cai.
+
 ## Ainda não implementado
 
-- métricas reais de consumo;
-- medição comparativa antes/depois no console do Firebase;
-- sincronização visual de writes pendentes além do indicador simples de offline.
+- comparação histórica com as métricas oficiais do Firebase Console após alguns dias de uso real.
 
 ---
 
@@ -650,15 +671,9 @@ Como o EslavaHub contém informações privadas de projetos, a implementação d
 
 # Plano de implementação recomendado
 
-## OTIM-01 — Instrumentação
+## OTIM-01 — Instrumentação — CONCLUÍDO
 
-Medir:
-
-- leituras por fluxo;
-- tempo de carregamento;
-- coleções mais repetidas.
-
-Nenhuma mudança de arquitetura.
+Instrumentação local de leituras, cache e writes implementada sem telemetria externa.
 
 ## OTIM-02 — Bootstrap metadata — CONCLUÍDO
 
@@ -688,15 +703,13 @@ Implementados:
 - refresh manual;
 - timestamps de sincronização sem duplicar dados no localStorage.
 
-## OTIM-07 — Estado offline — PARCIALMENTE CONCLUÍDO
+## OTIM-07 — Estado offline — CONCLUÍDO
 
-O header indica quando o navegador está offline.
+O header diferencia offline, offline com write pendente e sincronização em andamento.
 
-Ainda pode evoluir para mostrar writes pendentes/sincronizando.
+## OTIM-08 — Medir novamente — PRONTO PARA COLETA
 
-## OTIM-08 — Medir novamente — PENDENTE
-
-Comparar consumo real antes/depois usando as métricas do Firebase.
+A instrumentação cliente está pronta. A comparação com os números oficiais do Firebase Console depende apenas de acumular uso real após o deploy.
 
 ---
 
