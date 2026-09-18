@@ -396,7 +396,6 @@ async function renderProjectList(
       page: 1,
       pageSize: PROJECT_LIST_BATCH_SIZE
     });
-    const hasSearch = Boolean(search);
     const hasActiveFilters = Boolean(
       search || hasOpenPending || hiddenStatusCodes.length
     );

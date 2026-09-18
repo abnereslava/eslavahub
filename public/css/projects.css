@@ -740,7 +740,20 @@
 }
 
 .project-detail-sections {
+  width: 100%;
+  min-width: 0;
   gap: var(--space-4);
+}
+
+.project-detail-sections > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.project-detail-sections #pending-items {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .project-detail-sections #project-domains {

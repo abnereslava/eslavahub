@@ -84,6 +84,8 @@ test("authenticated shell exposes keyboard skip navigation", () => {
 
 test("responsive and reduced-motion guards remain present", () => {
   assert.match(styles, /@media \(max-width: 768px\)/);
+  assert.match(styles, /grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(styles, /\.detail-grid > \*/);
   assert.match(styles, /@media \(max-width: 480px\)/);
   assert.match(styles, /prefers-reduced-motion: reduce/);
   assert.match(projectStyles, /@media \(max-width: 1024px\)/);
@@ -96,6 +98,7 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /project-hide-option input:checked \+ span/);
   assert.match(projectStyles, /\.project-toolbar-archive/);
   assert.match(projectStyles, /\.project-overview-actions/);
+  assert.match(projectStyles, /#pending-items/);
   assert.match(projectStyles, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(projectStyles, /#project-list-rows/);
   assert.match(projectStyles, /project-row:not\(\.is-expanded\)/);
@@ -174,7 +177,8 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-sort-header/);
   assert.match(pendingStyles, /overscroll-behavior-inline: contain/);
   assert.match(pendingStyles, /\.pending-sheet-scroll/);
-  assert.match(pendingStyles, /touch-action: auto/);
+  assert.match(pendingStyles, /contain: inline-size/);
+  assert.match(pendingStyles, /touch-action: pan-x pan-y/);
   assert.match(pendingStyles, /min-width: 806px/);
   assert.match(pendingStyles, /\.pending-sheet-header,/);
   assert.match(projectStyles, /@media \(max-width: 480px\)/);

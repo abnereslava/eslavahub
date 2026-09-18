@@ -762,7 +762,11 @@ button:disabled {
 
   .form-grid,
   .detail-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detail-grid > * {
+    min-width: 0;
   }
 
   .field-span-2,
@@ -1042,6 +1046,15 @@ button[disabled],
 /* Mobile tab swipe transitions */
 @media (max-width: 768px) {
   .page-content {
+    min-width: 0;
+  }
+
+  .page-content:is(
+    .tab-swipe-exit-next,
+    .tab-swipe-exit-previous,
+    .tab-swipe-enter-next,
+    .tab-swipe-enter-previous
+  ) {
     overflow-x: clip;
   }
 
