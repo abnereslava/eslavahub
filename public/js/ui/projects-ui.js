@@ -349,56 +349,67 @@ async function renderProjectList(
 
           <button class="button button-primary compact-filter-apply" type="submit">Aplicar</button>
 
-          <details class="advanced-filters" ${secondaryFilterCount ? "open" : ""}>
-            <summary>
-              <span>Mais filtros</span>
-              ${secondaryFilterCount ? `<span class="filter-count">${secondaryFilterCount}</span>` : ""}
-            </summary>
+          <button
+            id="toggle-advanced-filters"
+            class="advanced-filters-toggle"
+            type="button"
+            aria-expanded="${secondaryFilterCount ? "true" : "false"}"
+            aria-controls="advanced-filter-panel"
+          >
+            <span>Mais filtros</span>
+            ${secondaryFilterCount ? `<span class="filter-count">${secondaryFilterCount}</span>` : ""}
+            <span class="advanced-filters-chevron" aria-hidden="true">▾</span>
+          </button>
+        </div>
 
-            <div class="advanced-filter-grid">
-              <label class="field">
-                <span>Categoria</span>
-                <select name="categoryId">
-                  <option value="">Todas</option>
-                  ${options.categories.map((item) => `<option value="${escapeHtml(item.id)}" ${categoryId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-                </select>
-              </label>
+        <div
+          id="advanced-filter-panel"
+          class="advanced-filter-panel"
+          ${secondaryFilterCount ? "" : "hidden"}
+        >
+          <div class="advanced-filter-grid">
+            <label class="field">
+              <span>Categoria</span>
+              <select name="categoryId">
+                <option value="">Todas</option>
+                ${options.categories.map((item) => `<option value="${escapeHtml(item.id)}" ${categoryId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+              </select>
+            </label>
 
-              <label class="field">
-                <span>Status</span>
-                <select name="statusId">
-                  <option value="">Todos</option>
-                  ${options.statuses.map((item) => `<option value="${escapeHtml(item.id)}" ${effectiveStatusId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-                </select>
-              </label>
+            <label class="field">
+              <span>Status</span>
+              <select name="statusId">
+                <option value="">Todos</option>
+                ${options.statuses.map((item) => `<option value="${escapeHtml(item.id)}" ${effectiveStatusId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+              </select>
+            </label>
 
-              <label class="field">
-                <span>Cliente</span>
-                <select name="client">
-                  <option value="">Todos</option>
-                  ${options.clients.map((item) => `<option value="${escapeHtml(item)}" ${client === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
-                </select>
-              </label>
+            <label class="field">
+              <span>Cliente</span>
+              <select name="client">
+                <option value="">Todos</option>
+                ${options.clients.map((item) => `<option value="${escapeHtml(item)}" ${client === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
+              </select>
+            </label>
 
-              <label class="field">
-                <span>Tecnologia</span>
-                <select name="technologyId">
-                  <option value="">Todas</option>
-                  ${options.technologies.map((item) => `<option value="${escapeHtml(item.id)}" ${technologyId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-                </select>
-              </label>
+            <label class="field">
+              <span>Tecnologia</span>
+              <select name="technologyId">
+                <option value="">Todas</option>
+                ${options.technologies.map((item) => `<option value="${escapeHtml(item.id)}" ${technologyId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
+              </select>
+            </label>
 
-              <label class="checkbox-item compact-pending-filter">
-                <input name="hasOpenPending" type="checkbox" ${hasOpenPending ? "checked" : ""} />
-                <span>Com pendência aberta</span>
-              </label>
+            <label class="checkbox-item compact-pending-filter">
+              <input name="hasOpenPending" type="checkbox" ${hasOpenPending ? "checked" : ""} />
+              <span>Com pendência aberta</span>
+            </label>
 
-              <div class="actions advanced-filter-actions">
-                <button class="button button-primary button-small" type="submit">Aplicar filtros</button>
-                <a class="button button-secondary button-small" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar</a>
-              </div>
+            <div class="actions advanced-filter-actions">
+              <button class="button button-primary button-small" type="submit">Aplicar filtros</button>
+              <a class="button button-secondary button-small" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar</a>
             </div>
-          </details>
+          </div>
         </div>
 
         ${renderAppliedFilters(filters, options)}
@@ -512,6 +523,22 @@ async function renderProjectList(
           select.disabled = false;
         }
       });
+    });
+
+    const advancedFiltersToggle = container.querySelector("#toggle-advanced-filters");
+    const advancedFilterPanel = container.querySelector("#advanced-filter-panel");
+
+    advancedFiltersToggle?.addEventListener("click", () => {
+      const willOpen = advancedFilterPanel.hasAttribute("hidden");
+
+      if (willOpen) {
+        advancedFilterPanel.removeAttribute("hidden");
+      } else {
+        advancedFilterPanel.setAttribute("hidden", "");
+      }
+
+      advancedFiltersToggle.setAttribute("aria-expanded", String(willOpen));
+      advancedFiltersToggle.classList.toggle("is-open", willOpen);
     });
 
     const sortSelect = container.querySelector('#project-filters select[name="sort"]');
