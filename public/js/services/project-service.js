@@ -119,7 +119,7 @@ async function queryProjects(
     hasOpenPending = false,
     sort = "name-asc",
     page = 1,
-    pageSize = 20
+    pageSize = 30
   } = {}
 ) {
   const [projects, categories, statuses, technologies, pendingItems, domains] = await Promise.all([
