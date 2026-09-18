@@ -20,12 +20,12 @@ Prioridades: `P0` essencial, `P1` necessária ao MVP e `P2` melhoria importante.
 ## Progresso atual
 
 - **DONE:** 23/61
-- **IN PROGRESS:** 34/61
-- **TODO:** 4/61
+- **IN PROGRESS:** 37/61
+- **TODO:** 1/61
 
 O núcleo funcional do MVP já está implementado em código: modelos Firestore, projetos, cadastros auxiliares, pendências, domínios, dashboard, busca, filtros, ordenação e paginação. Testes unitários e lint passam no GitHub Actions.
 
-As tasks ainda não iniciadas são a suíte end-to-end funcional (`TASK-046`), a revisão responsiva/acessibilidade do redesign (`TASK-059`), o QA visual final (`TASK-060`) e o enriquecimento dos vínculos de repositório (`TASK-061`). A maior parte das tasks funcionais `IN PROGRESS` aguarda validação contra Firebase Authentication e Firestore reais em navegador.
+A única task ainda não iniciada é a suíte end-to-end funcional (`TASK-046`). A revisão responsiva/acessibilidade, o QA visual e o enriquecimento dos vínculos GitHub já possuem implementação e aguardam validação final no navegador/Firestore real.
 
 ---
 
@@ -145,15 +145,15 @@ Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 - [ ] TASK-056 — Refinar tabela e toolbar de Projetos — **IN PROGRESS**
 - [x] TASK-057 — Refinar Detalhe do Projeto — **DONE**
 - [x] TASK-058 — Harmonizar Pendências, Domínios e Cadastros — **DONE**
-- [ ] TASK-059 — Revisão responsiva e acessibilidade visual — **TODO**
-- [ ] TASK-060 — QA visual e regressão funcional do redesign — **TODO**
+- [ ] TASK-059 — Revisão responsiva e acessibilidade visual — **IN PROGRESS**
+- [ ] TASK-060 — QA visual e regressão funcional do redesign — **IN PROGRESS**
 
 Plano: [`UX_REDESIGN_PLAN.md`](UX_REDESIGN_PLAN.md)  
 Detalhes: [`tasks/08-redesign-visual.md`](tasks/08-redesign-visual.md)
 
 ### Enriquecimento de dados
 
-- [ ] TASK-061 — Localizar repositórios no GitHub e vincular aos projetos — **TODO**
+- [ ] TASK-061 — Localizar repositórios no GitHub e vincular aos projetos — **IN PROGRESS**
 
 Detalhes: [`tasks/09-repository-links.md`](tasks/09-repository-links.md)
 
