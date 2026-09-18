@@ -272,7 +272,7 @@ Preservar criação/edição/ativação.
 
 ## TASK-059 — Revisão responsiva e acessibilidade visual
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P0  
 **Dependências:** TASK-054 a TASK-058
 
@@ -296,17 +296,29 @@ Preservar criação/edição/ativação.
 - ordem de tabulação;
 - densidade em mobile.
 
+### Implementado
+
+- [x] breakpoints principais consolidados em 480/768/1024 px;
+- [x] skip link para o conteúdo;
+- [x] foco global com `:focus-visible`;
+- [x] suporte a `prefers-reduced-motion`;
+- [x] alvos de toque de 44 px em celular para ações críticas;
+- [x] teste de contrato protege breakpoints e affordances principais;
+- [x] contraste das combinações semânticas principais verificado;
+- [ ] validação visual real em 360, 390/430, 768, 1024, 1280 e 1440+;
+- [ ] navegação por teclado validada manualmente no app autenticado.
+
 ### Aceite
 
-- [x] telas principais validadas nos breakpoints;
-- [x] navegação por teclado utilizável;
-- [x] controles não ficam inacessíveis por overflow.
+- [ ] telas principais validadas nos breakpoints;
+- [ ] navegação por teclado utilizável validada em navegador;
+- [ ] controles confirmados sem overflow em conteúdo real.
 
 ---
 
 ## TASK-060 — QA visual e regressão funcional do redesign
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P0  
 **Dependência:** TASK-059
 
@@ -332,9 +344,11 @@ Garantir que o redesign não tenha alterado comportamento consolidado.
 
 ### Aceite
 
-- [ ] CI verde;
-- [ ] fluxos existentes continuam funcionando;
-- [ ] nenhuma mudança de schema;
-- [ ] nenhuma mudança de regra de negócio;
-- [ ] nenhuma rota removida;
+- [x] CI verde após os testes de regressão adicionados;
+- [ ] fluxos existentes continuam funcionando no Firebase real;
+- [x] nenhuma mudança de schema causada pelo redesign;
+- [x] nenhuma mudança de regra de negócio causada pelo redesign;
+- [x] nenhuma rota removida;
 - [ ] revisão visual aprovada.
+
+Relatório: [`../REDESIGN_QA.md`](../REDESIGN_QA.md)
