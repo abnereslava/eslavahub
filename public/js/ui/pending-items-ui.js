@@ -113,13 +113,19 @@ function pendingRow(item) {
       </div>
 
       <div class="pending-sheet-cell" data-label="Descrição" role="cell">
-        <input
-          class="pending-inline-input pending-description-input"
-          data-field="description"
-          data-original="${escapeHtml(item.description)}"
-          value="${escapeHtml(item.description)}"
-          aria-label="Descrição da pendência"
-        />
+        <div
+          class="pending-description-wrap"
+          data-full-text="${escapeHtml(item.description)}"
+        >
+          <input
+            class="pending-inline-input pending-description-input"
+            data-field="description"
+            data-original="${escapeHtml(item.description)}"
+            value="${escapeHtml(item.description)}"
+            title="${escapeHtml(item.description)}"
+            aria-label="Descrição da pendência"
+          />
+        </div>
       </div>
 
       <div class="pending-sheet-cell" data-label="Área" role="cell">
@@ -286,6 +292,12 @@ async function renderPendingItems(container, uid, projectId) {
 
         if (control.dataset.original !== undefined) {
           control.dataset.original = control.value;
+        }
+
+        if (control.dataset.field === "description") {
+          const descriptionWrap = control.closest(".pending-description-wrap");
+          if (descriptionWrap) descriptionWrap.dataset.fullText = control.value;
+          control.title = control.value;
         }
 
         saveState.textContent = "Salvo";
