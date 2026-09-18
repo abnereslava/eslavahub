@@ -36,6 +36,8 @@ test("repository uses cache-first reads and invalidates memory after writes", ()
   assert.match(repository, /isCachedCollectionComplete/);
   assert.match(repository, /invalidateCache\(uid\)/);
   assert.match(repository, /this\.invalidateCache\(uid\)/);
+  assert.match(repository, /BroadcastChannel/);
+  assert.match(repository, /postMessage/);
   assert.match(repository, /cachedDocumentMatches/);
   assert.match(repository, /return false/);
 });
