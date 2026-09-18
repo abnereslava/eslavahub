@@ -727,6 +727,19 @@
 }
 
 @media (max-width: 480px) {
+  .project-row .project-links-inner {
+    grid-template-columns: repeat(2, var(--control-touch));
+    width: calc((var(--control-touch) * 2) + var(--space-2));
+    min-width: calc((var(--control-touch) * 2) + var(--space-2));
+  }
+
+  .project-row .project-links-inner > .project-link-icon {
+    width: var(--control-touch);
+    height: var(--control-touch);
+    min-width: var(--control-touch);
+    max-width: var(--control-touch);
+  }
+
   .pagination {
     justify-content: space-between;
   }
