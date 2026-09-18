@@ -90,8 +90,12 @@
   text-decoration: none;
 }
 
-.project-name-link:hover {
+.project-name-link:hover .project-name-text {
   text-decoration: underline;
+}
+
+.project-name-link:hover .project-pending-asterisk {
+  text-decoration: none;
 }
 
 .project-name-cell > span {
