@@ -485,10 +485,10 @@ async function renderProjectList(
 
                       <div class="project-cell project-name-cell" data-label="Nome do Projeto" role="cell">
                         <a class="project-name-link" href="#/projects/${encodeURIComponent(project.id)}">
-                          <span>${escapeHtml(project.name)}</span>
+                          <span class="project-name-text">${escapeHtml(project.name)}</span>
                           ${
                             project.has_open_pending
-                              ? '<span class="project-pending-dot" aria-label="Possui pendências não concluídas" title="Possui pendências não concluídas"></span>'
+                              ? '<span class="project-pending-asterisk" aria-hidden="true" title="Possui pendências não concluídas">*</span><span class="sr-only">Possui pendências não concluídas</span>'
                               : ""
                           }
                         </a>
