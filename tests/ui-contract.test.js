@@ -24,6 +24,7 @@ const projectStyles = readFileSync(
 test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
   assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
+  assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
 
   for (const route of ["dashboard", "projects", "domains", "catalogs"]) {
     assert.match(main, new RegExp(`data-section="${route}"`));
@@ -65,6 +66,9 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /search-console-mark/);
   assert.match(projects, /renderProjectDomain/);
   assert.match(projects, /status-cycle/);
+  assert.match(projects, /portfolio_visible/);
+  assert.match(projects, /portfolio-seal/);
+  assert.match(projects, /PAUSED/);
   assert.match(projects, /class="unstyled-link"/);
 });
 
