@@ -127,7 +127,7 @@ async function queryProjects(
     categoryRepository.list(uid),
     projectStatusRepository.list(uid),
     technologyRepository.list(uid),
-    hasOpenPending ? pendingItemRepository.list(uid) : Promise.resolve([]),
+    pendingItemRepository.list(uid),
     domainRepository.list(uid)
   ]);
 
@@ -158,7 +158,8 @@ async function queryProjects(
       category: categoryMap.get(project.category_id) || null,
       status: statusMap.get(project.status_id) || null,
       technologies: (project.technology_ids || []).map((id) => technologyMap.get(id)).filter(Boolean),
-      domain: domainsByProject.get(project.id) || null
+      domain: domainsByProject.get(project.id) || null,
+      has_open_pending: openPendingProjectIds.has(project.id)
     }));
 
   if (normalizedSearch) {
