@@ -2,7 +2,6 @@ import {
   createProject,
   getProjectDetails,
   getProjectFormOptions,
-  getProjectListOptions,
   queryProjects,
   updateProject
 } from "../services/project-service.js";
@@ -83,34 +82,32 @@ function applyProjectRowTone(row, code) {
   row.classList.add(projectRowTone(code));
 }
 
-const PROJECT_SORT_OPTIONS = Object.freeze([
-  ["project-name-asc", "Projeto A–Z"],
-  ["project-name-desc", "Projeto Z–A"],
-  ["client-asc", "Cliente A–Z"],
-  ["client-desc", "Cliente Z–A"],
-  ["status-cycle", "Status: ciclo"],
-  ["status-cycle-desc", "Status: ciclo inverso"],
-  ["expiration-asc", "Vencimento mais próximo"],
-  ["expiration-desc", "Vencimento mais distante"],
-  ["updated-desc", "Modificado recentemente"],
-  ["updated-asc", "Modificado há mais tempo"],
-  ["number-asc", "ID crescente"],
-  ["number-desc", "ID decrescente"]
-]);
-
 function normalizedSort(sort) {
   if (!sort || sort === "name-asc") return "project-name-asc";
   if (sort === "name-desc") return "project-name-desc";
   return sort;
 }
 
-function renderSortOptions(sort) {
-  const current = normalizedSort(sort);
+const PROJECT_LIST_SORT_KEY_PREFIX = "eslavahub:project-list-sort";
 
-  return PROJECT_SORT_OPTIONS.map(
-    ([value, label]) =>
-      `<option value="${value}" ${current === value ? "selected" : ""}>${label}</option>`
-  ).join("");
+function projectListSortKey(uid) {
+  return `${PROJECT_LIST_SORT_KEY_PREFIX}:${uid}`;
+}
+
+function readPersistedProjectSort(uid) {
+  try {
+    return window.localStorage.getItem(projectListSortKey(uid)) || "";
+  } catch {
+    return "";
+  }
+}
+
+function persistProjectSort(uid, sort) {
+  try {
+    window.localStorage.setItem(projectListSortKey(uid), normalizedSort(sort));
+  } catch {
+    // Sorting preference is optional; the list still works without localStorage.
+  }
 }
 
 function renderSortableHeader(label, filters, ascending, descending) {
@@ -129,35 +126,6 @@ function renderSortableHeader(label, filters, ascending, descending) {
       <span>${escapeHtml(label)}</span>
       <span class="sort-indicator" aria-hidden="true">${indicator}</span>
     </a>
-  `;
-}
-
-function renderAppliedFilters(filters, options) {
-  const chips = [];
-  const category = options.categories.find((item) => item.id === filters.categoryId);
-  const status = options.statuses.find((item) => item.id === filters.statusId);
-  const technology = options.technologies.find((item) => item.id === filters.technologyId);
-
-  const addChip = (label, overrides) => {
-    chips.push(
-      `<a class="filter-chip" href="${projectListHash(filters, { ...overrides, page: 1 })}">${escapeHtml(label)} <span aria-hidden="true">×</span></a>`
-    );
-  };
-
-  if (filters.search) addChip(`Busca: ${filters.search}`, { search: "" });
-  if (category) addChip(`Categoria: ${category.name}`, { categoryId: "" });
-  if (status) addChip(`Status: ${status.name}`, { statusId: "" });
-  if (filters.client) addChip(`Cliente: ${filters.client}`, { client: "" });
-  if (technology) addChip(`Tecnologia: ${technology.name}`, { technologyId: "" });
-  if (filters.hasOpenPending) addChip("Com pendência aberta", { hasOpenPending: false });
-
-  if (!chips.length) return "";
-
-  return `
-    <div class="applied-filters" aria-label="Filtros aplicados">
-      ${chips.join("")}
-      <a class="filter-clear-link" href="${filters.archived ? "#/projects?archived=1" : "#/projects"}">Limpar filtros</a>
-    </div>
   `;
 }
 
@@ -301,14 +269,7 @@ function projectListHash(filters, overrides = {}) {
 
   if (values.archived) params.set("archived", "1");
   if (values.search) params.set("search", values.search);
-  if (values.categoryId) params.set("categoryId", values.categoryId);
-  if (values.statusId) params.set("statusId", values.statusId);
-  if (values.client) params.set("client", values.client);
-  if (values.technologyId) params.set("technologyId", values.technologyId);
-  if (values.hasOpenPending) params.set("hasOpenPending", "1");
-  if (values.sort && !["name-asc", "project-name-asc"].includes(values.sort)) {
-    params.set("sort", values.sort);
-  }
+  if (values.sort) params.set("sort", normalizedSort(values.sort));
   if (values.page && values.page > 1) params.set("page", String(values.page));
 
   const query = params.toString();
@@ -321,43 +282,26 @@ async function renderProjectList(
   {
     archived = false,
     search = "",
-    categoryId = "",
-    statusId = "",
-    statusCode = "",
-    client = "",
-    technologyId = "",
-    hasOpenPending = false,
-    sort = "project-name-asc",
+    sort = null,
     page = 1
   } = {}
 ) {
   renderLoading(container, "Carregando projetos...");
 
   try {
-    const options = await getProjectListOptions(uid);
-    const effectiveStatusId = statusId || options.statuses.find((item) => item.code === statusCode)?.id || "";
+    const effectiveSort = normalizedSort(
+      sort || readPersistedProjectSort(uid) || "project-name-asc"
+    );
+    persistProjectSort(uid, effectiveSort);
+
     const filters = {
       archived,
       search,
-      categoryId,
-      statusId: effectiveStatusId,
-      client,
-      technologyId,
-      hasOpenPending,
-      sort,
+      sort: effectiveSort,
       page
     };
     const result = await queryProjects(uid, filters);
-    const hasFilters = Boolean(
-      search || categoryId || effectiveStatusId || client || technologyId || hasOpenPending
-    );
-    const secondaryFilterCount = [
-      categoryId,
-      effectiveStatusId,
-      client,
-      technologyId,
-      hasOpenPending
-    ].filter(Boolean).length;
+    const hasSearch = Boolean(search);
 
     container.innerHTML = `
       <section class="page-header project-list-page-header">
@@ -365,15 +309,9 @@ async function renderProjectList(
           <h1>${archived ? "Projetos arquivados" : "Seus projetos"}</h1>
           <p>${archived ? "Consulte ou restaure projetos arquivados." : "Acompanhe código, deploy, cliente e status em um só lugar."}</p>
         </div>
-        <div class="actions">
-          <a class="button button-secondary" href="${archived ? "#/projects" : "#/projects?archived=1"}">
-            ${archived ? "Ver ativos" : "Ver arquivados"}
-          </a>
-          <a class="button button-primary" href="#/projects/new">Novo projeto</a>
-        </div>
       </section>
 
-      <form id="project-filters" class="panel project-filter-panel">
+      <form id="project-search" class="panel project-filter-panel">
         <div class="project-filter-toolbar">
           <label class="compact-filter-search">
             <span class="sr-only">Buscar projetos</span>
@@ -385,79 +323,17 @@ async function renderProjectList(
             />
           </label>
 
-          <label class="compact-filter-sort">
-            <span class="sr-only">Ordenar projetos</span>
-            <select name="sort" aria-label="Ordenar projetos">
-              ${renderSortOptions(sort)}
-            </select>
-          </label>
+          <button class="button button-secondary compact-filter-apply" type="submit">Buscar</button>
 
-          <button class="button button-primary compact-filter-apply" type="submit">Aplicar</button>
-
-          <button
-            id="toggle-advanced-filters"
-            class="advanced-filters-toggle"
-            type="button"
-            aria-expanded="${secondaryFilterCount ? "true" : "false"}"
-            aria-controls="advanced-filter-panel"
+          <a
+            class="button button-secondary project-toolbar-archive"
+            href="${projectListHash(filters, { archived: !archived, page: 1 })}"
           >
-            <span>Mais filtros</span>
-            ${secondaryFilterCount ? `<span class="filter-count">${secondaryFilterCount}</span>` : ""}
-            <span class="advanced-filters-chevron" aria-hidden="true">▾</span>
-          </button>
+            ${archived ? "Ver ativos" : "Ver arquivados"}
+          </a>
+
+          <a class="button button-primary project-toolbar-new" href="#/projects/new">Novo projeto</a>
         </div>
-
-        <div
-          id="advanced-filter-panel"
-          class="advanced-filter-panel"
-          ${secondaryFilterCount ? "" : "hidden"}
-        >
-          <div class="advanced-filter-grid">
-            <label class="field">
-              <span>Categoria</span>
-              <select name="categoryId">
-                <option value="">Todas</option>
-                ${options.categories.map((item) => `<option value="${escapeHtml(item.id)}" ${categoryId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-              </select>
-            </label>
-
-            <label class="field">
-              <span>Status</span>
-              <select name="statusId">
-                <option value="">Todos</option>
-                ${options.statuses.map((item) => `<option value="${escapeHtml(item.id)}" ${effectiveStatusId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-              </select>
-            </label>
-
-            <label class="field">
-              <span>Cliente</span>
-              <select name="client">
-                <option value="">Todos</option>
-                ${options.clients.map((item) => `<option value="${escapeHtml(item)}" ${client === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
-              </select>
-            </label>
-
-            <label class="field">
-              <span>Tecnologia</span>
-              <select name="technologyId">
-                <option value="">Todas</option>
-                ${options.technologies.map((item) => `<option value="${escapeHtml(item.id)}" ${technologyId === item.id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}
-              </select>
-            </label>
-
-            <label class="checkbox-item compact-pending-filter">
-              <input name="hasOpenPending" type="checkbox" ${hasOpenPending ? "checked" : ""} />
-              <span>Com pendência aberta</span>
-            </label>
-
-            <div class="actions advanced-filter-actions">
-              <button class="button button-primary button-small" type="submit">Aplicar filtros</button>
-              <a class="button button-secondary button-small" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar</a>
-            </div>
-          </div>
-        </div>
-
-        ${renderAppliedFilters(filters, options)}
       </form>
 
       <div class="list-summary">
@@ -502,7 +378,7 @@ async function renderProjectList(
                           data-previous-value="${escapeHtml(project.status_id)}"
                           aria-label="Alterar status de ${escapeHtml(project.name)}"
                         >
-                          ${options.statuses
+                          ${result.statuses
                             .filter((status) => QUICK_STATUS_CODES.has(status.code))
                             .map(
                               (status) =>
@@ -543,9 +419,9 @@ async function renderProjectList(
                 : ""
             }`
           : `<section class="empty-state">
-              <h2>${hasFilters ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
-              <p>${hasFilters ? "Altere ou limpe os filtros para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
-              ${hasFilters ? `<a class="button button-secondary" href="${archived ? "#/projects?archived=1" : "#/projects"}">Limpar filtros</a>` : archived ? "" : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'}
+              <h2>${hasSearch ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
+              <p>${hasSearch ? "Altere ou limpe a busca para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
+              ${hasSearch ? `<a class="button button-secondary" href="${projectListHash(filters, { search: "", page: 1 })}">Limpar busca</a>` : archived ? "" : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'}
             </section>`
       }
     `;
@@ -580,39 +456,11 @@ async function renderProjectList(
       });
     });
 
-    const advancedFiltersToggle = container.querySelector("#toggle-advanced-filters");
-    const advancedFilterPanel = container.querySelector("#advanced-filter-panel");
-
-    advancedFiltersToggle?.addEventListener("click", () => {
-      const willOpen = advancedFilterPanel.hasAttribute("hidden");
-
-      if (willOpen) {
-        advancedFilterPanel.removeAttribute("hidden");
-      } else {
-        advancedFilterPanel.setAttribute("hidden", "");
-      }
-
-      advancedFiltersToggle.setAttribute("aria-expanded", String(willOpen));
-      advancedFiltersToggle.classList.toggle("is-open", willOpen);
-    });
-
-    const sortSelect = container.querySelector('#project-filters select[name="sort"]');
-    sortSelect?.addEventListener("change", () => {
-      container.querySelector("#project-filters").requestSubmit();
-    });
-
-    container.querySelector("#project-filters").addEventListener("submit", (event) => {
+    container.querySelector("#project-search").addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-      window.location.hash = projectListHash({
-        archived,
+      window.location.hash = projectListHash(filters, {
         search: data.get("search")?.trim() || "",
-        categoryId: data.get("categoryId") || "",
-        statusId: data.get("statusId") || "",
-        client: data.get("client") || "",
-        technologyId: data.get("technologyId") || "",
-        hasOpenPending: data.get("hasOpenPending") === "on",
-        sort: data.get("sort") || "project-name-asc",
         page: 1
       });
     });
