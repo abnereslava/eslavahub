@@ -119,11 +119,11 @@ Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 Backlog atual: **61 tasks**, sendo 48 do MVP funcional, 12 do marco separado de redesign visual e 1 de enriquecimento de dados.
 
-- 23 concluídas;
-- 37 em progresso;
+- 24 concluídas;
+- 36 em progresso;
 - 1 ainda não iniciada.
 
-O redesign visual já concluiu auditoria, tokens, tipografia, spacing, componentes-base, shell, Dashboard, Detalhe e harmonização de Pendências/Domínios/Cadastros. Responsividade/acessibilidade e QA possuem implementação técnica e aguardam validação visual autenticada. O enriquecimento de repositórios também está implementado e aguarda confirmação no Firestore real.
+O redesign visual já concluiu auditoria, tokens, tipografia, spacing, componentes-base, shell, Dashboard, Projetos, Detalhe e harmonização de Pendências/Domínios/Cadastros. Responsividade/acessibilidade e QA permanecem em validação final. O enriquecimento de repositórios está implementado para 24 dos 27 projetos e aguarda confirmação no Firestore real.
 
 ## Migração da planilha
 
