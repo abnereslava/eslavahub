@@ -81,6 +81,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
 
   appElement.className = "app-shell workspace-shell";
   appElement.innerHTML = `
+    <a class="skip-link" href="#page-content">Pular para o conteúdo</a>
     <header class="topbar">
       <a class="brand" href="#/dashboard" aria-label="EslavaHub — Dashboard">
         <span class="brand-mark" aria-hidden="true">E</span>
