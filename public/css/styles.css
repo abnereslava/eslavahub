@@ -289,18 +289,88 @@ button:disabled {
   gap: var(--space-3);
 }
 
-.header-tools {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
+.header-links-menu {
+  position: relative;
 }
 
-.header-tool-link {
+.header-links-menu > summary {
+  list-style: none;
+}
+
+.header-links-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.header-links-trigger {
+  gap: 6px;
   white-space: nowrap;
+}
+
+.header-links-arrow {
+  display: inline-block;
+  color: var(--color-text-muted);
+  font-size: 0.9em;
+  transition: transform 120ms ease;
+}
+
+.header-links-menu[open] .header-links-arrow {
+  transform: rotate(90deg);
+}
+
+.header-links-popover {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 30;
+  display: grid;
+  min-width: 180px;
+  padding: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.header-links-item {
+  padding: 8px 10px;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.header-links-item:hover,
+.header-links-item:focus-visible {
+  color: var(--color-brand-strong);
+  background: var(--color-brand-surface);
 }
 
 .header-refresh {
-  white-space: nowrap;
+  width: var(--control-compact);
+  min-width: var(--control-compact);
+  padding: 0;
+}
+
+.header-refresh-icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.header-refresh.is-refreshing .header-refresh-icon {
+  animation: header-refresh-spin 700ms linear infinite;
+}
+
+@keyframes header-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .connection-state {
@@ -684,15 +754,18 @@ button:disabled {
     display: none;
   }
 
-  .account-menu,
-  .header-tools {
+  .account-menu {
     gap: var(--space-1);
   }
 
-  .header-tool-link,
+  .header-links-trigger,
   #sign-out {
     padding-inline: var(--space-2);
     font-size: var(--font-size-caption);
+  }
+
+  .header-links-popover {
+    min-width: 164px;
   }
 
   .brand-logo {
