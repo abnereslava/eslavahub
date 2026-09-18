@@ -283,6 +283,7 @@ async function renderAuthenticatedRoute() {
       archived: query.get("archived") === "1",
       search: query.get("search") || "",
       hasOpenPending: query.get("hasOpenPending") === "1",
+      hiddenStatusCodes: query.getAll("hideStatus"),
       sort: query.has("sort") ? query.get("sort") : null
     });
     return;
