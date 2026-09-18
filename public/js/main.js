@@ -523,7 +523,6 @@ async function renderAuthenticatedRoute() {
       search: query.get("search") || "",
       hasOpenPending: query.get("hasOpenPending") === "1",
       hiddenStatusCodes: query.getAll("hideStatus"),
-      statusCode: query.get("status") || "",
       sort: query.has("sort") ? query.get("sort") : null
     });
     animatePendingMobileTabEntry(container);
