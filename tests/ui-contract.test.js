@@ -30,6 +30,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /header-links-arrow/);
   assert.match(main, /id="refresh-workspace"/);
   assert.match(main, /header-refresh-icon/);
+  assert.match(main, /M21 12a9 9/);
   assert.match(main, /is-refreshing/);
   assert.match(main, /id="connection-state"/);
   assert.match(main, /Sincronizando/);
@@ -67,6 +68,7 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /@media \(max-width: 1024px\)/);
   assert.match(projectStyles, /@media \(max-width: 768px\)/);
   assert.match(projectStyles, /@media \(max-width: 480px\)/);
+  assert.match(projectStyles, /project-name-link:hover \.project-name-text/);
 });
 
 test("consolidated project interactions remain present", () => {
