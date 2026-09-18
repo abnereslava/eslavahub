@@ -401,7 +401,7 @@ async function renderProjectList(
           </button>
 
           <details class="project-hide-menu">
-            <summary class="button button-secondary project-hide-trigger">
+            <summary class="button button-secondary project-hide-trigger ${hiddenStatusCodes.length ? "is-active" : ""}">
               <span>Ocultar</span>
               <span class="project-hide-arrow" aria-hidden="true">▾</span>
             </summary>
@@ -421,6 +421,14 @@ async function renderProjectList(
                   `
                 )
                 .join("")}
+              <button
+                id="clear-hidden-statuses"
+                class="project-hide-clear"
+                type="button"
+                ${hiddenStatusCodes.length ? "" : "disabled"}
+              >
+                Limpar
+              </button>
             </div>
           </details>
 
@@ -547,6 +555,16 @@ async function renderProjectList(
         if (!hideMenu.matches(":hover, :focus-within")) {
           hideMenu.removeAttribute("open");
         }
+      });
+    });
+
+    container.querySelector("#clear-hidden-statuses")?.addEventListener("click", () => {
+      const searchValue =
+        container.querySelector('#project-search input[name="search"]')?.value.trim() || "";
+
+      window.location.hash = projectListHash(filters, {
+        search: searchValue,
+        hiddenStatusCodes: []
       });
     });
 
