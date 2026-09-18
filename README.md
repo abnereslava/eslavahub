@@ -140,6 +140,7 @@ Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 - [Plano de migração](docs/MIGRATION_PLAN.md)
 - [Desenvolvimento local](docs/DEVELOPMENT.md)
 - [Configuração Firebase](docs/SETUP_FIREBASE.md)
+- [Plano de otimização do Firestore](docs/FIRESTORE_OPTIMIZATION_PLAN.md)
 - [Plano de redesign visual](docs/UX_REDESIGN_PLAN.md)
 - [Auditoria visual](docs/VISUAL_AUDIT.md)
 - [Design tokens](docs/DESIGN_TOKENS.md)
