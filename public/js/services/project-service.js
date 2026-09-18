@@ -1,9 +1,11 @@
 import { PENDING_STATUS } from "../domain/constants.js";
 import { categoryRepository } from "../repositories/category-repository.js";
+import { domainRepository } from "../repositories/domain-repository.js";
 import { pendingItemRepository } from "../repositories/pending-item-repository.js";
 import { projectRepository } from "../repositories/project-repository.js";
 import { projectStatusRepository } from "../repositories/project-status-repository.js";
 import { technologyRepository } from "../repositories/technology-repository.js";
+import { getNextProjectNumber } from "./project-number-service.js";
 
 const CLOSED_PENDING_STATUSES = new Set([PENDING_STATUS.COMPLETED, PENDING_STATUS.DISCARDED]);
 
@@ -107,18 +109,27 @@ async function queryProjects(
     pageSize = 20
   } = {}
 ) {
-  const [projects, categories, statuses, technologies, pendingItems] = await Promise.all([
+  const [projects, categories, statuses, technologies, pendingItems, domains] = await Promise.all([
     projectRepository.list(uid),
     categoryRepository.list(uid),
     projectStatusRepository.list(uid),
     technologyRepository.list(uid),
-    hasOpenPending ? pendingItemRepository.list(uid) : Promise.resolve([])
+    hasOpenPending ? pendingItemRepository.list(uid) : Promise.resolve([]),
+    domainRepository.list(uid)
   ]);
 
   const categoryMap = new Map(categories.map((item) => [item.id, item]));
   const statusMap = new Map(statuses.map((item) => [item.id, item]));
   const technologyMap = new Map(technologies.map((item) => [item.id, item]));
   const statusIdByCode = new Map(statuses.map((item) => [item.code, item.id]));
+  const domainsByProject = new Map();
+
+  for (const domain of domains) {
+    const current = domainsByProject.get(domain.project_id);
+    if (!current || (!current.is_primary && domain.is_primary)) {
+      domainsByProject.set(domain.project_id, domain);
+    }
+  }
   const openPendingProjectIds = new Set(
     pendingItems
       .filter((item) => !CLOSED_PENDING_STATUSES.has(item.status))
@@ -133,7 +144,8 @@ async function queryProjects(
       ...project,
       category: categoryMap.get(project.category_id) || null,
       status: statusMap.get(project.status_id) || null,
-      technologies: (project.technology_ids || []).map((id) => technologyMap.get(id)).filter(Boolean)
+      technologies: (project.technology_ids || []).map((id) => technologyMap.get(id)).filter(Boolean),
+      domain: domainsByProject.get(project.id) || null
     }));
 
   if (normalizedSearch) {
@@ -190,7 +202,11 @@ async function getProjectDetails(uid, projectId) {
 
 async function createProject(uid, data) {
   await assertValidRelations(uid, data);
-  return projectRepository.createProject(uid, data);
+  const projectNumber = await getNextProjectNumber(uid);
+  return projectRepository.createProject(uid, {
+    ...data,
+    project_number: projectNumber
+  });
 }
 
 async function updateProject(uid, projectId, data) {
