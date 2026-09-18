@@ -35,7 +35,7 @@ No Firebase Console:
 5. para desenvolvimento local, confirmar que `localhost` está autorizado;
 6. para produção no GitHub Pages, adicionar `abnereslava.github.io` aos domínios autorizados.
 
-Usuários não autenticados não devem acessar a aplicação privada.
+Usuários não autenticados não devem acessar a aplicação privada. O EslavaHub possui também uma allowlist de dois UIDs; contas Google fora dessa lista são recusadas no frontend.
 
 ## Firestore
 
@@ -45,10 +45,15 @@ As rules atuais:
 
 - exigem autenticação;
 - exigem que o provedor de login seja Google;
-- permitem que um usuário acesse apenas `/users/{seuUid}/...`;
+- exigem que o UID autenticado esteja na allowlist de duas contas;
+- permitem que cada conta autorizada acesse apenas `/users/{seuUid}/...`;
 - negam acesso global por padrão.
 
 A validação estrutural campo a campo será endurecida conforme os modelos forem implementados.
+
+## Publicar as Security Rules atualizadas
+
+As alterações em `firestore.rules` só entram em vigor depois de serem publicadas no projeto Firebase. Isso pode ser feito pelo Firebase Console em **Firestore Database > Rules** ou pela Firebase CLI.
 
 ## Configuração web
 
