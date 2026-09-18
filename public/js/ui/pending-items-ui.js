@@ -23,6 +23,34 @@ const PRIORITY_LABELS = Object.freeze({
   [PENDING_PRIORITY.HIGH]: "Alta"
 });
 
+const PRIORITY_TONES = Object.freeze({
+  [PENDING_PRIORITY.LOW]: "pending-priority-low",
+  [PENDING_PRIORITY.MEDIUM]: "pending-priority-medium",
+  [PENDING_PRIORITY.HIGH]: "pending-priority-high"
+});
+
+const PENDING_SORT_KEY_PREFIX = "eslavahub:pending-sort";
+
+function pendingSortKey(uid, projectId) {
+  return `${PENDING_SORT_KEY_PREFIX}:${uid}:${projectId}`;
+}
+
+function readPendingSort(uid, projectId) {
+  try {
+    return window.localStorage.getItem(pendingSortKey(uid, projectId)) || "default";
+  } catch {
+    return "default";
+  }
+}
+
+function persistPendingSort(uid, projectId, sort) {
+  try {
+    window.localStorage.setItem(pendingSortKey(uid, projectId), sort);
+  } catch {
+    // Sorting preference is optional.
+  }
+}
+
 function escapeHtml(value = "") {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -51,15 +79,71 @@ function priorityWeight(priority) {
   return 3;
 }
 
-function sortPendingItems(a, b) {
-  if (isOpen(a) !== isOpen(b)) return isOpen(a) ? -1 : 1;
+function compareText(a, b) {
+  return String(a || "").localeCompare(String(b || ""), "pt-BR", {
+    sensitivity: "base"
+  });
+}
 
-  const priorityDiff = priorityWeight(a.priority) - priorityWeight(b.priority);
-  if (priorityDiff) return priorityDiff;
+function statusWeight(status) {
+  const order = [
+    PENDING_STATUS.PENDING,
+    PENDING_STATUS.IN_PROGRESS,
+    PENDING_STATUS.WAITING,
+    PENDING_STATUS.COMPLETED,
+    PENDING_STATUS.DISCARDED
+  ];
+  const index = order.indexOf(status);
+  return index === -1 ? order.length : index;
+}
 
-  const aDate = dateInputValue(a.due_date) || "9999-12-31";
-  const bDate = dateInputValue(b.due_date) || "9999-12-31";
-  return aDate.localeCompare(bDate);
+function sortPendingItems(items, sort = "default") {
+  const [field, direction = "asc"] = sort.split(":");
+  const multiplier = direction === "desc" ? -1 : 1;
+
+  return items.slice().sort((a, b) => {
+    if (field === "description") return compareText(a.description, b.description) * multiplier;
+    if (field === "area") return compareText(a.area, b.area) * multiplier;
+    if (field === "status") return (statusWeight(a.status) - statusWeight(b.status)) * multiplier;
+    if (field === "priority") {
+      return (priorityWeight(a.priority) - priorityWeight(b.priority)) * multiplier;
+    }
+    if (field === "due_date") {
+      const aDate = dateInputValue(a.due_date) || "9999-12-31";
+      const bDate = dateInputValue(b.due_date) || "9999-12-31";
+      return aDate.localeCompare(bDate) * multiplier;
+    }
+    if (field === "notes") return compareText(a.notes, b.notes) * multiplier;
+
+    if (isOpen(a) !== isOpen(b)) return isOpen(a) ? -1 : 1;
+
+    const priorityDiff = priorityWeight(a.priority) - priorityWeight(b.priority);
+    if (priorityDiff) return priorityDiff;
+
+    const aDate = dateInputValue(a.due_date) || "9999-12-31";
+    const bDate = dateInputValue(b.due_date) || "9999-12-31";
+    return aDate.localeCompare(bDate);
+  });
+}
+
+function renderPendingSortHeader(label, field, currentSort) {
+  const [activeField, direction] = currentSort.split(":");
+  const active = activeField === field;
+  const nextDirection = active && direction === "asc" ? "desc" : "asc";
+  const indicator = active ? (direction === "desc" ? "↓" : "↑") : "";
+
+  return `
+    <button
+      class="pending-sort-header ${active ? "is-active" : ""}"
+      type="button"
+      data-sort-field="${field}"
+      data-sort-direction="${nextDirection}"
+      aria-label="Ordenar por ${label}"
+    >
+      <span>${label}</span>
+      <span class="pending-sort-indicator" aria-hidden="true">${indicator}</span>
+    </button>
+  `;
 }
 
 function renderStatusOptions(selected) {
@@ -149,9 +233,13 @@ function pendingRow(item) {
         </select>
       </div>
 
-      <div class="pending-sheet-cell" data-label="Prioridade" role="cell">
+      <div
+        class="pending-sheet-cell pending-priority-cell ${PRIORITY_TONES[item.priority] || "pending-priority-none"}"
+        data-label="Prioridade"
+        role="cell"
+      >
         <select
-          class="pending-inline-select"
+          class="pending-inline-select pending-priority-select"
           data-field="priority"
           aria-label="Prioridade da pendência"
         >
@@ -201,7 +289,9 @@ async function renderPendingItems(container, uid, projectId) {
   container.innerHTML = '<p class="muted">Carregando pendências...</p>';
 
   try {
-    const items = (await pendingItemRepository.listByProject(uid, projectId)).sort(sortPendingItems);
+    const currentSort = readPendingSort(uid, projectId);
+    const rawItems = await pendingItemRepository.listByProject(uid, projectId);
+    const items = sortPendingItems(rawItems, currentSort);
     const openCount = items.filter(isOpen).length;
 
     container.innerHTML = `
@@ -228,12 +318,12 @@ async function renderPendingItems(container, uid, projectId) {
           ? `<div class="pending-sheet" role="table" aria-label="Pendências do projeto">
               <div class="pending-sheet-header" role="row">
                 <div role="columnheader" aria-label="Concluir"></div>
-                <div role="columnheader">Descrição</div>
-                <div role="columnheader">Área</div>
-                <div role="columnheader">Status</div>
-                <div role="columnheader">Prioridade</div>
-                <div role="columnheader">Prazo</div>
-                <div role="columnheader">Notas</div>
+                <div role="columnheader">${renderPendingSortHeader("Descrição", "description", currentSort)}</div>
+                <div role="columnheader">${renderPendingSortHeader("Área", "area", currentSort)}</div>
+                <div role="columnheader">${renderPendingSortHeader("Status", "status", currentSort)}</div>
+                <div role="columnheader">${renderPendingSortHeader("Prioridade", "priority", currentSort)}</div>
+                <div role="columnheader">${renderPendingSortHeader("Prazo", "due_date", currentSort)}</div>
+                <div role="columnheader">${renderPendingSortHeader("Notas", "notes", currentSort)}</div>
                 <div role="columnheader">Ações</div>
               </div>
               ${items.map(pendingRow).join("")}
@@ -241,6 +331,14 @@ async function renderPendingItems(container, uid, projectId) {
           : '<div class="pending-empty"><p class="muted">Nenhuma pendência cadastrada para este projeto.</p></div>'
       }
     `;
+
+    container.querySelectorAll(".pending-sort-header").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const nextSort = `${button.dataset.sortField}:${button.dataset.sortDirection}`;
+        persistPendingSort(uid, projectId, nextSort);
+        await renderPendingItems(container, uid, projectId);
+      });
+    });
 
     const addForm = container.querySelector("#pending-quick-add");
     addForm.addEventListener("submit", async (event) => {
@@ -379,6 +477,17 @@ async function renderPendingItems(container, uid, projectId) {
         await saveRowField(row, prioritySelect, {
           priority: prioritySelect.value || null
         });
+
+        const priorityCell = prioritySelect.closest(".pending-priority-cell");
+        if (priorityCell) {
+          priorityCell.classList.remove(
+            "pending-priority-none",
+            ...Object.values(PRIORITY_TONES)
+          );
+          priorityCell.classList.add(
+            PRIORITY_TONES[prioritySelect.value] || "pending-priority-none"
+          );
+        }
       });
 
       const dueDateInput = row.querySelector('input[data-field="due_date"]');
