@@ -27,7 +27,7 @@ function renderAppLoading(message = "Carregando EslavaHub…") {
   appElement.className = "app-shell loading-shell";
   appElement.innerHTML = `
     <section class="app-loading" role="status" aria-live="polite">
-      <div class="app-loading-mark" aria-hidden="true">E</div>
+      <img class="app-loading-logo" src="./img/eslava-mark.svg" alt="" aria-hidden="true" />
       <div class="app-loading-spinner" aria-hidden="true"></div>
       <p>${escapeHtml(message)}</p>
     </section>
@@ -95,7 +95,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
     <a class="skip-link" href="#page-content">Pular para o conteúdo</a>
     <header class="topbar">
       <a class="brand" href="#/dashboard" aria-label="EslavaHub — Dashboard">
-        <span class="brand-mark" aria-hidden="true">E</span>
+        <img class="brand-logo" src="./img/eslava-mark.svg" alt="" aria-hidden="true" />
         <span>EslavaHub</span>
       </a>
       <nav class="main-nav" aria-label="Navegação principal">
