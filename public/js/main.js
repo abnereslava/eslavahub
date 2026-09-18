@@ -53,6 +53,7 @@ function renderSignedOut() {
   appElement.className = "app-shell auth-shell";
   appElement.innerHTML = `
     <section class="card auth-card">
+      <img class="auth-logo" src="./img/eslava-mark.svg" alt="Eslava" />
       <p class="eyebrow">EslavaHub</p>
       <h1>Central de projetos</h1>
       <p>Organize repositórios, deploys, domínios e pendências dos seus projetos de programação.</p>
