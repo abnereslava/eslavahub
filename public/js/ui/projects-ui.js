@@ -86,8 +86,8 @@ const PROJECT_SORT_OPTIONS = Object.freeze([
   ["project-name-desc", "Projeto Z–A"],
   ["client-asc", "Cliente A–Z"],
   ["client-desc", "Cliente Z–A"],
-  ["status-asc", "Status (ordem)"],
-  ["status-desc", "Status (ordem inversa)"],
+  ["status-cycle", "Status: ciclo"],
+  ["status-cycle-desc", "Status: ciclo inverso"],
   ["expiration-asc", "Vencimento mais próximo"],
   ["expiration-desc", "Vencimento mais distante"],
   ["updated-desc", "Modificado recentemente"],
@@ -238,7 +238,7 @@ function renderProjectDomain(domain) {
   const urgent = isExpirationUrgent(domain.expiration_date);
 
   return `
-    <strong class="project-domain-host">${escapeHtml(domain.hostname)}</strong>
+    <strong class="project-domain-host"><a class="unstyled-link" href="https://${escapeHtml(domain.hostname)}" target="_blank" rel="noopener noreferrer">${escapeHtml(domain.hostname)}</a></strong>
     ${
       domain.expiration_date
         ? `<span class="project-domain-expiry ${urgent ? "is-urgent" : ""}">
@@ -425,7 +425,7 @@ async function renderProjectList(
               <div class="project-table-header" role="row">
                 <div role="columnheader">${renderSortableHeader("ID", filters, "number-asc", "number-desc")}</div>
                 <div role="columnheader">${renderSortableHeader("Nome do Projeto", filters, "project-name-asc", "project-name-desc")}</div>
-                <div role="columnheader">${renderSortableHeader("Status", filters, "status-asc", "status-desc")}</div>
+                <div role="columnheader">${renderSortableHeader("Status", filters, "status-cycle", "status-cycle-desc")}</div>
                 <div role="columnheader">Links</div>
                 <div role="columnheader">${renderSortableHeader("Domínio", filters, "expiration-asc", "expiration-desc")}</div>
               </div>
