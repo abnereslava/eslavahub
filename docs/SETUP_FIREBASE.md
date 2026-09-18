@@ -44,12 +44,13 @@ Criar o banco Cloud Firestore e publicar o arquivo `firestore.rules` deste repos
 As rules atuais:
 
 - exigem autenticação;
-- exigem que o provedor de login seja Google;
-- exigem que o UID autenticado esteja na allowlist de duas contas;
-- permitem que cada conta autorizada acesse apenas `/users/{seuUid}/...`;
-- negam acesso global por padrão.
+- exigem que o token tenha sido obtido via Google Sign-In;
+- exigem que o UID autenticado esteja na allowlist das duas contas autorizadas;
+- permitem que cada conta autorizada acesse somente o próprio UID;
+- permitem acesso apenas às coleções usadas pelo EslavaHub: `projects`, `categories`, `statuses`, `technologies`, `domains` e `pendingItems`;
+- negam qualquer outro caminho por padrão.
 
-A validação estrutural campo a campo será endurecida conforme os modelos forem implementados.
+O frontend e as rules aplicam a mesma allowlist de UIDs.
 
 ## Publicar as Security Rules atualizadas
 
