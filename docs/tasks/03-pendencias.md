@@ -6,7 +6,7 @@ Este bloco implementa o acompanhamento do que ainda precisa ser feito em cada pr
 
 ## TASK-021 — Implementar listagem de pendências no projeto
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-012, TASK-015
 
@@ -20,13 +20,13 @@ Pendências são carregadas dentro da ficha do projeto, com status, descrição,
 - [x] concluídas/descartadas são diferenciadas visualmente;
 - [x] projeto sem pendências possui estado vazio;
 - [x] ordenação inicial prioriza abertas, prioridade e prazo;
-- [ ] listagem validada contra Firestore real.
+- [x] listagem validada contra Firestore real.
 
 ---
 
 ## TASK-022 — Implementar criação de pendência
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-012, TASK-021
 
@@ -36,13 +36,13 @@ Pendências são carregadas dentro da ficha do projeto, com status, descrição,
 - [x] criação vincula a pendência ao projeto atual;
 - [x] estado inicial padrão é `PENDING`;
 - [x] após criação a lista é recarregada automaticamente;
-- [ ] criação validada em Firestore real.
+- [x] criação validada em Firestore real.
 
 ---
 
 ## TASK-023 — Implementar edição de pendência
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-022
 
@@ -52,13 +52,13 @@ Pendências são carregadas dentro da ficha do projeto, com status, descrição,
 - [x] descrição continua obrigatória;
 - [x] alterações persistidas atualizam `updated_at` pela camada comum;
 - [x] cancelamento volta à listagem sem persistir o formulário;
-- [ ] edição validada em Firestore real.
+- [x] edição validada em Firestore real.
 
 ---
 
 ## TASK-024 — Implementar fluxo de status e conclusão
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-022
 
@@ -68,13 +68,13 @@ Pendências são carregadas dentro da ficha do projeto, com status, descrição,
 - [x] ao sair de `COMPLETED`, `completed_at` é limpo;
 - [x] concluídas e descartadas não entram na contagem padrão de abertas;
 - [x] alteração de estado atualiza a contagem exibida na própria seção;
-- [ ] transições validadas em Firestore real.
+- [x] transições validadas em Firestore real.
 
 ---
 
 ## TASK-025 — Implementar prioridade e prazo
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-022
 
@@ -84,13 +84,13 @@ Pendências são carregadas dentro da ficha do projeto, com status, descrição,
 - [x] prioridade e prazo aparecem na listagem quando existentes;
 - [x] pendência sem prioridade ou prazo permanece válida;
 - [x] ordenação existente já pode utilizar esses campos;
-- [ ] persistência validada em Firestore real.
+- [x] persistência validada em Firestore real.
 
 ---
 
 ## TASK-026 — Implementar descarte/exclusão controlada de pendência
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-024
 
@@ -103,4 +103,4 @@ O MVP utiliza descarte lógico (`DISCARDED`) com confirmação explícita. Exclu
 - [x] descarte preserva o documento e seu histórico mínimo;
 - [x] não existe exclusão definitiva silenciosa na UI;
 - [x] pendência descartada não entra na contagem de abertas;
-- [ ] descarte validado em Firestore real.
+- [x] descarte validado em Firestore real.
