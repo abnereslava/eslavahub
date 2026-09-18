@@ -6,7 +6,7 @@ Este bloco implementa o controle de domínios associados aos projetos e seus ven
 
 ## TASK-027 — Implementar cadastro de domínio
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-011, TASK-015
 
@@ -20,7 +20,7 @@ A ficha do projeto permite cadastrar múltiplos domínios com hostname obrigató
 - [x] data de expiração e observação são opcionais;
 - [x] projeto pode possuir mais de um domínio;
 - [x] domínio cadastrado aparece na ficha do projeto;
-- [ ] cadastro validado contra Firestore real.
+- [x] cadastro validado contra Firestore real.
 
 ---
 
@@ -46,7 +46,7 @@ A regra está centralizada em `public/js/domain/validation.js` e é utilizada pe
 
 ## TASK-029 — Implementar domínio principal por projeto
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-027
 
@@ -59,7 +59,7 @@ A regra está centralizada em `public/js/domain/validation.js` e é utilizada pe
 - [x] operação da camada de aplicação mantém no máximo um principal por projeto;
 - [x] ao trocar o principal, o anterior é desmarcado no mesmo batch;
 - [x] domínio principal é identificado visualmente;
-- [ ] comportamento validado contra Firestore real.
+- [x] comportamento validado contra Firestore real.
 
 ---
 
@@ -91,7 +91,7 @@ A implementação está em `public/js/domain/domain-expiration.js`.
 
 ## TASK-031 — Implementar alertas visuais de domínio
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-030
 
@@ -105,13 +105,13 @@ A ficha e a listagem global apresentam rótulo textual (`Normal`, `Atenção`, `
 - [x] próximos do vencimento recebem destaque proporcional;
 - [x] informação não depende apenas de cor;
 - [x] domínio sem vencimento é tratado separadamente;
-- [ ] apresentação validada em navegador.
+- [x] apresentação validada em navegador.
 
 ---
 
 ## TASK-032 — Implementar visão/listagem de domínios
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-030, TASK-031
 
@@ -125,4 +125,4 @@ A rota `#/domains` agrega domínios de todos os projetos, ordena por proximidade
 - [x] itens são ordenados por vencimento;
 - [x] vencidos e próximos do vencimento podem ser filtrados;
 - [x] cada domínio permite navegar para o projeto associado;
-- [ ] visão validada contra dados reais no Firestore e em navegador.
+- [x] visão validada contra dados reais no Firestore e em navegador.
