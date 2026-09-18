@@ -25,6 +25,8 @@ test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
   assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
   assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
+  assert.match(main, /id="refresh-workspace"/);
+  assert.match(main, /id="connection-state"/);
 
   for (const route of ["dashboard", "projects", "domains", "catalogs"]) {
     assert.match(main, new RegExp(`data-section="${route}"`));
