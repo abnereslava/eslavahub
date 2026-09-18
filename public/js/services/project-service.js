@@ -162,10 +162,40 @@ async function queryProjects(
   if (hasOpenPending) filtered = filtered.filter((project) => openPendingProjectIds.has(project.id));
 
   filtered.sort((a, b) => {
-    if (sort === "name-desc") return b.name.localeCompare(a.name, "pt-BR");
+    const projectNameAsc = () => a.name.localeCompare(b.name, "pt-BR");
+    const projectNameDesc = () => b.name.localeCompare(a.name, "pt-BR");
+    const clientAsc = () =>
+      (a.client_name || "\uffff").localeCompare(b.client_name || "\uffff", "pt-BR");
+    const clientDesc = () =>
+      (b.client_name || "").localeCompare(a.client_name || "", "pt-BR");
+    const statusAsc = () =>
+      (a.status?.sort_order ?? Number.MAX_SAFE_INTEGER) -
+        (b.status?.sort_order ?? Number.MAX_SAFE_INTEGER) ||
+      (a.status?.name || "").localeCompare(b.status?.name || "", "pt-BR");
+    const statusDesc = () => -statusAsc();
+    const expirationAsc = () => {
+      const aValue = a.domain?.expiration_date || "9999-12-31";
+      const bValue = b.domain?.expiration_date || "9999-12-31";
+      return aValue.localeCompare(bValue);
+    };
+    const expirationDesc = () => {
+      const aValue = a.domain?.expiration_date || "";
+      const bValue = b.domain?.expiration_date || "";
+      return bValue.localeCompare(aValue);
+    };
+
+    if (sort === "number-asc") return (a.project_number ?? Number.MAX_SAFE_INTEGER) - (b.project_number ?? Number.MAX_SAFE_INTEGER);
+    if (sort === "number-desc") return (b.project_number ?? 0) - (a.project_number ?? 0);
+    if (sort === "project-name-desc" || sort === "name-desc") return projectNameDesc();
+    if (sort === "client-asc") return clientAsc();
+    if (sort === "client-desc") return clientDesc();
+    if (sort === "status-asc") return statusAsc();
+    if (sort === "status-desc") return statusDesc();
+    if (sort === "expiration-asc") return expirationAsc();
+    if (sort === "expiration-desc") return expirationDesc();
     if (sort === "updated-desc") return timestampValue(b.updated_at) - timestampValue(a.updated_at);
     if (sort === "updated-asc") return timestampValue(a.updated_at) - timestampValue(b.updated_at);
-    return a.name.localeCompare(b.name, "pt-BR");
+    return projectNameAsc();
   });
 
   const total = filtered.length;
