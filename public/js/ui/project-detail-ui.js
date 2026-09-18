@@ -37,8 +37,18 @@ async function renderProjectDetailPage(container, uid, projectId) {
 
   try {
     const project = await getProjectDetails(uid, projectId);
+
     if (!project) {
       container.innerHTML = `
+        <section class="panel">
+          <p class="error-message">Projeto não encontrado.</p>
+          <a class="button button-secondary" href="#/projects">Voltar aos projetos</a>
+        </section>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
       <section class="panel project-overview">
         <div class="project-overview-top">
           <div class="project-overview-title">
@@ -52,7 +62,12 @@ async function renderProjectDetailPage(container, uid, projectId) {
 
           <div class="actions project-overview-actions">
             <a class="button button-secondary button-small" href="#/projects">Voltar</a>
-            <a class="button button-primary button-small" href="#/projects/${encodeURIComponent(project.id)}/edit">Editar</a>
+            <a
+              class="button button-primary button-small"
+              href="#/projects/${encodeURIComponent(project.id)}/edit"
+            >
+              Editar
+            </a>
           </div>
         </div>
 
@@ -67,7 +82,12 @@ async function renderProjectDetailPage(container, uid, projectId) {
             <dd>
               ${
                 project.technologies.length
-                  ? project.technologies.map((item) => `<span class="tag compact-tag">${escapeHtml(item.name)}</span>`).join("")
+                  ? project.technologies
+                      .map(
+                        (item) =>
+                          `<span class="tag compact-tag">${escapeHtml(item.name)}</span>`
+                      )
+                      .join("")
                   : "—"
               }
             </dd>
@@ -113,8 +133,18 @@ async function renderProjectDetailPage(container, uid, projectId) {
         <details class="panel danger-zone detail-span-2 compact-danger">
           <summary>${project.archived_at ? "Restaurar projeto" : "Arquivar projeto"}</summary>
           <div class="compact-danger-content">
-            <p>${project.archived_at ? "O projeto voltará para a listagem ativa." : "Os dados relacionados serão preservados e o projeto sairá da listagem ativa."}</p>
-            <button id="archive-project" class="button ${project.archived_at ? "button-secondary" : "button-danger"}" type="button">
+            <p>
+              ${
+                project.archived_at
+                  ? "O projeto voltará para a listagem ativa."
+                  : "Os dados relacionados serão preservados e o projeto sairá da listagem ativa."
+              }
+            </p>
+            <button
+              id="archive-project"
+              class="button ${project.archived_at ? "button-secondary" : "button-danger"}"
+              type="button"
+            >
               ${project.archived_at ? "Restaurar" : "Arquivar"}
             </button>
           </div>
@@ -137,6 +167,7 @@ async function renderProjectDetailPage(container, uid, projectId) {
         } else {
           await archiveProject(uid, project.id);
         }
+
         window.location.hash = project.archived_at ? "#/projects" : "#/projects?archived=1";
       } catch (error) {
         console.error("Project archive/restore failed", error);
@@ -145,7 +176,8 @@ async function renderProjectDetailPage(container, uid, projectId) {
     });
   } catch (error) {
     console.error("Project details failed", error);
-    container.innerHTML = '<section class="panel"><p class="error-message">Não foi possível carregar o projeto.</p></section>';
+    container.innerHTML =
+      '<section class="panel"><p class="error-message">Não foi possível carregar o projeto.</p></section>';
   }
 }
 
