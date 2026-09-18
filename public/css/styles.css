@@ -397,18 +397,18 @@ button:disabled {
   border-color: var(--color-info-border);
 }
 
-.account-menu strong,
-.account-menu span {
+.account-identity strong,
+.account-identity span {
   display: block;
   text-align: right;
 }
 
-.account-menu strong {
+.account-identity strong {
   color: var(--color-text-strong);
   font-size: var(--font-size-body-sm);
 }
 
-.account-menu span {
+.account-identity span {
   color: var(--color-text-muted);
   font-size: var(--font-size-caption);
 }
