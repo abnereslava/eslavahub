@@ -1,4 +1,5 @@
 import {
+  getDocFromCache,
   serverTimestamp,
   setDoc
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -13,6 +14,15 @@ class WorkspaceMetadataRepository extends FirestoreRepository {
   }
 
   async getWorkspace(uid) {
+    const ref = this.documentRef(uid, WORKSPACE_METADATA_ID);
+
+    try {
+      const cached = await getDocFromCache(ref);
+      if (cached.exists()) return { id: cached.id, ...cached.data() };
+    } catch {
+      // First access on this browser: fetch from server through the base repository.
+    }
+
     return this.get(uid, WORKSPACE_METADATA_ID);
   }
 
