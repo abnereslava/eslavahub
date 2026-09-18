@@ -33,6 +33,8 @@ test("service worker keeps app shell local and supports Firebase SDK reuse", () 
   assert.match(serviceWorker, /firebasejs\/12\.19\.0/);
   assert.match(serviceWorker, /navigationPreload/);
   assert.match(serviceWorker, /caches\.delete/);
+  assert.match(serviceWorker, /return \(await networkPromise\) \|\| Response\.error\(\)/);
+  assert.match(serviceWorker, /new URL\(fallbackUrl, self\.registration\.scope\)\.href/);
 });
 
 test("mobile shell uses touch-friendly bottom navigation and bounded popovers", () => {
