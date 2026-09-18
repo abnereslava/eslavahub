@@ -54,8 +54,31 @@ const PROJECT_STATUS_TONES = Object.freeze({
   ABANDONED: "status-tone-abandoned"
 });
 
+const PROJECT_ROW_TONES = Object.freeze({
+  IDEALIZED: "status-row-idealized",
+  IN_DEVELOPMENT: "status-row-development",
+  FUNCTIONAL: "status-row-functional",
+  FINISHED: "status-row-finished",
+  PAUSED: "status-row-paused",
+  ABANDONED: "status-row-abandoned"
+});
+
 function projectStatusTone(code) {
   return PROJECT_STATUS_TONES[code] || "status-tone-neutral";
+}
+
+function projectRowTone(code) {
+  return PROJECT_ROW_TONES[code] || "status-row-neutral";
+}
+
+function applyProjectRowTone(row, code) {
+  if (!row) return;
+
+  for (const className of Object.values(PROJECT_ROW_TONES)) {
+    row.classList.remove(className);
+  }
+
+  row.classList.add(projectRowTone(code));
 }
 
 const PROJECT_SORT_OPTIONS = Object.freeze([
@@ -398,7 +421,7 @@ async function renderProjectList(
               ${result.items
                 .map(
                   (project) => `
-                    <div class="project-row" role="row">
+                    <div class="project-row ${projectRowTone(project.status?.code)}" role="row">
                       <div class="project-cell project-number-cell" data-label="ID" role="cell">
                         ${escapeHtml(project.project_number ?? "—")}
                       </div>
@@ -477,6 +500,7 @@ async function renderProjectList(
 
           const selectedCode = select.selectedOptions[0]?.dataset.code;
           select.className = `quick-status-select ${projectStatusTone(selectedCode)}`;
+          applyProjectRowTone(select.closest(".project-row"), selectedCode);
         } catch (error) {
           console.error("Quick status update failed", error);
           select.value = previousValue;
