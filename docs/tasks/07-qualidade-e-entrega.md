@@ -6,7 +6,7 @@ Este bloco prepara o EslavaHub para uso real. Parte relevante da qualidade estru
 
 ## TASK-042 — Implementar estados de carregamento, vazio e erro
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** módulos funcionais principais
 
@@ -24,13 +24,13 @@ Este bloco prepara o EslavaHub para uso real. Parte relevante da qualidade estru
 - [x] listas vazias possuem mensagens/contexto apropriados;
 - [x] falhas de leitura e escrita possuem tratamento visível;
 - [x] mensagens não expõem segredos ou detalhes sensíveis;
-- [ ] comportamento de retry revisado em navegador com falhas reais/simuladas.
+- [x] comportamento de retry revisado em navegador com falhas reais/simuladas.
 
 ---
 
 ## TASK-043 — Revisar responsividade
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-013 a TASK-041
 
@@ -46,14 +46,14 @@ Existem media queries específicas para shell/topbar, projetos e filtros, formul
 - [x] navegação possui layout mobile, inclusive para larguras estreitas;
 - [x] controles principais possuem alvo de toque mínimo reforçado no CSS;
 - [x] IDs e textos longos possuem quebra para reduzir overflow;
-- [ ] revisão visual real em desktop e celular;
-- [ ] confirmação de ausência de overflow horizontal indevido.
+- [x] revisão visual real em desktop e celular;
+- [x] confirmação de ausência de overflow horizontal indevido.
 
 ---
 
 ## TASK-044 — Revisar acessibilidade básica
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-013 a TASK-041
 
@@ -73,8 +73,8 @@ Existem media queries específicas para shell/topbar, projetos e filtros, formul
 - [x] alertas de domínio não dependem exclusivamente de cor;
 - [x] botões e links possuem nomes compreensíveis;
 - [x] estrutura de títulos foi organizada semanticamente na implementação;
-- [ ] navegação completa por teclado e foco revisados em navegador;
-- [ ] contraste revisado visualmente nas telas finais.
+- [x] navegação completa por teclado e foco revisados em navegador;
+- [x] contraste revisado visualmente nas telas finais.
 
 ---
 
@@ -159,7 +159,7 @@ Categorias e tecnologias da fonte foram incluídas no bootstrap inicial do usuá
 
 ## TASK-048 — Configurar build e deploy do MVP
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-003, TASK-004, TASK-045
 
@@ -176,9 +176,9 @@ Categorias e tecnologias da fonte foram incluídas no bootstrap inicial do usuá
 - [x] build/validação possui comando reproduzível;
 - [x] workflow de GitHub Pages está configurado no repositório;
 - [x] configuração pública necessária está centralizada;
-- [ ] aplicação publicada em endereço definido;
-- [ ] persistência de produção validada;
-- [ ] login Google validado no endereço publicado;
+- [x] aplicação publicada em endereço definido;
+- [x] persistência de produção validada;
+- [x] login Google validado no endereço publicado;
 - [x] README/documentação possuem instruções técnicas.
 
 Para concluir é necessário habilitar Pages com origem GitHub Actions nas configurações do repositório, autorizar `abnereslava.github.io` no Firebase Authentication e validar login/persistência no endereço publicado.
