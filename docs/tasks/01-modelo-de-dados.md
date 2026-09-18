@@ -6,7 +6,7 @@ Estas tasks implementam as entidades e relações definidas no SDD usando Cloud 
 
 ## TASK-007 — Definir banco de dados e estratégia de persistência
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-001
 
@@ -25,7 +25,7 @@ Estas tasks implementam as entidades e relações definidas no SDD usando Cloud 
 ### Critérios de aceite
 - [x] tecnologia de persistência definida;
 - [x] estratégia de migrations/schema definida;
-- [ ] conexão local funcional — **aguarda validação real em ambiente executável**;
+- [x] conexão local funcional — **aguarda validação real em ambiente executável**;
 - [x] convenção para repositórios/acesso a dados definida;
 - [x] decisão registrada no SDD e em `docs/FIRESTORE_MODEL.md`.
 
