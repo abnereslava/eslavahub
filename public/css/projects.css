@@ -1272,4 +1272,24 @@
     color: currentColor;
     font-weight: 900;
   }
+
+  /* Mobile toolbar order:
+     Buscar | Com pendências
+     Filtrar por status | Ocultar
+     Ver arquivados | + Novo projeto */
+  .mobile-status-sort {
+    order: 4;
+  }
+
+  .project-hide-menu {
+    order: 5;
+  }
+
+  .project-toolbar-archive {
+    order: 6;
+  }
+
+  .project-toolbar-new {
+    order: 7;
+  }
 }
