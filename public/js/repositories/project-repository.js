@@ -21,6 +21,7 @@ class ProjectRepository extends FirestoreRepository {
       client_name: data.client_name?.trim() || null,
       quick_notes: data.quick_notes?.trim() || null,
       technology_ids: [...new Set(data.technology_ids || [])],
+      project_number: data.project_number ?? null,
       archived_at: null
     });
   }
