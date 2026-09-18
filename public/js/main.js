@@ -241,7 +241,7 @@ function setupMobileTabSwipe(container) {
         event.touches.length !== 1 ||
         !window.matchMedia("(max-width: 768px)").matches ||
         event.target.closest(
-          "input, select, textarea, [contenteditable='true'], .main-nav, .pending-sheet"
+          "input, select, textarea, [contenteditable='true'], .main-nav, .pending-sheet-scroll"
         )
       ) {
         resetSwipe();

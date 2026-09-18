@@ -56,11 +56,28 @@
   font-size: var(--font-size-label);
 }
 
-.pending-sheet {
+.pending-sheet-scroll {
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.pending-sheet-scroll:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.pending-sheet {
+  width: max-content;
+  min-width: 100%;
+  background: var(--color-surface);
 }
 
 .pending-sheet-header,
@@ -372,18 +389,23 @@
 
   /* Keep the desktop spreadsheet model on mobile, but make it denser
      and let the user pan horizontally inside the pending-items panel. */
-  .pending-sheet {
-    display: block;
+  .pending-sheet-scroll {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    touch-action: auto;
     overscroll-behavior-inline: contain;
-    touch-action: pan-x pan-y;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+  }
+
+  .pending-sheet {
+    display: block;
+    width: max-content;
+    min-width: 848px;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
   }
 
   .pending-sheet-header,
@@ -482,6 +504,10 @@
 }
 
 @media (max-width: 480px) {
+  .pending-sheet {
+    min-width: 806px;
+  }
+
   .pending-sheet-header,
   .pending-sheet-row {
     grid-template-columns:

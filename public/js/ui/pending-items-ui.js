@@ -315,8 +315,14 @@ async function renderPendingItems(container, uid, projectId) {
 
       ${
         items.length
-          ? `<div class="pending-sheet" role="table" aria-label="Pendências do projeto">
-              <div class="pending-sheet-header" role="row">
+          ? `<div
+              class="pending-sheet-scroll"
+              role="region"
+              aria-label="Pendências do projeto — deslize horizontalmente para ver todas as colunas"
+              tabindex="0"
+            >
+              <div class="pending-sheet" role="table" aria-label="Pendências do projeto">
+                <div class="pending-sheet-header" role="row">
                 <div role="columnheader" aria-label="Concluir"></div>
                 <div role="columnheader">${renderPendingSortHeader("Descrição", "description", currentSort)}</div>
                 <div role="columnheader">${renderPendingSortHeader("Área", "area", currentSort)}</div>
@@ -326,7 +332,8 @@ async function renderPendingItems(container, uid, projectId) {
                 <div role="columnheader">${renderPendingSortHeader("Notas", "notes", currentSort)}</div>
                 <div role="columnheader">Ações</div>
               </div>
-              ${items.map(pendingRow).join("")}
+                ${items.map(pendingRow).join("")}
+              </div>
             </div>`
           : '<div class="pending-empty"><p class="muted">Nenhuma pendência cadastrada para este projeto.</p></div>'
       }

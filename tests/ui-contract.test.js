@@ -57,7 +57,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /setupMobileTabSwipe/);
   assert.match(main, /setupMobileTabSwipe\(appElement\)/);
   assert.match(main, /input, select, textarea/);
-  assert.match(main, /\.pending-sheet/);
+  assert.match(main, /\.pending-sheet-scroll/);
   assert.match(main, /suppressClickUntil/);
   assert.match(main, /touchstart/);
   assert.match(main, /touchmove/);
@@ -156,6 +156,7 @@ test("consolidated project interactions remain present", () => {
 
 test("pending items remain inline-editable", () => {
   assert.match(pending, /pending-sheet/);
+  assert.match(pending, /pending-sheet-scroll/);
   assert.match(pending, /data-action="complete"/);
   assert.match(pending, /data-field="description"/);
   assert.match(pending, /pending-description-wrap/);
@@ -172,7 +173,8 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-priority-high/);
   assert.match(pendingStyles, /\.pending-sort-header/);
   assert.match(pendingStyles, /overscroll-behavior-inline: contain/);
-  assert.match(pendingStyles, /touch-action: pan-x pan-y/);
+  assert.match(pendingStyles, /\.pending-sheet-scroll/);
+  assert.match(pendingStyles, /touch-action: auto/);
   assert.match(pendingStyles, /min-width: 806px/);
   assert.match(pendingStyles, /\.pending-sheet-header,/);
   assert.match(projectStyles, /@media \(max-width: 480px\)/);
