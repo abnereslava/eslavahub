@@ -61,3 +61,274 @@
     justify-content: space-between;
   }
 }
+
+
+/* Project operational table */
+.project-list {
+  overflow: visible;
+}
+
+.project-table-header,
+.project-row {
+  display: grid;
+  grid-template-columns:
+    72px
+    minmax(220px, 2fr)
+    minmax(160px, 1fr)
+    104px
+    minmax(190px, 1.2fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.project-table-header {
+  position: sticky;
+  top: 70px;
+  z-index: 5;
+  padding: 11px 18px;
+  color: #6b7280;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.project-row {
+  padding: 15px 18px;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.project-row:last-child {
+  border-bottom: 0;
+}
+
+.project-row:hover {
+  background: #fafafa;
+}
+
+.project-cell {
+  min-width: 0;
+}
+
+.project-number-cell {
+  color: #6b7280;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.project-name-cell {
+  display: grid;
+  gap: 3px;
+}
+
+.project-name-link {
+  width: fit-content;
+  color: #111827;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.project-name-link:hover {
+  text-decoration: underline;
+}
+
+.project-name-cell > span {
+  color: #6b7280;
+  font-size: 0.84rem;
+}
+
+.quick-status-select {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 28px 7px 10px;
+  color: #374151;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.quick-status-select:focus {
+  outline: 2px solid #9ca3af;
+  outline-offset: 2px;
+}
+
+.project-links-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: #374151;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.project-link-icon:hover {
+  color: #111827;
+  background: #e5e7eb;
+}
+
+.project-link-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.project-domain-cell {
+  display: grid;
+  gap: 3px;
+}
+
+.project-domain-host {
+  overflow-wrap: anywhere;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.project-domain-expiry {
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.project-domain-expiry.is-urgent {
+  color: #b91c1c;
+  font-weight: 800;
+}
+
+.list-inline-error {
+  min-height: 1.25em;
+  margin: 8px 2px 0;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 900px) {
+  .project-table-header,
+  .project-row {
+    grid-template-columns:
+      56px
+      minmax(190px, 1.8fr)
+      minmax(150px, 1fr)
+      88px
+      minmax(170px, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  .project-list {
+    display: grid;
+    gap: 10px;
+    overflow: visible;
+    background: transparent;
+    border: 0;
+  }
+
+  .project-table-header {
+    display: none;
+  }
+
+  .project-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 4px 14px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+  }
+
+  .project-row:last-child {
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .project-cell {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f1f3;
+  }
+
+  .project-cell:last-child {
+    border-bottom: 0;
+  }
+
+  .project-cell::before {
+    content: attr(data-label);
+    color: #6b7280;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .project-name-cell,
+  .project-domain-cell {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+
+  .project-name-cell::before,
+  .project-domain-cell::before {
+    grid-row: 1 / span 2;
+  }
+
+  .project-name-link,
+  .project-name-cell > span,
+  .project-domain-host,
+  .project-domain-expiry {
+    grid-column: 2;
+  }
+
+  .project-links-cell {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+  }
+
+  .project-links-cell::before {
+    grid-column: 1;
+  }
+
+  .project-links-cell > * {
+    grid-column: auto;
+  }
+
+  .quick-status-select {
+    max-width: 230px;
+  }
+}
+
+@media (max-width: 420px) {
+  .project-cell,
+  .project-name-cell,
+  .project-domain-cell,
+  .project-links-cell {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .project-name-link,
+  .project-name-cell > span,
+  .project-domain-host,
+  .project-domain-expiry {
+    grid-column: 2;
+  }
+}
