@@ -14,6 +14,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { db } from "../config/firebase.js";
 import {
+  beginPendingWrite,
+  endPendingWrite,
+  incrementMetric
+} from "../domain/firestore-metrics.js";
+import {
   collectionTtlMs,
   isCachedCollectionComplete,
   isCollectionSyncFresh,
@@ -107,22 +112,32 @@ class FirestoreRepository {
       updated_at: serverTimestamp()
     });
 
-    if (id) {
-      const ref = this.documentRef(uid, id);
-      await setDoc(ref, payload);
-      this.invalidateCache(uid);
-      return id;
-    }
+    beginPendingWrite();
 
-    const ref = await addDoc(this.collectionRef(uid), payload);
-    this.invalidateCache(uid);
-    return ref.id;
+    try {
+      if (id) {
+        const ref = this.documentRef(uid, id);
+        await setDoc(ref, payload);
+        incrementMetric("writes");
+        this.invalidateCache(uid);
+        return id;
+      }
+
+      const ref = await addDoc(this.collectionRef(uid), payload);
+      incrementMetric("writes");
+      this.invalidateCache(uid);
+      return ref.id;
+    } finally {
+      endPendingWrite();
+    }
   }
 
   async get(uid, id) {
     const cached = listCache.get(cacheKey(uid, this.collectionName));
     if (cached && cached.expiresAt > Date.now()) {
-      return cloneItem(cached.items.find((item) => item.id === id) || null);
+      const item = cached.items.find((candidate) => candidate.id === id) || null;
+      if (item) incrementMetric("memoryDocumentReads");
+      return cloneItem(item);
     }
 
     const ref = this.documentRef(uid, id);
@@ -131,6 +146,7 @@ class FirestoreRepository {
       try {
         const snapshot = await getDocFromCache(ref);
         if (!snapshot.exists()) return null;
+        incrementMetric("cacheDocumentReads");
         return { id: snapshot.id, ...snapshot.data() };
       } catch {
         // Document may have been evicted from IndexedDB; continue with server.
@@ -139,12 +155,14 @@ class FirestoreRepository {
 
     try {
       const snapshot = await getDocFromServer(ref);
+      incrementMetric("serverDocumentReads");
       if (!snapshot.exists()) return null;
       return { id: snapshot.id, ...snapshot.data() };
     } catch (serverError) {
       try {
         const snapshot = await getDocFromCache(ref);
         if (!snapshot.exists()) return null;
+        incrementMetric("cacheDocumentReads");
         return { id: snapshot.id, ...snapshot.data() };
       } catch {
         throw serverError;
@@ -159,17 +177,23 @@ class FirestoreRepository {
     if (constraints.length) {
       if (isCollectionSyncFresh(uid, this.collectionName)) {
         try {
-          return snapshotItems(await getDocsFromCache(target));
+          const snapshot = await getDocsFromCache(target);
+          incrementMetric("cacheDocumentReads", snapshot.size);
+          return snapshotItems(snapshot);
         } catch {
           // Continue with server query.
         }
       }
 
       try {
-        return snapshotItems(await getDocsFromServer(target));
+        const snapshot = await getDocsFromServer(target);
+        incrementMetric("serverDocumentReads", Math.max(snapshot.size, 1));
+        return snapshotItems(snapshot);
       } catch (serverError) {
         try {
-          return snapshotItems(await getDocsFromCache(target));
+          const snapshot = await getDocsFromCache(target);
+          incrementMetric("cacheDocumentReads", snapshot.size);
+          return snapshotItems(snapshot);
         } catch {
           throw serverError;
         }
@@ -180,6 +204,7 @@ class FirestoreRepository {
     const cached = listCache.get(key);
 
     if (cached && cached.expiresAt > Date.now()) {
+      incrementMetric("memoryDocumentReads", cached.items.length);
       return cloneList(cached.items);
     }
 
@@ -189,6 +214,7 @@ class FirestoreRepository {
 
         if (isCachedCollectionComplete(uid, this.collectionName, snapshot.size)) {
           const items = snapshotItems(snapshot);
+          incrementMetric("cacheDocumentReads", snapshot.size);
           this.cacheList(uid, items);
           return cloneList(items);
         }
@@ -201,6 +227,7 @@ class FirestoreRepository {
       const snapshot = await getDocsFromServer(ref);
       const items = snapshotItems(snapshot);
 
+      incrementMetric("serverDocumentReads", Math.max(snapshot.size, 1));
       markCollectionSynced(uid, this.collectionName, snapshot.size);
       this.cacheList(uid, items);
 
@@ -210,6 +237,7 @@ class FirestoreRepository {
         const snapshot = await getDocsFromCache(ref);
         const items = snapshotItems(snapshot);
 
+        incrementMetric("cacheDocumentReads", snapshot.size);
         this.cacheList(uid, items);
         return cloneList(items);
       } catch {
@@ -222,23 +250,38 @@ class FirestoreRepository {
     const cleanData = removeUndefinedValues(data);
 
     if (cachedDocumentMatches(uid, this.collectionName, id, cleanData)) {
+      incrementMetric("writesSkipped");
       return false;
     }
 
-    await updateDoc(
-      this.documentRef(uid, id),
-      {
-        ...cleanData,
-        updated_at: serverTimestamp()
-      }
-    );
-    this.invalidateCache(uid);
-    return true;
+    beginPendingWrite();
+
+    try {
+      await updateDoc(
+        this.documentRef(uid, id),
+        {
+          ...cleanData,
+          updated_at: serverTimestamp()
+        }
+      );
+      incrementMetric("writes");
+      this.invalidateCache(uid);
+      return true;
+    } finally {
+      endPendingWrite();
+    }
   }
 
   async remove(uid, id) {
-    await deleteDoc(this.documentRef(uid, id));
-    this.invalidateCache(uid);
+    beginPendingWrite();
+
+    try {
+      await deleteDoc(this.documentRef(uid, id));
+      incrementMetric("deletes");
+      this.invalidateCache(uid);
+    } finally {
+      endPendingWrite();
+    }
   }
 }
 
