@@ -80,7 +80,11 @@
 }
 
 .project-name-link {
+  display: inline-grid;
+  grid-template-columns: minmax(0, auto) auto;
+  align-items: start;
   width: fit-content;
+  max-width: 100%;
   color: var(--color-text-strong);
   font-weight: 800;
   text-decoration: none;
@@ -905,21 +909,19 @@
   align-self: flex-end;
 }
 
-.project-name-link {
-  position: relative;
-  width: fit-content;
+.project-name-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
-.project-pending-dot {
-  position: absolute;
-  top: -3px;
-  right: -9px;
-  width: 7px;
-  height: 7px;
-  background: var(--color-danger-strong);
-  border: 1.5px solid var(--color-surface);
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px rgb(185 28 28 / 10%);
+.project-pending-asterisk {
+  display: inline-block;
+  flex: 0 0 auto;
+  margin-left: 3px;
+  color: var(--color-danger-strong);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 0.8;
 }
 
 .portfolio-seal-mark {
