@@ -114,6 +114,7 @@ button:disabled {
 .main-nav {
   display: flex;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
 .main-nav a {
@@ -224,6 +225,13 @@ button:disabled {
   font-size: 0.78rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.project-id,
+.definition-list dd,
+.pre-wrap {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .status-badge,
@@ -445,6 +453,51 @@ button:disabled {
   .detail-grid .panel:first-child,
   .detail-grid .danger-zone {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 10px 12px;
+  }
+
+  .main-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+
+  .main-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 7px 9px;
+    border-radius: 8px;
+  }
+
+  .page-content {
+    width: min(100% - 20px, 1180px);
+  }
+
+  .page-header .actions {
+    width: 100%;
+  }
+
+  .page-header .actions .button {
+    flex: 1 1 140px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea,
+  .button {
+    min-height: 44px;
+  }
+
+  .project-id {
+    white-space: normal;
   }
 }
 
