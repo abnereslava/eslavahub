@@ -361,6 +361,12 @@ button:disabled {
   object-fit: contain;
 }
 
+.header-links-favicon-search-console {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+}
+
 .header-links-item:hover,
 .header-links-item:focus-visible {
   color: var(--color-brand-strong);
