@@ -372,6 +372,18 @@
   white-space: nowrap;
 }
 
+.project-hide-trigger.is-active {
+  color: #6d28d9;
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.project-hide-trigger.is-active:hover {
+  color: #5b21b6;
+  background: #ede9fe;
+  border-color: #c4b5fd;
+}
+
 .project-hide-arrow {
   display: inline-block;
   color: var(--color-text-muted);
@@ -424,6 +436,31 @@
 .project-hide-option input {
   margin: 0;
   accent-color: var(--color-brand);
+}
+
+.project-hide-clear {
+  width: 100%;
+  margin-top: 5px;
+  padding: 7px 8px 5px;
+  color: var(--color-brand-strong);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--color-border-subtle);
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+
+.project-hide-clear:hover:not(:disabled) {
+  color: #5b21b6;
+  background: #f5f3ff;
+}
+
+.project-hide-clear:disabled {
+  color: var(--color-text-muted);
+  cursor: default;
+  opacity: 0.45;
 }
 
 .project-toolbar-archive {
