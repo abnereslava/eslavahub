@@ -355,6 +355,11 @@
 }
 
 @media (max-width: 480px) {
+  .pending-icon-button {
+    width: var(--control-touch);
+    height: var(--control-touch);
+  }
+
   .pending-quick-add {
     grid-template-columns: 1fr;
   }
