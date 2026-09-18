@@ -5,6 +5,11 @@ import {
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
 import {
+  formatMetrics,
+  getPendingWrites,
+  readMetrics
+} from "./domain/firestore-metrics.js";
+import {
   clearWorkspaceSessionCache,
   forceWorkspaceRefresh
 } from "./services/workspace-cache-service.js";
@@ -43,8 +48,25 @@ function updateConnectionState() {
   if (!indicator) return;
 
   const offline = !navigator.onLine;
-  indicator.hidden = !offline;
-  indicator.textContent = offline ? "Offline" : "";
+  const pendingWrites = getPendingWrites();
+
+  indicator.classList.toggle("is-syncing", !offline && pendingWrites > 0);
+  indicator.hidden = !offline && pendingWrites === 0;
+
+  if (offline) {
+    indicator.textContent = pendingWrites > 0 ? "Offline · pendente" : "Offline";
+  } else if (pendingWrites > 0) {
+    indicator.textContent = "Sincronizando…";
+  } else {
+    indicator.textContent = "";
+  }
+}
+
+function updateFirebaseUsageHint() {
+  const button = document.querySelector("#refresh-workspace");
+  if (!button) return;
+
+  button.title = `Forçar atualização dos dados · ${formatMetrics(readMetrics())}`;
 }
 
 function updateActiveNavigation() {
@@ -166,6 +188,8 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   `;
 
   updateActiveNavigation();
+  updateConnectionState();
+  updateFirebaseUsageHint();
 
   document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
@@ -257,6 +281,8 @@ async function renderAuthenticatedRoute() {
 
 window.addEventListener("online", updateConnectionState);
 window.addEventListener("offline", updateConnectionState);
+window.addEventListener("eslavahub:firestore-write-state", updateConnectionState);
+window.addEventListener("eslavahub:firestore-metrics", updateFirebaseUsageHint);
 
 window.addEventListener("hashchange", () => {
   updateActiveNavigation();
