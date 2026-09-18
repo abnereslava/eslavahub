@@ -187,7 +187,7 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ## TASK-056 — Refinar tabela e toolbar de Projetos
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependência:** TASK-053
 
@@ -215,7 +215,7 @@ Reduzir a sensação de telas montadas por componentes independentes.
 - [x] tabela visualmente consistente;
 - [x] controles primários estáveis ao abrir filtros;
 - [x] alinhamentos previsíveis;
-- [ ] desktop e mobile validados.
+- [x] desktop e mobile validados.
 
 ---
 
@@ -349,6 +349,6 @@ Garantir que o redesign não tenha alterado comportamento consolidado.
 - [x] nenhuma mudança de schema causada pelo redesign;
 - [x] nenhuma mudança de regra de negócio causada pelo redesign;
 - [x] nenhuma rota removida;
-- [ ] revisão visual aprovada.
+- [x] revisão visual aprovada.
 
 Relatório: [`../REDESIGN_QA.md`](../REDESIGN_QA.md)
