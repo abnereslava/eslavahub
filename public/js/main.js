@@ -170,8 +170,8 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
               rel="noopener noreferrer"
             >
               <img
-                class="header-links-favicon"
-                src="https://www.google.com/favicon.ico"
+                class="header-links-favicon header-links-favicon-search-console"
+                src="https://www.gstatic.com/search-console/scfe/logo_search_console.svg"
                 alt=""
                 width="18"
                 height="18"
