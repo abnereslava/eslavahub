@@ -1127,29 +1127,37 @@
 
   .project-card-expand {
     position: absolute;
-    top: 9px;
-    right: 9px;
+    top: 10px;
+    right: 10px;
     z-index: 3;
     display: inline-grid;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     place-items: center;
     padding: 0;
-    color: var(--color-text-secondary);
-    background: rgb(255 255 255 / 82%);
-    border: 1px solid rgb(148 163 184 / 45%);
-    border-radius: var(--radius-pill);
-    box-shadow: var(--shadow-sm);
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-md);
+    box-shadow: none;
   }
 
-  .project-card-expand span {
-    display: block;
-    font-size: 1.15rem;
-    line-height: 1;
+  .project-card-expand:active {
+    background: rgb(255 255 255 / 55%);
+  }
+
+  .project-card-expand-icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     transition: transform 140ms ease;
   }
 
-  .project-row.is-expanded .project-card-expand span {
+  .project-row.is-expanded .project-card-expand-icon {
     transform: rotate(180deg);
   }
 
@@ -1227,8 +1235,8 @@
   }
 
   .project-card-expand {
-    top: 8px;
-    right: 8px;
+    top: 9px;
+    right: 9px;
   }
 
   .project-row:not(.is-expanded) .project-name-cell {

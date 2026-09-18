@@ -235,7 +235,7 @@ function setupMobileTabSwipe(container) {
       event.pointerType !== "touch" ||
       !window.matchMedia("(max-width: 768px)").matches ||
       event.target.closest(
-        "a, button, input, select, textarea, summary, label, [contenteditable='true']"
+        "input, select, textarea, [contenteditable='true'], .main-nav"
       )
     ) {
       return;
@@ -424,7 +424,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   updateActiveNavigation();
   updateConnectionState();
   updateFirebaseUsageHint();
-  setupMobileTabSwipe(document.querySelector("#page-content"));
+  setupMobileTabSwipe(appElement);
   syncInstallButtons();
 
   document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {

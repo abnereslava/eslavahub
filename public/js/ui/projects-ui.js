@@ -305,7 +305,13 @@ function renderProjectRow(project, statuses) {
         aria-label="Mostrar mais detalhes de ${escapeHtml(project.name)}"
         title="Mostrar detalhes"
       >
-        <span aria-hidden="true">⌄</span>
+        <svg
+          class="project-card-expand-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="m7 9.5 5 5 5-5"></path>
+        </svg>
       </button>
       <div class="project-cell project-number-cell" data-label="ID" role="cell">
         ${escapeHtml(project.project_number ?? "—")}

@@ -55,6 +55,8 @@ test("primary application routes remain available", () => {
   assert.match(main, /parts\[2\] === "edit"/);
   assert.match(main, /MOBILE_TAB_ROUTES/);
   assert.match(main, /setupMobileTabSwipe/);
+  assert.match(main, /setupMobileTabSwipe\(appElement\)/);
+  assert.match(main, /input, select, textarea/);
   assert.match(main, /pendingMobileTabEntry/);
 });
 
@@ -91,6 +93,8 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /#project-list-rows/);
   assert.match(projectStyles, /project-row:not\(\.is-expanded\)/);
   assert.match(projectStyles, /\.project-card-expand/);
+  assert.match(projectStyles, /\.project-card-expand-icon/);
+  assert.match(projects, /project-card-expand-icon/);
   assert.match(styles, /tab-swipe-in-next/);
   assert.match(styles, /touch-action: pan-y/);
 });
