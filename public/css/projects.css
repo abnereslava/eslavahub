@@ -948,3 +948,96 @@
     gap: 8px;
   }
 }
+
+
+/* Definitive link layout override: beats global .project-row span rule */
+.project-row .project-links-inner {
+  display: grid;
+  grid-template-columns: 36px 36px;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: start;
+  column-gap: 8px;
+  width: 80px;
+  min-width: 80px;
+}
+
+.project-row .project-links-inner > .project-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.project-row .project-links-inner > .project-link-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex: 0 0 18px;
+}
+
+/* Slightly stronger, still subtle project-row tints */
+.project-row.status-row-idealized {
+  background: #f6f7f8;
+}
+
+.project-row.status-row-development {
+  background: #fff7dc;
+}
+
+.project-row.status-row-functional {
+  background: #eef6ff;
+}
+
+.project-row.status-row-finished {
+  background: #eef9f1;
+}
+
+.project-row.status-row-abandoned {
+  background: #fff0f0;
+}
+
+.project-row.status-row-paused {
+  background: #fff7e6;
+}
+
+.project-row.status-row-idealized:hover {
+  background: #eef0f2;
+}
+
+.project-row.status-row-development:hover {
+  background: #ffefbd;
+}
+
+.project-row.status-row-functional:hover {
+  background: #e2efff;
+}
+
+.project-row.status-row-finished:hover {
+  background: #e2f3e6;
+}
+
+.project-row.status-row-abandoned:hover {
+  background: #ffe1e1;
+}
+
+.project-row.status-row-paused:hover {
+  background: #ffedcc;
+}
+
+@media (max-width: 760px) {
+  .project-row .project-links-inner {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: 36px 36px;
+    width: 80px;
+    min-width: 80px;
+  }
+}
