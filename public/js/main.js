@@ -200,15 +200,17 @@ function setupMobileTabSwipe(container) {
   if (!container || container.dataset.swipeTabsReady === "true") return;
   container.dataset.swipeTabsReady = "true";
 
-  let pointerId = null;
+  let touchId = null;
   let startX = 0;
   let startY = 0;
+  let horizontalSwipe = false;
   let suppressClickUntil = 0;
 
   function resetSwipe() {
-    pointerId = null;
+    touchId = null;
     startX = 0;
     startY = 0;
+    horizontalSwipe = false;
   }
 
   function navigate(direction) {
@@ -222,48 +224,92 @@ function setupMobileTabSwipe(container) {
     const exitClass =
       direction === "next" ? "tab-swipe-exit-next" : "tab-swipe-exit-previous";
 
-    container.classList.add(exitClass);
+    const page = document.querySelector("#page-content");
+    page?.classList.add(exitClass);
 
     window.setTimeout(() => {
       pendingMobileTabEntry = direction;
-      container.classList.remove(exitClass);
+      page?.classList.remove(exitClass);
       window.location.hash = nextRoute.hash;
     }, 130);
   }
 
-  container.addEventListener("pointerdown", (event) => {
-    if (
-      event.pointerType !== "touch" ||
-      !window.matchMedia("(max-width: 768px)").matches ||
-      event.target.closest(
-        "input, select, textarea, [contenteditable='true'], .main-nav"
-      )
-    ) {
-      return;
-    }
+  container.addEventListener(
+    "touchstart",
+    (event) => {
+      if (
+        event.touches.length !== 1 ||
+        !window.matchMedia("(max-width: 768px)").matches ||
+        event.target.closest(
+          "input, select, textarea, [contenteditable='true'], .main-nav, .pending-sheet"
+        )
+      ) {
+        resetSwipe();
+        return;
+      }
 
-    pointerId = event.pointerId;
-    startX = event.clientX;
-    startY = event.clientY;
-  });
+      const touch = event.touches[0];
+      touchId = touch.identifier;
+      startX = touch.clientX;
+      startY = touch.clientY;
+      horizontalSwipe = false;
+    },
+    { passive: true }
+  );
 
-  container.addEventListener("pointerup", (event) => {
-    if (event.pointerId !== pointerId) return;
+  container.addEventListener(
+    "touchmove",
+    (event) => {
+      if (touchId === null) return;
 
-    const deltaX = event.clientX - startX;
-    const deltaY = event.clientY - startY;
-    resetSwipe();
+      const touch = [...event.touches].find((item) => item.identifier === touchId);
+      if (!touch) return;
 
-    if (
-      Math.abs(deltaX) < 64 ||
-      Math.abs(deltaX) < Math.abs(deltaY) * 1.25
-    ) {
-      return;
-    }
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
 
-    suppressClickUntil = window.performance.now() + 400;
-    navigate(deltaX < 0 ? "next" : "previous");
-  });
+      if (
+        Math.abs(deltaX) >= 14 &&
+        Math.abs(deltaX) > Math.abs(deltaY) * 1.15
+      ) {
+        horizontalSwipe = true;
+        event.preventDefault();
+      }
+    },
+    { passive: false }
+  );
+
+  container.addEventListener(
+    "touchend",
+    (event) => {
+      if (touchId === null) return;
+
+      const touch = [...event.changedTouches].find(
+        (item) => item.identifier === touchId
+      );
+      if (!touch) {
+        resetSwipe();
+        return;
+      }
+
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
+      const shouldNavigate =
+        horizontalSwipe &&
+        Math.abs(deltaX) >= 64 &&
+        Math.abs(deltaX) > Math.abs(deltaY) * 1.25;
+
+      resetSwipe();
+
+      if (!shouldNavigate) return;
+
+      suppressClickUntil = window.performance.now() + 400;
+      navigate(deltaX < 0 ? "next" : "previous");
+    },
+    { passive: true }
+  );
+
+  container.addEventListener("touchcancel", resetSwipe, { passive: true });
 
   container.addEventListener(
     "click",
@@ -274,8 +320,6 @@ function setupMobileTabSwipe(container) {
     },
     true
   );
-
-  container.addEventListener("pointercancel", resetSwipe);
 }
 
 function renderSignedOut() {

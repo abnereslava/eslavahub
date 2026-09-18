@@ -1041,10 +1041,6 @@ button[disabled],
 
 /* Mobile tab swipe transitions */
 @media (max-width: 768px) {
-  .workspace-shell {
-    touch-action: pan-y;
-  }
-
   .page-content {
     overflow-x: clip;
   }
