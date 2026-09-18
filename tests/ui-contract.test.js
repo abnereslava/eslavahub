@@ -80,7 +80,7 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /status-cycle/);
   assert.match(projects, /portfolio_visible/);
   assert.match(projects, /portfolio-seal/);
-  assert.match(projects, /project-pending-dot/);
+  assert.match(projects, /project-pending-asterisk/);
   assert.match(projects, /has_open_pending/);
   assert.match(projects, /PAUSED/);
   assert.match(projects, /class="unstyled-link"/);
@@ -90,6 +90,8 @@ test("pending items remain inline-editable", () => {
   assert.match(pending, /pending-sheet/);
   assert.match(pending, /data-action="complete"/);
   assert.match(pending, /data-field="description"/);
+  assert.match(pending, /pending-description-wrap/);
+  assert.match(pending, /data-full-text/);
   assert.match(pending, /data-field="status"/);
   assert.match(pending, /data-field="priority"/);
   assert.match(pending, /data-field="due_date"/);
