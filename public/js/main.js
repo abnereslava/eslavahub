@@ -109,7 +109,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
         <nav class="header-tools" aria-label="Atalhos externos">
           <a
             class="button button-secondary button-small header-tool-link"
-            href="https://github.com/repose"
+            href="https://github.com/repos"
             target="_blank"
             rel="noopener noreferrer"
           >
