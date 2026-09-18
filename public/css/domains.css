@@ -1,35 +1,35 @@
 .domain-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
-  padding: 14px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
 .domain-list {
   display: grid;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .domain-row {
   display: grid;
   grid-template-columns: minmax(180px, 1.4fr) minmax(130px, 0.8fr) auto;
-  gap: 14px;
+  gap: var(--space-3);
   align-items: center;
-  padding: 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-left-width: 5px;
-  border-radius: 12px;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+  border-radius: var(--radius-lg);
 }
 
 .domain-row > div:first-child {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
@@ -41,22 +41,22 @@
 
 .domain-row small,
 .domain-project-link {
-  color: #6b7280;
+  color: var(--color-text-muted);
 }
 
 .domain-project-link {
   width: 100%;
-  margin-top: 3px;
-  font-size: 0.84rem;
+  margin-top: var(--space-1);
+  font-size: var(--font-size-body-sm);
 }
 
 .domain-status {
-  font-size: 0.82rem;
+  font-size: var(--font-size-label);
   font-weight: 800;
 }
 
 .domain-normal {
-  border-left-color: #9ca3af;
+  border-left-color: var(--color-border-strong);
 }
 
 .domain-attention {
@@ -69,11 +69,11 @@
 
 .domain-urgent,
 .domain-expired {
-  border-left-color: #b91c1c;
+  border-left-color: var(--color-danger-strong);
 }
 
 .domain-none {
-  border-left-color: #d1d5db;
+  border-left-color: var(--color-border-strong);
 }
 
 .domain-row > p {
@@ -89,7 +89,7 @@
   grid-template-columns: minmax(220px, 1.5fr) minmax(160px, 0.8fr) auto;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .domain-form,
   .domain-row,
   .global-domain-list .domain-row {
