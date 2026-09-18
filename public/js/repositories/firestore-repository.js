@@ -3,17 +3,24 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
-  getDocs,
+  getDocFromCache,
+  getDocFromServer,
+  getDocsFromCache,
+  getDocsFromServer,
   query,
   serverTimestamp,
   setDoc,
   updateDoc
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { db } from "../config/firebase.js";
+import {
+  collectionTtlMs,
+  isCachedCollectionComplete,
+  isCollectionSyncFresh,
+  markCollectionSynced
+} from "../domain/firestore-cache-policy.js";
 import { getUserCollectionPath } from "./user-paths.js";
 
-const LIST_CACHE_TTL_MS = 5 * 60 * 1000;
 const listCache = new Map();
 
 function removeUndefinedValues(data) {
@@ -30,6 +37,10 @@ function cloneItem(item) {
 
 function cloneList(items) {
   return items.map(cloneItem);
+}
+
+function snapshotItems(snapshot) {
+  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
 }
 
 function clearFirestoreSessionCache(uid = null) {
@@ -55,6 +66,13 @@ class FirestoreRepository {
   documentRef(uid, id) {
     if (!id || typeof id !== "string") throw new Error("ID do documento é obrigatório.");
     return doc(this.collectionRef(uid), id);
+  }
+
+  cacheList(uid, items) {
+    listCache.set(cacheKey(uid, this.collectionName), {
+      items,
+      expiresAt: Date.now() + collectionTtlMs(this.collectionName)
+    });
   }
 
   invalidateCache(uid) {
@@ -86,35 +104,97 @@ class FirestoreRepository {
       return cloneItem(cached.items.find((item) => item.id === id) || null);
     }
 
-    const snapshot = await getDoc(this.documentRef(uid, id));
-    if (!snapshot.exists()) return null;
-    return { id: snapshot.id, ...snapshot.data() };
+    const ref = this.documentRef(uid, id);
+
+    if (isCollectionSyncFresh(uid, this.collectionName)) {
+      try {
+        const snapshot = await getDocFromCache(ref);
+        if (!snapshot.exists()) return null;
+        return { id: snapshot.id, ...snapshot.data() };
+      } catch {
+        // Document may have been evicted from IndexedDB; continue with server.
+      }
+    }
+
+    try {
+      const snapshot = await getDocFromServer(ref);
+      if (!snapshot.exists()) return null;
+      return { id: snapshot.id, ...snapshot.data() };
+    } catch (serverError) {
+      try {
+        const snapshot = await getDocFromCache(ref);
+        if (!snapshot.exists()) return null;
+        return { id: snapshot.id, ...snapshot.data() };
+      } catch {
+        throw serverError;
+      }
+    }
   }
 
   async list(uid, constraints = []) {
     const ref = this.collectionRef(uid);
+    const target = constraints.length ? query(ref, ...constraints) : ref;
 
-    if (!constraints.length) {
-      const key = cacheKey(uid, this.collectionName);
-      const cached = listCache.get(key);
-
-      if (cached && cached.expiresAt > Date.now()) {
-        return cloneList(cached.items);
+    if (constraints.length) {
+      if (isCollectionSyncFresh(uid, this.collectionName)) {
+        try {
+          return snapshotItems(await getDocsFromCache(target));
+        } catch {
+          // Continue with server query.
+        }
       }
 
-      const snapshot = await getDocs(ref);
-      const items = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
-
-      listCache.set(key, {
-        items,
-        expiresAt: Date.now() + LIST_CACHE_TTL_MS
-      });
-
-      return cloneList(items);
+      try {
+        return snapshotItems(await getDocsFromServer(target));
+      } catch (serverError) {
+        try {
+          return snapshotItems(await getDocsFromCache(target));
+        } catch {
+          throw serverError;
+        }
+      }
     }
 
-    const snapshot = await getDocs(query(ref, ...constraints));
-    return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+    const key = cacheKey(uid, this.collectionName);
+    const cached = listCache.get(key);
+
+    if (cached && cached.expiresAt > Date.now()) {
+      return cloneList(cached.items);
+    }
+
+    if (isCollectionSyncFresh(uid, this.collectionName)) {
+      try {
+        const snapshot = await getDocsFromCache(ref);
+
+        if (isCachedCollectionComplete(uid, this.collectionName, snapshot.size)) {
+          const items = snapshotItems(snapshot);
+          this.cacheList(uid, items);
+          return cloneList(items);
+        }
+      } catch {
+        // Cache metadata may outlive IndexedDB entries. Refresh from server.
+      }
+    }
+
+    try {
+      const snapshot = await getDocsFromServer(ref);
+      const items = snapshotItems(snapshot);
+
+      markCollectionSynced(uid, this.collectionName, snapshot.size);
+      this.cacheList(uid, items);
+
+      return cloneList(items);
+    } catch (serverError) {
+      try {
+        const snapshot = await getDocsFromCache(ref);
+        const items = snapshotItems(snapshot);
+
+        this.cacheList(uid, items);
+        return cloneList(items);
+      } catch {
+        throw serverError;
+      }
+    }
   }
 
   async update(uid, id, data) {
