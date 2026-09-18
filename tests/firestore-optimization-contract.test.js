@@ -32,6 +32,8 @@ test("repository uses cache-first reads and invalidates memory after writes", ()
   assert.match(repository, /isCachedCollectionComplete/);
   assert.match(repository, /invalidateCache\(uid\)/);
   assert.match(repository, /this\.invalidateCache\(uid\)/);
+  assert.match(repository, /cachedDocumentMatches/);
+  assert.match(repository, /return false/);
 });
 
 test("bootstrap reads workspace metadata before legacy scans", () => {
