@@ -314,7 +314,7 @@
 
 .project-filter-toolbar {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto auto auto auto auto;
+  grid-template-columns: minmax(260px, 1fr) auto auto auto auto auto auto;
   align-items: center;
   gap: var(--space-2);
 }
@@ -340,9 +340,101 @@
   padding-block: var(--space-2);
 }
 
+.project-filter-toolbar,
+.project-filter-toolbar input,
+.project-filter-toolbar button,
+.project-filter-toolbar a,
+.project-filter-toolbar summary,
+.project-hide-option {
+  font-size: calc(var(--font-size-body-sm) - 1px);
+}
+
 .project-pending-toggle.is-active {
   color: var(--color-brand-strong);
   background: var(--color-brand-surface);
+  border-color: var(--color-brand-border);
+}
+
+.project-hide-menu {
+  position: relative;
+}
+
+.project-hide-menu > summary {
+  list-style: none;
+}
+
+.project-hide-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-hide-trigger {
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.project-hide-arrow {
+  display: inline-block;
+  color: var(--color-text-muted);
+  transition: transform 120ms ease;
+}
+
+.project-hide-menu[open] .project-hide-arrow {
+  transform: rotate(180deg);
+}
+
+.project-hide-popover {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 35;
+  display: grid;
+  min-width: 185px;
+  padding: 7px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.project-hide-popover::before {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: var(--space-2);
+  content: "";
+}
+
+.project-hide-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.project-hide-option:hover {
+  color: var(--color-brand-strong);
+  background: var(--color-brand-surface);
+}
+
+.project-hide-option input {
+  margin: 0;
+  accent-color: var(--color-brand);
+}
+
+.project-toolbar-archive {
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+}
+
+.project-toolbar-archive:hover {
+  color: var(--color-brand-strong);
+  background: #f5f7ff;
   border-color: var(--color-brand-border);
 }
 
@@ -649,7 +741,7 @@
   }
 
   .project-filter-toolbar {
-    grid-template-columns: minmax(220px, 1fr) auto auto auto auto auto;
+    grid-template-columns: minmax(220px, 1fr) auto auto auto auto auto auto;
   }
 
   .advanced-filter-grid {
@@ -746,7 +838,7 @@
   }
 
   .project-filter-toolbar {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .compact-filter-search {
@@ -799,6 +891,7 @@
 
   .compact-filter-apply,
   .project-pending-toggle,
+  .project-hide-trigger,
   .project-toolbar-archive,
   .project-toolbar-new {
     width: 100%;
