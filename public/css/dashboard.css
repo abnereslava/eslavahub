@@ -82,7 +82,8 @@
   display: grid;
 }
 
-.compact-list a {
+.compact-list > a,
+.compact-list-item {
   display: grid;
   gap: var(--space-1);
   padding: var(--space-3) 0;
@@ -91,16 +92,19 @@
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.compact-list a:first-child {
+.compact-list > a:first-child,
+.compact-list-item:first-child {
   padding-top: 0;
 }
 
-.compact-list a:last-child {
+.compact-list > a:last-child,
+.compact-list-item:last-child {
   padding-bottom: 0;
   border-bottom: 0;
 }
 
-.compact-list a:hover strong {
+.compact-list > a:hover strong,
+.compact-list-item > a:hover strong {
   text-decoration: underline;
 }
 
