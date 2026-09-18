@@ -20,6 +20,10 @@ const projectStyles = readFileSync(
   new URL("../public/css/projects.css", import.meta.url),
   "utf8"
 );
+const pendingStyles = readFileSync(
+  new URL("../public/css/pending-items.css", import.meta.url),
+  "utf8"
+);
 
 test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
@@ -122,5 +126,14 @@ test("pending items remain inline-editable", () => {
   assert.match(pending, /data-full-text/);
   assert.match(pending, /data-field="status"/);
   assert.match(pending, /data-field="priority"/);
+  assert.match(pending, /PRIORITY_TONES/);
+  assert.match(pending, /PENDING_SORT_KEY_PREFIX/);
+  assert.match(pending, /pending-sort-header/);
+  assert.match(pending, /data-sort-field/);
   assert.match(pending, /data-field="due_date"/);
+  assert.match(pendingStyles, /\.pending-priority-low/);
+  assert.match(pendingStyles, /\.pending-priority-medium/);
+  assert.match(pendingStyles, /\.pending-priority-high/);
+  assert.match(pendingStyles, /\.pending-sort-header/);
+  assert.match(projectStyles, /@media \(max-width: 480px\)/);
 });
