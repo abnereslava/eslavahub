@@ -37,6 +37,14 @@ const QUICK_STATUS_CODES = new Set([
   "ABANDONED"
 ]);
 
+const QUICK_STATUS_LABELS = Object.freeze({
+  FINISHED: "Finalizado",
+  FUNCTIONAL: "Funcional",
+  IN_DEVELOPMENT: "Desenvolvendo",
+  IDEALIZED: "Idealizado",
+  ABANDONED: "Abandonado"
+});
+
 function formatDatePtBr(value) {
   if (!value) return "";
 
@@ -52,10 +60,11 @@ function isExpirationUrgent(value) {
   const expiration = new Date(`${value}T23:59:59`);
   if (Number.isNaN(expiration.getTime())) return false;
 
-  const diffMs = expiration.getTime() - Date.now();
-  const diffDays = diffMs / 86400000;
+  const threeMonthsFromNow = new Date();
+  threeMonthsFromNow.setHours(23, 59, 59, 999);
+  threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
 
-  return diffDays <= 90;
+  return expiration <= threeMonthsFromNow;
 }
 
 function siteIcon() {
@@ -104,7 +113,9 @@ function renderProjectLinks(project) {
     `);
   }
 
-  return links.length ? links.join("") : '<span class="muted">—</span>';
+  return links.length
+    ? `<span class="project-links-inner">${links.join("")}</span>`
+    : '<span class="muted">—</span>';
 }
 
 function renderProjectDomain(domain) {
@@ -286,7 +297,7 @@ async function renderProjectList(
                             .filter((status) => QUICK_STATUS_CODES.has(status.code))
                             .map(
                               (status) =>
-                                `<option value="${escapeHtml(status.id)}" ${project.status_id === status.id ? "selected" : ""}>${escapeHtml(status.name)}</option>`
+                                `<option value="${escapeHtml(status.id)}" ${project.status_id === status.id ? "selected" : ""}>${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}</option>`
                             )
                             .join("")}
                         </select>
