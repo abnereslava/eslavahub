@@ -163,6 +163,33 @@
   border-color: var(--color-border);
 }
 
+.pending-description-wrap {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.pending-description-wrap:hover:not(:focus-within)::after {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 40;
+  width: max-content;
+  max-width: min(480px, 70vw);
+  padding: 7px 9px;
+  content: attr(data-full-text);
+  color: var(--color-surface);
+  background: var(--color-text-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  line-height: var(--line-height-body);
+  overflow-wrap: anywhere;
+  white-space: normal;
+  pointer-events: none;
+}
+
 .pending-description-input {
   font-weight: 700;
 }
