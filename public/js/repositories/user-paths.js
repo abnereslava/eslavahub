@@ -4,7 +4,8 @@ const USER_COLLECTIONS = Object.freeze({
   STATUSES: "statuses",
   TECHNOLOGIES: "technologies",
   DOMAINS: "domains",
-  PENDING_ITEMS: "pendingItems"
+  PENDING_ITEMS: "pendingItems",
+  META: "meta"
 });
 
 function assertUid(uid) {
