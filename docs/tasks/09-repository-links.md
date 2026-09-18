@@ -43,6 +43,7 @@ Foram inventariados os repositórios pertencentes à conta GitHub conectada e cr
 | To doOS | `abnereslava/RotinaOS` |
 | Vallor.nest | `abnereslava/Gest-o-Financeira` |
 | Teacher Invest | `abnereslava/landingpage_teacherinvest` |
+| RPG Educacional 2.0 | `abnereslava/rpg_animais` |
 | Recreaeduca | `abnereslava/recreaeduca` |
 | Sara Santos Nutricionista | `abnereslava/landingpage_sara_nutricionista` |
 
@@ -52,7 +53,6 @@ Foram inventariados os repositórios pertencentes à conta GitHub conectada e cr
 | --- | --- |
 | Gerenciador Manutenções Carro | nenhum repositório correspondente localizado |
 | Klein Holtz | nenhum repositório correspondente localizado |
-| RPG Educacional 2.0 | `rpg_animais` é plausível, mas não há evidência suficiente para assumir que é o mesmo projeto |
 | Teacher Chell | nenhum repositório correspondente localizado |
 
 ## Implementação
@@ -76,8 +76,8 @@ Regras:
 
 Após o próximo bootstrap bem-sucedido da conta principal, o resultado esperado é:
 
-- **23 projetos com repository URL**;
-- **4 projetos sem repository URL confirmado**.
+- **24 projetos com repository URL**;
+- **3 projetos sem repository URL confirmado**.
 
 ## Evidências usadas
 
@@ -88,7 +88,7 @@ Foram utilizadas, conforme o projeto:
 - homepage do repositório igual ao deploy cadastrado;
 - descrição do repositório coerente com a finalidade do projeto.
 
-Não foi usada semelhança de nome isolada para o caso ambíguo `RPG Educacional 2.0`.
+O vínculo `RPG Educacional 2.0 → abnereslava/rpg_animais` foi confirmado explicitamente pelo proprietário do projeto.
 
 ## Critérios de aceite
 
