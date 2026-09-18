@@ -45,6 +45,19 @@ const QUICK_STATUS_LABELS = Object.freeze({
   ABANDONED: "Abandonado"
 });
 
+const PROJECT_STATUS_TONES = Object.freeze({
+  IDEALIZED: "status-tone-idealized",
+  IN_DEVELOPMENT: "status-tone-development",
+  FUNCTIONAL: "status-tone-functional",
+  FINISHED: "status-tone-finished",
+  PAUSED: "status-tone-paused",
+  ABANDONED: "status-tone-abandoned"
+});
+
+function projectStatusTone(code) {
+  return PROJECT_STATUS_TONES[code] || "status-tone-neutral";
+}
+
 const PROJECT_SORT_OPTIONS = Object.freeze([
   ["project-name-asc", "Projeto A–Z"],
   ["project-name-desc", "Projeto Z–A"],
@@ -163,37 +176,37 @@ function githubIcon() {
 }
 
 function renderProjectLinks(project) {
-  const links = [];
-
-  if (project.deploy_url) {
-    links.push(`
-      <a
+  const siteButton = project.deploy_url
+    ? `<a
         class="project-link-icon"
         href="${escapeHtml(project.deploy_url)}"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Abrir site de ${escapeHtml(project.name)}"
         title="Abrir site"
-      >${siteIcon()}</a>
-    `);
-  }
+      >${siteIcon()}</a>`
+    : `<span
+        class="project-link-icon is-disabled"
+        aria-label="Site não cadastrado"
+        title="Site não cadastrado"
+      >${siteIcon()}</span>`;
 
-  if (project.repository_url) {
-    links.push(`
-      <a
+  const githubButton = project.repository_url
+    ? `<a
         class="project-link-icon"
         href="${escapeHtml(project.repository_url)}"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Abrir GitHub de ${escapeHtml(project.name)}"
         title="Abrir GitHub"
-      >${githubIcon()}</a>
-    `);
-  }
+      >${githubIcon()}</a>`
+    : `<span
+        class="project-link-icon is-disabled"
+        aria-label="GitHub não cadastrado"
+        title="GitHub não cadastrado"
+      >${githubIcon()}</span>`;
 
-  return links.length
-    ? `<span class="project-links-inner">${links.join("")}</span>`
-    : '<span class="muted">—</span>';
+  return `<span class="project-links-inner">${siteButton}${githubButton}</span>`;
 }
 
 function renderProjectDomain(domain) {
@@ -399,7 +412,7 @@ async function renderProjectList(
 
                       <div class="project-cell" data-label="Status" role="cell">
                         <select
-                          class="quick-status-select"
+                          class="quick-status-select ${projectStatusTone(project.status?.code)}"
                           data-project-id="${escapeHtml(project.id)}"
                           data-previous-value="${escapeHtml(project.status_id)}"
                           aria-label="Alterar status de ${escapeHtml(project.name)}"
@@ -408,7 +421,11 @@ async function renderProjectList(
                             .filter((status) => QUICK_STATUS_CODES.has(status.code))
                             .map(
                               (status) =>
-                                `<option value="${escapeHtml(status.id)}" ${project.status_id === status.id ? "selected" : ""}>${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}</option>`
+                                `<option
+                                  value="${escapeHtml(status.id)}"
+                                  data-code="${escapeHtml(status.code)}"
+                                  ${project.status_id === status.id ? "selected" : ""}
+                                >${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}</option>`
                             )
                             .join("")}
                         </select>
@@ -457,6 +474,9 @@ async function renderProjectList(
         try {
           await updateProject(uid, projectId, { status_id: select.value });
           select.dataset.previousValue = select.value;
+
+          const selectedCode = select.selectedOptions[0]?.dataset.code;
+          select.className = `quick-status-select ${projectStatusTone(selectedCode)}`;
         } catch (error) {
           console.error("Quick status update failed", error);
           select.value = previousValue;
