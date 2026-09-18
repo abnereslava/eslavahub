@@ -75,7 +75,13 @@ test("responsive and reduced-motion guards remain present", () => {
 
 test("consolidated project interactions remain present", () => {
   assert.match(projects, /quick-status-select/);
-  assert.match(projects, /toggle-advanced-filters/);
+  assert.doesNotMatch(projects, /toggle-advanced-filters/);
+  assert.match(projects, /PROJECT_LIST_SORT_KEY_PREFIX/);
+  assert.match(projects, /readPersistedProjectSort/);
+  assert.match(projects, /persistProjectSort/);
+  assert.match(projects, /id="project-search"/);
+  assert.match(projects, /project-toolbar-archive/);
+  assert.doesNotMatch(projects, /compact-filter-sort/);
   assert.match(projects, /project-links-inner/);
   assert.match(projects, /search_console_url/);
   assert.match(projects, /github-mark/);
