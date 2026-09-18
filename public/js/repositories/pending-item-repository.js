@@ -1,9 +1,4 @@
-import {
-  getDocs,
-  query,
-  serverTimestamp,
-  where
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { PENDING_STATUS } from "../domain/constants.js";
 import { pendingStatusPatch } from "../domain/state-transitions.js";
 import { validatePendingItem } from "../domain/validation.js";
@@ -16,10 +11,8 @@ class PendingItemRepository extends FirestoreRepository {
   }
 
   async listByProject(uid, projectId) {
-    const snapshot = await getDocs(
-      query(this.collectionRef(uid), where("project_id", "==", projectId))
-    );
-    return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+    const items = await this.list(uid);
+    return items.filter((item) => item.project_id === projectId);
   }
 
   async createPendingItem(uid, data) {
