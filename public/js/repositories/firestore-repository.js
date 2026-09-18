@@ -27,6 +27,18 @@ import {
 import { getUserCollectionPath } from "./user-paths.js";
 
 const listCache = new Map();
+const cacheChannel =
+  typeof BroadcastChannel === "undefined"
+    ? null
+    : new BroadcastChannel("eslavahub-firestore-cache");
+
+cacheChannel?.addEventListener("message", (event) => {
+  const uid = event.data?.uid;
+  const collectionName = event.data?.collectionName;
+
+  if (!uid || !collectionName) return;
+  listCache.delete(cacheKey(uid, collectionName));
+});
 
 function removeUndefinedValues(data) {
   return Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined));
@@ -103,6 +115,10 @@ class FirestoreRepository {
 
   invalidateCache(uid) {
     listCache.delete(cacheKey(uid, this.collectionName));
+    cacheChannel?.postMessage({
+      uid,
+      collectionName: this.collectionName
+    });
   }
 
   async create(uid, data, { id = null } = {}) {
