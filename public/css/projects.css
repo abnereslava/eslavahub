@@ -34,6 +34,7 @@
     72px
     minmax(220px, 2fr)
     minmax(160px, 1fr)
+    72px
     136px
     minmax(190px, 1.2fr);
   align-items: center;
@@ -150,11 +151,16 @@
   border-color: var(--color-border-strong);
 }
 
-.status-tone-development,
-.status-tone-paused {
+.status-tone-development {
   color: var(--color-warning);
   background: var(--color-warning-surface);
   border-color: var(--color-warning-border);
+}
+
+.status-tone-paused {
+  color: #7e22ce;
+  background: #faf5ff;
+  border-color: #e9d5ff;
 }
 
 .status-tone-functional {
@@ -197,7 +203,7 @@
 }
 
 .project-row.status-row-paused {
-  background: var(--color-warning-surface);
+  background: var(--status-paused-surface);
 }
 
 .project-row.status-row-idealized:hover {
@@ -221,7 +227,7 @@
 }
 
 .project-row.status-row-paused:hover {
-  background: #ffedcc;
+  background: #f3e8ff;
 }
 
 /* Stable project links */
@@ -599,6 +605,7 @@
       56px
       minmax(190px, 1.8fr)
       minmax(150px, 1fr)
+      64px
       124px
       minmax(170px, 1fr);
     gap: var(--space-3);
@@ -833,4 +840,58 @@
 .project-row .project-links-inner > .project-link-console:hover {
   background: #eef6ff;
   border-color: #bfdbfe;
+}
+
+
+.project-portfolio-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.portfolio-column-header {
+  text-align: center;
+}
+
+.portfolio-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--color-brand);
+}
+
+.portfolio-seal.is-disabled {
+  color: #c7cbd4;
+  opacity: 0.5;
+}
+
+.portfolio-seal-mark {
+  width: 22px;
+  height: 22px;
+}
+
+.project-portfolio-field {
+  justify-content: flex-start;
+  background: var(--color-brand-surface);
+  border-color: var(--color-brand-border);
+}
+
+@media (max-width: 768px) {
+  .project-portfolio-cell {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    justify-content: initial;
+  }
+
+  .project-portfolio-cell .portfolio-seal {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-portfolio-cell {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
 }
