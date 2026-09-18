@@ -36,14 +36,16 @@ Este bloco prepara o EslavaHub para uso real. Parte relevante da qualidade estru
 
 ### Implementado
 
-Existem media queries específicas para shell/topbar, projetos e filtros, formulários/detalhes, dashboard, cadastros, pendências, domínios e paginação.
+Existem media queries específicas para shell/topbar, projetos e filtros, formulários/detalhes, dashboard, cadastros, pendências, domínios e paginação. A revisão de código de 18/09/2026 reforçou navegação em duas colunas em celulares estreitos, alvos de toque mínimos, quebra de IDs/textos longos e largura adaptativa das ações.
 
 ### Critérios de aceite
 - [x] dashboard possui adaptação para telas menores no CSS;
 - [x] formulários mudam para uma coluna em telas estreitas;
 - [x] listas possuem estratégia responsiva/empilhável;
 - [x] ações principais possuem layout adaptável;
-- [x] navegação possui layout mobile;
+- [x] navegação possui layout mobile, inclusive para larguras estreitas;
+- [x] controles principais possuem alvo de toque mínimo reforçado no CSS;
+- [x] IDs e textos longos possuem quebra para reduzir overflow;
 - [ ] revisão visual real em desktop e celular;
 - [ ] confirmação de ausência de overflow horizontal indevido.
 
@@ -143,7 +145,7 @@ Foram confirmados:
 - 3 tecnologias principais;
 - duplicidade do ID legado `0024`.
 
-Categorias e tecnologias da fonte foram incluídas no bootstrap inicial do usuário.
+Categorias e tecnologias da fonte foram incluídas no bootstrap inicial do usuário. A migração dos 27 projetos agora está implementada em `public/js/services/legacy-migration-service.js` e é executada de forma idempotente somente para o UID de destino.
 
 ### Critérios de aceite
 - [x] categorias iniciais definidas;
@@ -151,7 +153,7 @@ Categorias e tecnologias da fonte foram incluídas no bootstrap inicial do usuá
 - [x] estratégia para inserir projetos existentes documentada;
 - [x] mapeamento entre colunas da planilha e campos do sistema documentado;
 - [x] duplicidade de IDs antigos não compromete os IDs internos;
-- [x] decisão registrada: script único assistido após validação do Firebase.
+- [x] migração única implementada e protegida contra duplicação.
 
 ---
 
