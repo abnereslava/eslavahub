@@ -365,7 +365,7 @@
   place-items: center;
   padding-inline: 5px;
   color: var(--color-surface);
-  background: var(--color-text-secondary);
+  background: var(--color-brand);
   border-radius: var(--radius-pill);
   font-size: var(--font-size-caption);
 }
@@ -426,8 +426,8 @@
   gap: 5px;
   flex: 0 0 auto;
   padding: 5px var(--space-2);
-  color: var(--color-text-secondary);
-  background: var(--color-surface-muted);
+  color: var(--color-brand-strong);
+  background: var(--color-brand-surface);
   border-radius: var(--radius-pill);
   font-size: var(--font-size-caption);
   font-weight: 700;
@@ -435,7 +435,7 @@
 }
 
 .filter-chip:hover {
-  background: var(--color-border);
+  background: var(--color-brand-surface-strong);
 }
 
 .filter-clear-link {
@@ -456,7 +456,7 @@
 
 .project-sort-header:hover,
 .project-sort-header.is-active {
-  color: var(--color-text-strong);
+  color: var(--color-brand-strong);
 }
 
 .sort-indicator {
