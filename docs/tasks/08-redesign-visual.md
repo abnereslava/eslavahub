@@ -215,7 +215,7 @@ Reduzir a sensação de telas montadas por componentes independentes.
 - [x] tabela visualmente consistente;
 - [x] controles primários estáveis ao abrir filtros;
 - [x] alinhamentos previsíveis;
-- [x] desktop e mobile validados.
+- [ ] desktop e mobile validados.
 
 ---
 
