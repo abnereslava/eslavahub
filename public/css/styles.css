@@ -316,6 +316,12 @@ button:disabled {
   font-weight: 800;
 }
 
+.connection-state.is-syncing {
+  color: var(--color-info);
+  background: var(--color-info-surface);
+  border-color: var(--color-info-border);
+}
+
 .account-menu strong,
 .account-menu span {
   display: block;
