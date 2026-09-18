@@ -44,7 +44,7 @@ function domainCard(domain, { showProject = false, projectName = "" } = {}) {
   return `
     <article class="domain-row domain-${meta.status?.toLowerCase() || "none"}">
       <div>
-        <strong>${escapeHtml(domain.hostname)}</strong>
+        <strong><a class="unstyled-link" href="https://${escapeHtml(domain.hostname)}" target="_blank" rel="noopener noreferrer">${escapeHtml(domain.hostname)}</a></strong>
         ${domain.is_primary ? '<span class="tag">Principal</span>' : ""}
         ${showProject ? `<a class="domain-project-link" href="#/projects/${encodeURIComponent(domain.project_id)}">${escapeHtml(projectName || domain.project_id)}</a>` : ""}
       </div>
