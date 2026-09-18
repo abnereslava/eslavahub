@@ -33,7 +33,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /Eslava Soluções Digitais/);
   assert.match(main, /class="header-links-menu"/);
   assert.match(main, /github\.githubassets\.com\/favicons\/favicon\.svg/);
-  assert.match(main, /images\.seeklogo\.com\/logo-png\/62\/1\/google-search-console-icon-logo-png_seeklogo-624699\.png/);
+  assert.match(main, /\.\/img\/search-console\.png/);
   assert.match(main, /header-links-favicon/);
   assert.match(main, /header-links-trigger/);
   assert.match(main, /header-links-arrow/);
@@ -145,8 +145,9 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /search_console_url/);
   assert.match(projects, /GITHUB_FAVICON_URL/);
   assert.match(projects, /SEARCH_CONSOLE_ICON_URL/);
-  assert.match(projects, /WEB_LINK_ICON_DATA_URI/);
-  assert.match(projects, /data:image\/webp;base64/);
+  assert.match(projects, /WEB_LINK_ICON_URL/);
+  assert.match(projects, /\.\/img\/deploy-link\.webp/);
+  assert.match(projects, /\.\/img\/search-console\.png/);
   assert.match(projects, /renderProjectDomain/);
   assert.match(projects, /status-cycle/);
   assert.match(projects, /portfolio_visible/);

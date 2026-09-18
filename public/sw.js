@@ -1,4 +1,4 @@
-const CACHE_NAME = "eslavahub-shell-2026-09-18-v2";
+const CACHE_NAME = "eslavahub-shell-2026-09-18-v3";
 
 const APP_SHELL = [
   "./",
@@ -11,6 +11,8 @@ const APP_SHELL = [
   "./css/pending-items.css",
   "./css/domains.css",
   "./img/eslava-mark.svg",
+  "./img/search-console.png",
+  "./img/deploy-link.webp",
   "./img/pwa-192.png",
   "./img/pwa-512.png",
   "./img/pwa-maskable-512.png",
