@@ -1,4 +1,4 @@
-import { PENDING_STATUS } from "../domain/constants.js";
+import { PENDING_STATUS, PROJECT_STATUS_CODES } from "../domain/constants.js";
 import { categoryRepository } from "../repositories/category-repository.js";
 import { domainRepository } from "../repositories/domain-repository.js";
 import { pendingItemRepository } from "../repositories/pending-item-repository.js";
@@ -9,8 +9,21 @@ import { getNextProjectNumber } from "./project-number-service.js";
 
 const CLOSED_PENDING_STATUSES = new Set([PENDING_STATUS.COMPLETED, PENDING_STATUS.DISCARDED]);
 
+const PROJECT_STATUS_CYCLE = new Map([
+  [PROJECT_STATUS_CODES.IDEALIZED, 10],
+  [PROJECT_STATUS_CODES.IN_DEVELOPMENT, 20],
+  [PROJECT_STATUS_CODES.PAUSED, 25],
+  [PROJECT_STATUS_CODES.FUNCTIONAL, 30],
+  [PROJECT_STATUS_CODES.FINISHED, 40],
+  [PROJECT_STATUS_CODES.ABANDONED, 50]
+]);
+
+function statusCycleValue(status) {
+  return PROJECT_STATUS_CYCLE.get(status?.code) ?? status?.sort_order ?? Number.MAX_SAFE_INTEGER;
+}
+
 function bySortOrder(a, b) {
-  return (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.name.localeCompare(b.name, "pt-BR");
+  return statusCycleValue(a) - statusCycleValue(b) || a.name.localeCompare(b.name, "pt-BR");
 }
 
 function timestampValue(value) {
@@ -169,10 +182,11 @@ async function queryProjects(
     const clientDesc = () =>
       (b.client_name || "").localeCompare(a.client_name || "", "pt-BR");
     const statusAsc = () =>
-      (a.status?.sort_order ?? Number.MAX_SAFE_INTEGER) -
-        (b.status?.sort_order ?? Number.MAX_SAFE_INTEGER) ||
-      (a.status?.name || "").localeCompare(b.status?.name || "", "pt-BR");
-    const statusDesc = () => -statusAsc();
+      statusCycleValue(a.status) - statusCycleValue(b.status) ||
+      a.name.localeCompare(b.name, "pt-BR");
+    const statusDesc = () =>
+      statusCycleValue(b.status) - statusCycleValue(a.status) ||
+      a.name.localeCompare(b.name, "pt-BR");
     const expirationAsc = () => {
       const aValue = a.domain?.expiration_date || "9999-12-31";
       const bValue = b.domain?.expiration_date || "9999-12-31";
@@ -189,8 +203,8 @@ async function queryProjects(
     if (sort === "project-name-desc" || sort === "name-desc") return projectNameDesc();
     if (sort === "client-asc") return clientAsc();
     if (sort === "client-desc") return clientDesc();
-    if (sort === "status-asc") return statusAsc();
-    if (sort === "status-desc") return statusDesc();
+    if (sort === "status-cycle" || sort === "status-asc") return statusAsc();
+    if (sort === "status-cycle-desc" || sort === "status-desc") return statusDesc();
     if (sort === "expiration-asc") return expirationAsc();
     if (sort === "expiration-desc") return expirationDesc();
     if (sort === "updated-desc") return timestampValue(b.updated_at) - timestampValue(a.updated_at);
