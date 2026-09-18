@@ -28,6 +28,10 @@ test("PWA metadata and install assets remain configured", () => {
 test("service worker keeps app shell local and supports Firebase SDK reuse", () => {
   assert.match(main, /navigator\.serviceWorker/);
   assert.match(main, /updateViaCache: "none"/);
+  assert.match(main, /beforeinstallprompt/);
+  assert.match(main, /data-install-app/);
+  assert.match(main, /deferredInstallPrompt/);
+  assert.match(main, /appinstalled/);
   assert.match(serviceWorker, /APP_SHELL/);
   assert.match(serviceWorker, /requestUrl\.origin === self\.location\.origin/);
   assert.match(serviceWorker, /firebasejs\/12\.19\.0/);

@@ -1102,3 +1102,16 @@ button[disabled],
     transform: translateX(0);
   }
 }
+
+
+/* PWA install action */
+.pwa-install-button[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 480px) {
+  .header-install {
+    padding-inline: var(--space-2);
+    font-size: var(--font-size-caption);
+  }
+}

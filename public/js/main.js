@@ -21,6 +21,7 @@ import { renderProjectForm, renderProjectList } from "./ui/projects-ui.js";
 
 const appElement = document.querySelector("#app");
 let currentUser = null;
+let deferredInstallPrompt = null;
 
 const MOBILE_TAB_ROUTES = Object.freeze([
   { section: "dashboard", hash: "#/dashboard" },
@@ -39,6 +40,60 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+
+function isPwaStandalone() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
+}
+
+function syncInstallButtons() {
+  const installed = isPwaStandalone();
+
+  document.querySelectorAll("[data-install-app]").forEach((button) => {
+    button.hidden = installed;
+  });
+}
+
+async function requestPwaInstall() {
+  if (isPwaStandalone()) return;
+
+  if (!deferredInstallPrompt) {
+    window.alert(
+      "A instalação ainda não está disponível neste navegador. No Android, abra o EslavaHub diretamente no Chrome, interaja com a página e aguarde cerca de 30 segundos. Depois use ⋮ > Adicionar à tela inicial ou Instalar app."
+    );
+    return;
+  }
+
+  deferredInstallPrompt.prompt();
+
+  try {
+    await deferredInstallPrompt.userChoice;
+  } finally {
+    deferredInstallPrompt = null;
+    syncInstallButtons();
+  }
+}
+
+function setupPwaInstallPrompt() {
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    syncInstallButtons();
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    syncInstallButtons();
+  });
+
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-install-app]");
+    if (!button) return;
+    void requestPwaInstall();
+  });
+}
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
@@ -223,10 +278,19 @@ function renderSignedOut() {
         <button id="google-sign-in" class="button button-primary" type="button">
           Entrar com Google
         </button>
+        <button
+          class="button button-secondary pwa-install-button"
+          type="button"
+          data-install-app
+        >
+          Instalar app
+        </button>
       </div>
       <p id="auth-error" class="error-message" role="alert"></p>
     </section>
   `;
+
+  syncInstallButtons();
 
   const signInButton = document.querySelector("#google-sign-in");
   const errorElement = document.querySelector("#auth-error");
@@ -268,6 +332,13 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
         <a data-section="catalogs" href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
+        <button
+          class="button button-secondary button-small pwa-install-button header-install"
+          type="button"
+          data-install-app
+        >
+          Instalar
+        </button>
         <details class="header-links-menu">
           <summary class="button button-secondary button-small header-links-trigger">
             <span>Links</span>
@@ -354,6 +425,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   updateConnectionState();
   updateFirebaseUsageHint();
   setupMobileTabSwipe(document.querySelector("#page-content"));
+  syncInstallButtons();
 
   document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
@@ -473,6 +545,7 @@ window.addEventListener("hashchange", () => {
   void renderAuthenticatedRoute();
 });
 
+setupPwaInstallPrompt();
 registerServiceWorker();
 renderAppLoading();
 
