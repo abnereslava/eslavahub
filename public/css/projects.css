@@ -160,6 +160,11 @@
 .project-links-cell {
   display: flex;
   align-items: center;
+}
+
+.project-links-inner {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 
@@ -307,8 +312,9 @@
     grid-column: 1;
   }
 
-  .project-links-cell > * {
-    grid-column: auto;
+  .project-links-inner,
+  .project-links-cell > .muted {
+    grid-column: 2;
   }
 
   .quick-status-select {
