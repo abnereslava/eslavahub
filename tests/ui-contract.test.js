@@ -33,6 +33,13 @@ test("primary application routes remain available", () => {
   assert.match(main, /parts\[2\] === "edit"/);
 });
 
+test("Eslava branding is reused in shell and loading states", () => {
+  assert.match(main, /eslava-mark\.svg/);
+  assert.match(styles, /--color-brand:/);
+  assert.match(styles, /\.brand-logo/);
+  assert.match(styles, /\.app-loading-logo/);
+});
+
 test("authenticated shell exposes keyboard skip navigation", () => {
   assert.match(main, /class="skip-link" href="#page-content"/);
   assert.match(main, /id="page-content"/);
