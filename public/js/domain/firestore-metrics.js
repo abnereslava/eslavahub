@@ -9,6 +9,8 @@ const EMPTY_METRICS = Object.freeze({
   deletes: 0
 });
 
+let pendingWrites = 0;
+
 function readMetrics() {
   try {
     const raw = window.sessionStorage.getItem(METRICS_KEY);
@@ -37,6 +39,28 @@ function incrementMetric(field, amount = 1) {
   saveMetrics(metrics);
 }
 
+function emitWriteState() {
+  window.dispatchEvent(
+    new CustomEvent("eslavahub:firestore-write-state", {
+      detail: { pendingWrites }
+    })
+  );
+}
+
+function beginPendingWrite() {
+  pendingWrites += 1;
+  emitWriteState();
+}
+
+function endPendingWrite() {
+  pendingWrites = Math.max(0, pendingWrites - 1);
+  emitWriteState();
+}
+
+function getPendingWrites() {
+  return pendingWrites;
+}
+
 function resetMetrics() {
   const metrics = { ...EMPTY_METRICS };
   saveMetrics(metrics);
@@ -53,7 +77,10 @@ function formatMetrics(metrics = readMetrics()) {
 }
 
 export {
+  beginPendingWrite,
+  endPendingWrite,
   formatMetrics,
+  getPendingWrites,
   incrementMetric,
   readMetrics,
   resetMetrics
