@@ -1,8 +1,5 @@
 import {
-  getDocs,
-  query,
   serverTimestamp,
-  where,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { normalizeHostname, validateDomain } from "../domain/validation.js";
@@ -47,10 +44,8 @@ class DomainRepository extends FirestoreRepository {
   }
 
   async listByProject(uid, projectId) {
-    const snapshot = await getDocs(
-      query(this.collectionRef(uid), where("project_id", "==", projectId))
-    );
-    return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+    const domains = await this.list(uid);
+    return domains.filter((item) => item.project_id === projectId);
   }
 
   async setPrimary(uid, domainId, projectId) {
@@ -65,6 +60,7 @@ class DomainRepository extends FirestoreRepository {
     }
 
     await batch.commit();
+    this.invalidateCache(uid);
   }
 }
 
