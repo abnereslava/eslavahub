@@ -6,7 +6,7 @@ Este bloco torna o volume de projetos consultável e mantém os cadastros reutil
 
 ## TASK-037 — Implementar busca textual de projetos
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-013
 
@@ -20,13 +20,13 @@ A busca textual da rota `#/projects` procura correspondência parcial, sem exigi
 - [x] busca vazia retorna a listagem padrão;
 - [x] busca não exige correspondência exata;
 - [x] ausência de resultados possui estado próprio com ação para limpar filtros;
-- [ ] busca validada com dados reais em navegador.
+- [x] busca validada com dados reais em navegador.
 
 ---
 
 ## TASK-038 — Implementar filtros combináveis
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-013, TASK-018, TASK-024
 
@@ -43,13 +43,13 @@ Filtros são representados na própria URL, permitindo navegação direta a uma 
 - [x] filtro ativo/arquivado;
 - [x] múltiplos filtros podem ser combinados;
 - [x] usuário consegue limpar os filtros;
-- [ ] combinação validada com dados reais.
+- [x] combinação validada com dados reais.
 
 ---
 
 ## TASK-039 — Implementar ordenação e paginação/carregamento
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P2  
 **Dependências:** TASK-013
 
@@ -63,13 +63,13 @@ A consulta carrega a coleção privada do usuário e aplica busca/filtros no cli
 - [x] paginação de 20 itens não duplica registros na lógica implementada;
 - [x] filtros e busca permanecem na URL durante a paginação;
 - [x] layout da paginação possui adaptação para telas menores;
-- [ ] paginação/ordenação validadas com base real e navegador.
+- [x] paginação/ordenação validadas com base real e navegador.
 
 ---
 
 ## TASK-040 — Implementar gestão de categorias
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-009
 
@@ -84,13 +84,13 @@ A rota `#/catalogs/categories` permite criar, renomear, desativar e reativar cat
 - [x] categoria utilizada não é apagada destrutivamente no fluxo normal;
 - [x] categoria desativada permanece legível em projetos antigos;
 - [x] categoria desativada não aparece como opção para novos projetos;
-- [ ] fluxo validado contra Firestore real.
+- [x] fluxo validado contra Firestore real.
 
 ---
 
 ## TASK-041 — Implementar gestão de tecnologias
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-010
 
@@ -104,4 +104,4 @@ A rota `#/catalogs/technologies` permite criar, renomear, desativar e reativar t
 - [x] tecnologia pode ser desativada;
 - [x] tecnologia utilizada não precisa ser excluída ao ser removida de um projeto;
 - [x] tecnologias desativadas permanecem legíveis em projetos existentes;
-- [ ] fluxo validado contra Firestore real.
+- [x] fluxo validado contra Firestore real.
