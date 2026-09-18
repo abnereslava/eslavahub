@@ -303,6 +303,19 @@ button:disabled {
   white-space: nowrap;
 }
 
+.connection-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 8px;
+  color: var(--color-warning);
+  background: var(--color-warning-surface);
+  border: 1px solid var(--color-warning-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-caption);
+  font-weight: 800;
+}
+
 .account-menu strong,
 .account-menu span {
   display: block;
