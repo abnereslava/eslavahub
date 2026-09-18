@@ -32,6 +32,24 @@ function escapeHtml(value = "") {
 }
 
 
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+
+  window.addEventListener("load", () => {
+    const serviceWorkerUrl = new URL("../sw.js", import.meta.url);
+    const appScope = new URL("../", import.meta.url);
+
+    navigator.serviceWorker
+      .register(serviceWorkerUrl, {
+        scope: appScope.pathname,
+        updateViaCache: "none"
+      })
+      .catch((error) => {
+        console.warn("Service worker registration failed", error);
+      });
+  });
+}
+
 function renderAppLoading(message = "Carregando EslavaHub…") {
   appElement.className = "app-shell loading-shell";
   appElement.innerHTML = `
@@ -338,6 +356,7 @@ window.addEventListener("hashchange", () => {
   void renderAuthenticatedRoute();
 });
 
+registerServiceWorker();
 renderAppLoading();
 
 observeAuthState(async (user) => {

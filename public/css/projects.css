@@ -1076,3 +1076,32 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+
+/* Mobile project interaction refinements */
+@media (max-width: 768px) {
+  .project-overview-actions .actions {
+    width: 100%;
+  }
+
+  .project-overview-actions .button {
+    flex: 1 1 150px;
+  }
+
+  .project-hide-option {
+    min-height: var(--control-touch);
+  }
+}
+
+@media (max-width: 480px) {
+  .project-hide-menu {
+    min-width: 0;
+  }
+
+  .project-hide-popover {
+    right: auto;
+    left: 0;
+    min-width: min(220px, calc(100vw - 36px));
+    max-width: calc(100vw - 20px);
+  }
+}

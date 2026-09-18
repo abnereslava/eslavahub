@@ -467,3 +467,16 @@
     grid-template-columns: 78px minmax(0, 1fr);
   }
 }
+
+
+/* Mobile pending-item touch refinements */
+@media (max-width: 768px) {
+  .pending-description-wrap:hover:not(:focus-within)::after {
+    display: none;
+  }
+
+  .pending-complete-checkbox {
+    width: 24px;
+    height: 24px;
+  }
+}
