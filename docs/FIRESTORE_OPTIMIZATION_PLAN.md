@@ -1,7 +1,7 @@
 # Plano de otimização de leituras e escritas — Firestore
 
-**Estado:** planejamento  
-**Implementação:** NÃO iniciada  
+**Estado:** em execução  
+**Implementação:** bootstrap versionado e cache de sessão implementados  
 **Objetivo:** reduzir leituras/escritas desnecessárias no Cloud Firestore mantendo simplicidade, consistência e funcionamento offline.
 
 ---
@@ -157,6 +157,52 @@ Salvar projetos, domínios e pendências diretamente em `localStorage` criaria:
 - duplicação de funcionalidades já presentes no SDK do Firestore.
 
 O Firestore Web SDK oferece cache local persistente usando IndexedDB e sincronização de alterações offline.
+
+---
+
+# Estado de implementação
+
+## Entregue — 18/09/2026
+
+### Bootstrap versionado
+
+Implementado um documento:
+
+```text
+users/{uid}/meta/workspace
+```
+
+Ele registra as versões das etapas de inicialização. Quando todas estão atuais, o login faz apenas a leitura desse documento e não executa novamente defaults, migração, enriquecimentos ou numeração.
+
+Enquanto a Security Rule de `meta` não estiver publicada no Firebase, o app usa automaticamente o bootstrap legado como fallback e continua funcionando.
+
+### Cache em memória por sessão
+
+`FirestoreRepository.list()` agora mantém listas completas por **5 minutos** em memória.
+
+Regras:
+
+- cache separado por UID e coleção;
+- apenas listagens completas são cacheadas;
+- queries arbitrárias continuam indo ao Firestore;
+- create/update/delete invalidam imediatamente a coleção afetada;
+- logout limpa o cache do usuário;
+- Domínios e Pendências por projeto reutilizam a lista da sessão.
+
+Isso já elimina boa parte das leituras repetidas entre Dashboard, Projetos, Detalhe e Cadastros.
+
+### Status defaults
+
+A verificação de status padrão passou a listar a coleção uma vez, alimentando também o cache da sessão, em vez de buscar cada status isoladamente.
+
+## Ainda não implementado
+
+- cache persistente IndexedDB do SDK;
+- estratégia cache-first;
+- TTL persistido entre sessões;
+- indicador offline/sincronização;
+- refresh manual;
+- métricas reais de consumo.
 
 ---
 
@@ -546,19 +592,19 @@ Medir:
 
 Nenhuma mudança de arquitetura.
 
-## OTIM-02 — Bootstrap metadata
+## OTIM-02 — Bootstrap metadata — CONCLUÍDO
 
-Adicionar versão do workspace.
+Versão do workspace implementada em `users/{uid}/meta/workspace`.
 
-Objetivo principal: remover scans em todo login.
+## OTIM-03 — Cache em memória — PRIMEIRA VERSÃO CONCLUÍDA
 
-## OTIM-03 — WorkspaceStore em memória
+Listagens completas são reutilizadas por até 5 minutos dentro da sessão.
 
-Uma coleção deve ser buscada no máximo uma vez por sessão, salvo refresh explícito/invalidação.
+Ainda poderá evoluir para um `WorkspaceStore` com snapshot explícito, caso a complexidade futura justifique.
 
-## OTIM-04 — Invalidação após writes
+## OTIM-04 — Invalidação após writes — CONCLUÍDO PARA O CACHE ATUAL
 
-Criar, editar, arquivar, domínio e pendência atualizam imediatamente o store.
+Create/update/delete invalidam a coleção correspondente. Operações batch de domínio também invalidam o cache.
 
 ## OTIM-05 — Persistent Firestore cache
 
