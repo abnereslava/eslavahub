@@ -15,8 +15,16 @@ function normalizeExternalUrl(value) {
   const trimmed = value.trim();
   if (!trimmed) return null;
 
-  const hasProtocol = /^[a-z][a-z0-9+.-]*:/i.test(trimmed);
-  const candidate = hasProtocol ? trimmed : `https://${trimmed}`;
+  if (/^(javascript|data|vbscript|file|mailto|tel):/i.test(trimmed)) {
+    throw new Error("Link deve usar HTTP ou HTTPS.");
+  }
+
+  const explicitProtocol = /^([a-z][a-z0-9+.-]*):\/\//i.exec(trimmed);
+  if (explicitProtocol && !["http", "https"].includes(explicitProtocol[1].toLowerCase())) {
+    throw new Error("Link deve usar HTTP ou HTTPS.");
+  }
+
+  const candidate = explicitProtocol ? trimmed : `https://${trimmed}`;
   const url = new URL(candidate);
 
   if (!["http:", "https:"].includes(url.protocol)) {
