@@ -57,6 +57,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /setupMobileTabSwipe/);
   assert.match(main, /setupMobileTabSwipe\(appElement\)/);
   assert.match(main, /input, select, textarea/);
+  assert.match(main, /suppressClickUntil/);
   assert.match(main, /pendingMobileTabEntry/);
 });
 

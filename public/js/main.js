@@ -203,6 +203,7 @@ function setupMobileTabSwipe(container) {
   let pointerId = null;
   let startX = 0;
   let startY = 0;
+  let suppressClickUntil = 0;
 
   function resetSwipe() {
     pointerId = null;
@@ -260,8 +261,19 @@ function setupMobileTabSwipe(container) {
       return;
     }
 
+    suppressClickUntil = window.performance.now() + 400;
     navigate(deltaX < 0 ? "next" : "previous");
   });
+
+  container.addEventListener(
+    "click",
+    (event) => {
+      if (window.performance.now() >= suppressClickUntil) return;
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true
+  );
 
   container.addEventListener("pointercancel", resetSwipe);
 }
