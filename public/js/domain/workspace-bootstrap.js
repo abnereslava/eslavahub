@@ -4,7 +4,7 @@ const WORKSPACE_BOOTSTRAP_VERSIONS = Object.freeze({
   repository_links_version: 1,
   search_console_links_version: 1,
   portfolio_flags_version: 1,
-  repository_pending_import_version: 1,
+  repository_pending_import_version: 2,
   project_numbers_version: 1
 });
 
