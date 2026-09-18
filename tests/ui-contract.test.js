@@ -81,6 +81,13 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /persistProjectSort/);
   assert.match(projects, /id="project-search"/);
   assert.match(projects, /project-toolbar-archive/);
+  assert.match(projects, /PROJECT_LIST_BATCH_SIZE = 30/);
+  assert.match(projects, /IntersectionObserver/);
+  assert.match(projects, /project-infinite-sentinel/);
+  assert.match(projects, /toggle-pending-projects/);
+  assert.match(projects, /Apenas com pendências/);
+  assert.match(projects, /project-toolbar-divider/);
+  assert.doesNotMatch(projects, /aria-label="Paginação de projetos"/);
   assert.doesNotMatch(projects, /compact-filter-sort/);
   assert.match(projects, /project-links-inner/);
   assert.match(projects, /search_console_url/);
