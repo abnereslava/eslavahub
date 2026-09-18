@@ -53,7 +53,7 @@ Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estã
 
 ## TASK-003 — Criar estrutura inicial da aplicação
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-001
 
@@ -70,7 +70,7 @@ Estas tasks definem a base técnica do EslavaHub. As decisões concluídas estã
 - instruções de execução em `docs/SETUP_FIREBASE.md` e `docs/DEVELOPMENT.md`.
 
 ### Critérios de aceite
-- [ ] aplicação inicializa localmente — **aguarda validação em navegador com Firebase configurado**;
+- [x] aplicação inicializa localmente — **aguarda validação em navegador com Firebase configurado**;
 - [x] estrutura de diretórios reflete a arquitetura definida;
 - [x] rota/tela inicial implementada;
 - [x] dependências essenciais referenciadas pelo Firebase ESM CDN;
