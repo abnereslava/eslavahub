@@ -6,7 +6,7 @@ Este bloco entrega a entidade central do EslavaHub e seus fluxos principais. O f
 
 ## TASK-013 — Implementar listagem de projetos
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-008, TASK-009
 
@@ -24,13 +24,13 @@ Este bloco entrega a entidade central do EslavaHub e seus fluxos principais. O f
 - [x] projetos arquivados não aparecem na visão padrão;
 - [x] estado vazio possui tratamento próprio;
 - [x] cada item permite acessar seus detalhes;
-- [ ] fluxo validado contra dados reais no Firestore.
+- [x] fluxo validado contra dados reais no Firestore.
 
 ---
 
 ## TASK-014 — Implementar cadastro de projeto
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-008, TASK-009, TASK-013
 
@@ -45,13 +45,13 @@ A rota `#/projects/new` possui formulário com campos obrigatórios e opcionais,
 - [x] código persiste projeto válido pelo repositório Firestore;
 - [x] sucesso e erro possuem fluxo visual;
 - [x] após criação, a rota muda para o projeto criado;
-- [ ] criação validada em Firestore real.
+- [x] criação validada em Firestore real.
 
 ---
 
 ## TASK-015 — Implementar página de detalhes do projeto
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-013
 
@@ -62,13 +62,13 @@ A rota `#/projects/new` possui formulário com campos obrigatórios e opcionais,
 - [x] reserva seções para domínios e pendências;
 - [x] exibe observações quando existentes;
 - [x] campos opcionais ausentes não geram dados artificiais;
-- [ ] detalhe validado em execução real.
+- [x] detalhe validado em execução real.
 
 ---
 
 ## TASK-016 — Implementar edição de projeto
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-014, TASK-015
 
@@ -83,13 +83,13 @@ A rota `#/projects/{id}/edit` reutiliza o formulário do cadastro e carrega os d
 - [x] validações do cadastro também se aplicam à edição;
 - [x] `updated_at` é atualizado pela camada Firestore;
 - [x] cancelamento não persiste alterações;
-- [ ] edição validada em Firestore real.
+- [x] edição validada em Firestore real.
 
 ---
 
 ## TASK-017 — Implementar arquivamento e restauração
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-015, TASK-016
 
@@ -108,13 +108,13 @@ A rota `#/projects/{id}/edit` reutiliza o formulário do cadastro e carrega os d
 - [x] projeto arquivado pode ser consultado em visão própria;
 - [x] existe fluxo para restaurar projeto arquivado;
 - [x] restauração limpa `archived_at`;
-- [ ] arquivamento/restauração validados em Firestore real.
+- [x] arquivamento/restauração validados em Firestore real.
 
 ---
 
 ## TASK-018 — Implementar tecnologias por projeto
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-010, TASK-015, TASK-016
 
@@ -123,13 +123,13 @@ A rota `#/projects/{id}/edit` reutiliza o formulário do cadastro e carrega os d
 - [x] associação pode ser removida sem excluir a tecnologia;
 - [x] tecnologias associadas aparecem nos detalhes;
 - [x] projeto sem tecnologia continua válido;
-- [ ] associação validada em Firestore real.
+- [x] associação validada em Firestore real.
 
 ---
 
 ## TASK-019 — Implementar links rápidos de repositório e deploy
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependências:** TASK-015
 
@@ -138,13 +138,13 @@ A rota `#/projects/{id}/edit` reutiliza o formulário do cadastro e carrega os d
 - [x] repositório e deploy possuem ações distintas;
 - [x] URLs válidas podem ser abertas em nova aba;
 - [x] ausência de link não gera placeholder enganoso;
-- [ ] comportamento validado em navegador.
+- [x] comportamento validado em navegador.
 
 ---
 
 ## TASK-020 — Implementar validações do módulo de projetos
 
-**Status:** IN PROGRESS  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-014, TASK-016
 
@@ -159,4 +159,4 @@ Validações estão em `domain/validation.js` e `services/project-service.js`. T
 - [x] URLs preenchidas são validadas;
 - [x] campos opcionais vazios não bloqueiam salvamento;
 - [x] mensagens identificam o problema;
-- [ ] validações de relacionamento confirmadas contra Firestore real.
+- [x] validações de relacionamento confirmadas contra Firestore real.
