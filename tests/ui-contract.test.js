@@ -91,6 +91,8 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /\.project-hide-clear/);
   assert.match(projectStyles, /project-hide-option input:checked \+ span/);
   assert.match(projectStyles, /\.project-toolbar-archive/);
+  assert.match(projectStyles, /\.project-overview-actions/);
+  assert.match(projectStyles, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(projectStyles, /#project-list-rows/);
   assert.match(projectStyles, /project-row:not\(\.is-expanded\)/);
   assert.match(projectStyles, /\.project-card-expand/);
@@ -167,5 +169,8 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-priority-medium/);
   assert.match(pendingStyles, /\.pending-priority-high/);
   assert.match(pendingStyles, /\.pending-sort-header/);
+  assert.match(pendingStyles, /overscroll-behavior-inline: contain/);
+  assert.match(pendingStyles, /min-width: 806px/);
+  assert.match(pendingStyles, /\.pending-sheet-header,/);
   assert.match(projectStyles, /@media \(max-width: 480px\)/);
 });

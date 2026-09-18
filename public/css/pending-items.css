@@ -370,101 +370,152 @@
     grid-column: auto;
   }
 
+  /* Keep the desktop spreadsheet model on mobile, but make it denser
+     and let the user pan horizontally inside the pending-items panel. */
   .pending-sheet {
-    display: grid;
-    gap: var(--space-3);
-    overflow: visible;
-    background: transparent;
-    border: 0;
-  }
-
-  .pending-sheet-header {
-    display: none;
-  }
-
-  .pending-sheet-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    min-width: 0;
-    padding: var(--space-2) var(--space-3);
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .pending-sheet-header,
+  .pending-sheet-row {
+    display: grid;
+    grid-template-columns:
+      40px
+      minmax(180px, 1.6fr)
+      92px
+      118px
+      96px
+      118px
+      minmax(150px, 1.2fr)
+      54px;
+    min-width: 848px;
+    align-items: stretch;
+  }
+
+  .pending-sheet-header {
+    display: grid;
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: var(--color-surface-subtle);
+  }
+
+  .pending-sheet-row {
+    padding: 0;
+    background: var(--color-surface);
+    border: 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+    border-radius: 0;
   }
 
   .pending-sheet-row:last-child {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .pending-sheet-cell {
-    display: grid;
-    grid-template-columns: 92px minmax(0, 1fr);
-    gap: var(--space-2);
-    min-height: 0;
-    padding: var(--space-2) 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--color-border-subtle);
-  }
-
-  .pending-sheet-cell:last-child {
     border-bottom: 0;
   }
 
-  .pending-sheet-cell::before {
-    content: attr(data-label);
-    color: var(--color-text-muted);
-    font-size: var(--font-size-caption);
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+  .pending-sheet-cell {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 38px;
+    padding: 3px 4px;
+    border-right: 1px solid var(--color-border-subtle);
+    border-bottom: 0;
   }
 
-  .pending-check-cell {
-    justify-content: initial;
+  .pending-sheet-cell:last-child {
+    border-right: 0;
+  }
+
+  .pending-sheet-cell::before {
+    content: none;
+  }
+
+  .pending-check-cell,
+  .pending-actions-cell {
+    justify-content: center;
   }
 
   .pending-complete-checkbox,
   .pending-inline-input,
   .pending-inline-select,
   .pending-actions-cell > * {
-    grid-column: 2;
+    grid-column: auto;
   }
 
   .pending-inline-input,
   .pending-inline-select {
-    min-height: var(--control-default);
+    min-height: 32px;
+    padding: 4px 6px;
+    font-size: var(--font-size-caption);
+  }
+
+  .pending-description-input {
+    font-size: var(--font-size-label);
   }
 
   .pending-actions-cell {
-    display: grid;
+    display: flex;
   }
 
   .pending-save-state {
-    position: static;
-    min-height: 0;
+    position: absolute;
+  }
+
+  .pending-quick-add {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .pending-quick-add .button {
+    width: auto;
+    min-width: 92px;
   }
 }
 
 @media (max-width: 480px) {
-  .pending-icon-button {
-    width: var(--control-touch);
-    height: var(--control-touch);
-  }
-
-  .pending-quick-add {
-    grid-template-columns: 1fr;
-  }
-
-  .pending-quick-add .button {
-    width: 100%;
-  }
-
+  .pending-sheet-header,
   .pending-sheet-row {
-    padding-inline: var(--space-2);
+    grid-template-columns:
+      38px
+      168px
+      88px
+      112px
+      92px
+      116px
+      142px
+      50px;
+    min-width: 806px;
   }
 
   .pending-sheet-cell {
-    grid-template-columns: 78px minmax(0, 1fr);
+    min-height: 36px;
+    padding: 2px 3px;
+  }
+
+  .pending-icon-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .pending-quick-add {
+    gap: 6px;
+  }
+
+  .pending-quick-add input {
+    min-width: 0;
+  }
+
+  .pending-quick-add .button {
+    min-width: 84px;
+    padding-inline: 10px;
   }
 }
 
@@ -476,7 +527,7 @@
   }
 
   .pending-complete-checkbox {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 }
