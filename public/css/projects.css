@@ -34,7 +34,7 @@
     72px
     minmax(220px, 2fr)
     minmax(160px, 1fr)
-    104px
+    136px
     minmax(190px, 1.2fr);
   align-items: center;
   gap: var(--space-4);
@@ -234,12 +234,12 @@
 
 .project-row .project-links-inner {
   display: grid;
-  grid-template-columns: repeat(2, 36px);
+  grid-template-columns: repeat(3, 36px);
   align-items: center;
   justify-content: start;
   gap: var(--space-2);
-  width: 80px;
-  min-width: 80px;
+  width: 124px;
+  min-width: 124px;
 }
 
 .project-row .project-links-inner > .project-link-icon {
@@ -599,7 +599,7 @@
       56px
       minmax(190px, 1.8fr)
       minmax(150px, 1fr)
-      88px
+      124px
       minmax(170px, 1fr);
     gap: var(--space-3);
   }
@@ -728,9 +728,9 @@
 
 @media (max-width: 480px) {
   .project-row .project-links-inner {
-    grid-template-columns: repeat(2, var(--control-touch));
-    width: calc((var(--control-touch) * 2) + var(--space-2));
-    min-width: calc((var(--control-touch) * 2) + var(--space-2));
+    grid-template-columns: repeat(3, var(--control-touch));
+    width: calc((var(--control-touch) * 3) + (var(--space-2) * 2));
+    min-width: calc((var(--control-touch) * 3) + (var(--space-2) * 2));
   }
 
   .project-row .project-links-inner > .project-link-icon {
@@ -817,4 +817,20 @@
     grid-template-columns: 1fr;
     gap: var(--space-1);
   }
+}
+
+
+.project-row .project-links-inner > .project-link-icon .github-mark {
+  width: 19px;
+  height: 19px;
+}
+
+.project-row .project-links-inner > .project-link-icon .search-console-mark {
+  width: 20px;
+  height: 20px;
+}
+
+.project-row .project-links-inner > .project-link-console:hover {
+  background: #eef6ff;
+  border-color: #bfdbfe;
 }
