@@ -6,12 +6,20 @@
 }
 
 .metric-card {
+  position: relative;
   display: grid;
-  gap: var(--space-1);
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "label hint"
+    "value hint";
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-height: 104px;
   padding: var(--space-4);
   color: var(--color-text-strong);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-border-strong);
   border-radius: var(--radius-lg);
   text-decoration: none;
   box-shadow: var(--shadow-sm);
@@ -22,14 +30,42 @@
 }
 
 .metric-card strong {
+  grid-area: value;
   font-size: var(--font-size-metric);
   line-height: var(--line-height-tight);
 }
 
-.metric-card span {
+.metric-label {
+  grid-area: label;
   color: var(--color-text-muted);
   font-size: var(--font-size-body-sm);
   font-weight: 700;
+}
+
+.metric-link-hint {
+  grid-area: hint;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.metric-card:hover .metric-link-hint,
+.metric-card:focus-visible .metric-link-hint {
+  opacity: 1;
+}
+
+.metric-card-info {
+  border-left-color: var(--color-info);
+}
+
+.metric-card-warning {
+  border-left-color: #d97706;
+}
+
+.metric-card-danger {
+  border-left-color: var(--color-danger-strong);
 }
 
 .dashboard-grid {
