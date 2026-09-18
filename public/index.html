@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="EslavaHub — central de projetos de programação." />
   <title>EslavaHub</title>
+  <link rel="icon" type="image/svg+xml" href="./img/eslava-mark.svg" />
   <link rel="stylesheet" href="./css/styles.css" />
   <link rel="stylesheet" href="./css/dashboard.css" />
   <link rel="stylesheet" href="./css/projects.css" />
@@ -14,9 +15,12 @@
 </head>
 <body>
   <main id="app" class="app-shell" aria-live="polite">
-    <section class="loading-state" aria-label="Carregando aplicação">
-      <h1>EslavaHub</h1>
-      <p>Carregando...</p>
+    <section class="loading-shell" aria-label="Carregando aplicação">
+      <div class="app-loading">
+        <img class="app-loading-logo" src="./img/eslava-mark.svg" alt="" aria-hidden="true" />
+        <div class="app-loading-spinner" aria-hidden="true"></div>
+        <p>Carregando EslavaHub…</p>
+      </div>
     </section>
   </main>
 
