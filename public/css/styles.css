@@ -53,6 +53,7 @@
   --status-development-surface: #fff7dc;
   --status-functional-surface: #eef6ff;
   --status-finished-surface: #eef9f1;
+  --status-paused-surface: #faf5ff;
   --status-abandoned-surface: #fff0f0;
 
   /* Spacing scale */
