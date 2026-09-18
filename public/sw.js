@@ -1,4 +1,4 @@
-const CACHE_NAME = "eslavahub-shell-2026-09-18-v1";
+const CACHE_NAME = "eslavahub-shell-2026-09-18-v2";
 
 const APP_SHELL = [
   "./",
@@ -81,7 +81,8 @@ async function networkFirst(request, fallbackUrl = null, preloadResponse = null)
     if (cached) return cached;
 
     if (fallbackUrl) {
-      const fallback = await cache.match(fallbackUrl);
+      const fallbackRequest = new URL(fallbackUrl, self.registration.scope).href;
+      const fallback = await cache.match(fallbackRequest);
       if (fallback) return fallback;
     }
 
@@ -106,7 +107,9 @@ async function staleWhileRevalidate(request) {
     .then((response) => cacheResponse(cache, request, response))
     .catch(() => null);
 
-  return cached || networkPromise || Response.error();
+  if (cached) return cached;
+
+  return (await networkPromise) || Response.error();
 }
 
 self.addEventListener("install", (event) => {
