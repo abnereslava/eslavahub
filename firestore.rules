@@ -8,8 +8,16 @@ service cloud.firestore {
         && request.auth.token.firebase.sign_in_provider == "google.com";
     }
 
-    function isOwner(userId) {
+    function isAllowedUser() {
       return isGoogleUser()
+        && request.auth.uid in [
+          "056LHaaeFKYeqYCvNRUwbmww8AH3",
+          "sGuYhgdQswdtlhCTTfizJQDhNiF3"
+        ];
+    }
+
+    function isOwner(userId) {
+      return isAllowedUser()
         && request.auth.uid == userId;
     }
 
