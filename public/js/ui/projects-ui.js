@@ -654,12 +654,12 @@ async function renderProjectForm(container, uid, { projectId = null } = {}) {
 
         <label class="field">
           <span>Repositório</span>
-          <input name="repository_url" type="url" placeholder="https://github.com/..." value="${escapeHtml(project?.repository_url || "")}" />
+          <input name="repository_url" type="text" inputmode="url" placeholder="github.com/usuario/repositorio" value="${escapeHtml(project?.repository_url || "")}" />
         </label>
 
         <label class="field">
           <span>Deploy</span>
-          <input name="deploy_url" type="url" placeholder="https://..." value="${escapeHtml(project?.deploy_url || "")}" />
+          <input name="deploy_url" type="text" inputmode="url" placeholder="exemplo.com.br" value="${escapeHtml(project?.deploy_url || "")}" />
         </label>
 
         <fieldset class="field field-span-2">
