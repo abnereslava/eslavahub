@@ -72,6 +72,8 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /@media \(max-width: 480px\)/);
   assert.match(projectStyles, /project-name-link:hover \.project-name-text/);
   assert.match(projectStyles, /\.project-hide-popover/);
+  assert.match(projectStyles, /\.project-hide-trigger\.is-active/);
+  assert.match(projectStyles, /\.project-hide-clear/);
   assert.match(projectStyles, /\.project-toolbar-archive/);
 });
 
@@ -90,6 +92,8 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /Com pendências/);
   assert.match(projects, /project-hide-menu/);
   assert.match(projects, /Ocultar/);
+  assert.match(projects, /clear-hidden-statuses/);
+  assert.match(projects, /hiddenStatusCodes: \[\]/);
   assert.match(projects, /hideStatus/);
   assert.match(projects, /hiddenStatusCodes/);
   assert.match(projects, /\+ Novo projeto/);
