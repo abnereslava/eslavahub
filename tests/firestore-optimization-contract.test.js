@@ -1,0 +1,34 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { URL } from "node:url";
+
+const repository = readFileSync(
+  new URL("../public/js/repositories/firestore-repository.js", import.meta.url),
+  "utf8"
+);
+const bootstrap = readFileSync(
+  new URL("../public/js/services/bootstrap-service.js", import.meta.url),
+  "utf8"
+);
+const rules = readFileSync(
+  new URL("../firestore.rules", import.meta.url),
+  "utf8"
+);
+
+test("repository cache is bounded and invalidated by writes", () => {
+  assert.match(repository, /LIST_CACHE_TTL_MS = 5 \* 60 \* 1000/);
+  assert.match(repository, /invalidateCache\(uid\)/);
+  assert.match(repository, /this\.invalidateCache\(uid\)/);
+});
+
+test("bootstrap reads workspace metadata before legacy scans", () => {
+  assert.match(bootstrap, /workspaceMetadataRepository\.getWorkspace/);
+  assert.match(bootstrap, /needsVersion/);
+  assert.match(bootstrap, /legacy-fallback/);
+});
+
+test("Firestore rules protect workspace metadata by owner", () => {
+  assert.match(rules, /match \/users\/\{userId\}\/meta\/\{documentId\}/);
+  assert.match(rules, /allow read, write: if isOwner\(userId\)/);
+});
