@@ -100,7 +100,10 @@ async function renderDashboard(container, uid) {
             data.expiringDomains.length
               ? `<div class="compact-list domains-compact">${data.expiringDomains
                   .map(
-                    (domain) => `<a href="#/projects/${encodeURIComponent(domain.project_id)}"><strong>${escapeHtml(domain.hostname)}</strong><span>${escapeHtml(domain.project?.name || "Projeto indisponível")} · ${escapeHtml(formatDate(domain.expiration_date))} · ${escapeHtml(DOMAIN_LABELS[domain.expiration_status] || domain.expiration_status)}</span></a>`
+                    (domain) => `<div class="compact-list-item">
+                      <a class="unstyled-link" href="https://${escapeHtml(domain.hostname)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(domain.hostname)}</strong></a>
+                      <span><a class="unstyled-link" href="#/projects/${encodeURIComponent(domain.project_id)}">${escapeHtml(domain.project?.name || "Projeto indisponível")}</a> · ${escapeHtml(formatDate(domain.expiration_date))} · ${escapeHtml(DOMAIN_LABELS[domain.expiration_status] || domain.expiration_status)}</span>
+                    </div>`
                   )
                   .join("")}</div>`
               : '<p class="muted">Nenhum domínio com vencimento cadastrado.</p>'
