@@ -42,6 +42,11 @@ test("repository backlog migration contains the six audited projects and 50 pend
 
 test("repository backlog migration is versioned and idempotent", () => {
   assert.match(bootstrap, /repository_pending_import_version/);
+  const versions = readFileSync(
+    new URL("../public/js/domain/workspace-bootstrap.js", import.meta.url),
+    "utf8"
+  );
+  assert.match(versions, /repository_pending_import_version: 2/);
   assert.match(bootstrap, /importRepositoryPendingItems/);
   assert.match(importer, /existingSourceKeys/);
   assert.match(importer, /existingDescriptions/);
