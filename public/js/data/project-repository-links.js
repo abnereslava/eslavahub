@@ -17,6 +17,7 @@ const PROJECT_REPOSITORY_LINKS = Object.freeze([
   { legacy_key: "0017-to-doos", project_name: "To doOS", repository_url: "https://github.com/abnereslava/RotinaOS" },
   { legacy_key: "0018-vallor-nest", project_name: "Vallor.nest", repository_url: "https://github.com/abnereslava/Gest-o-Financeira" },
   { legacy_key: "0022-teacher-invest", project_name: "Teacher Invest", repository_url: "https://github.com/abnereslava/landingpage_teacherinvest" },
+  { legacy_key: "0023-rpg-educacional-2", project_name: "RPG Educacional 2.0", repository_url: "https://github.com/abnereslava/rpg_animais" },
   { legacy_key: "0024-recreaeduca", project_name: "Recreaeduca", repository_url: "https://github.com/abnereslava/recreaeduca" },
   { legacy_key: "0025-sara-santos-nutricionista", project_name: "Sara Santos Nutricionista", repository_url: "https://github.com/abnereslava/landingpage_sara_nutricionista" }
 ]);
@@ -24,7 +25,6 @@ const PROJECT_REPOSITORY_LINKS = Object.freeze([
 const UNRESOLVED_REPOSITORY_LINKS = Object.freeze([
   { legacy_key: "0020-gerenciador-manutencoes-carro", project_name: "Gerenciador Manutenções Carro", reason: "nenhum repositório correspondente localizado" },
   { legacy_key: "0021-klein-holtz", project_name: "Klein Holtz", reason: "nenhum repositório correspondente localizado" },
-  { legacy_key: "0023-rpg-educacional-2", project_name: "RPG Educacional 2.0", reason: "rpg_animais é plausível, mas não há evidência suficiente para vincular automaticamente" },
   { legacy_key: "0024-teacher-chell", project_name: "Teacher Chell", reason: "nenhum repositório correspondente localizado" }
 ]);
 
