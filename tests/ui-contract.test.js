@@ -33,7 +33,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /Eslava Soluções Digitais/);
   assert.match(main, /class="header-links-menu"/);
   assert.match(main, /github\.githubassets\.com\/favicons\/favicon\.svg/);
-  assert.match(main, /www\.google\.com\/favicon\.ico/);
+  assert.match(main, /www\.gstatic\.com\/search-console\/scfe\/logo_search_console\.svg/);
   assert.match(main, /header-links-favicon/);
   assert.match(main, /header-links-trigger/);
   assert.match(main, /header-links-arrow/);
@@ -83,6 +83,7 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /\.project-hide-popover/);
   assert.match(projectStyles, /\.project-hide-trigger\.is-active/);
   assert.match(projectStyles, /\.project-hide-clear/);
+  assert.match(projectStyles, /project-hide-option input:checked \+ span/);
   assert.match(projectStyles, /\.project-toolbar-archive/);
 });
 
@@ -105,14 +106,18 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /hiddenStatusCodes: \[\]/);
   assert.match(projects, /hideStatus/);
   assert.match(projects, /hiddenStatusCodes/);
+  assert.match(projects, /applyHiddenStatusSelection/);
+  assert.match(projects, /hideMenu\.open/);
   assert.match(projects, /\+ Novo projeto/);
   assert.match(projects, /project-toolbar-divider/);
   assert.doesNotMatch(projects, /aria-label="Paginação de projetos"/);
   assert.doesNotMatch(projects, /compact-filter-sort/);
   assert.match(projects, /project-links-inner/);
   assert.match(projects, /search_console_url/);
-  assert.match(projects, /github-mark/);
-  assert.match(projects, /search-console-mark/);
+  assert.match(projects, /GITHUB_FAVICON_URL/);
+  assert.match(projects, /SEARCH_CONSOLE_ICON_URL/);
+  assert.match(projects, /WEB_LINK_ICON_DATA_URI/);
+  assert.match(projects, /data:image\/webp;base64/);
   assert.match(projects, /renderProjectDomain/);
   assert.match(projects, /status-cycle/);
   assert.match(projects, /portfolio_visible/);
