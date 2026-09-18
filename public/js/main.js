@@ -105,7 +105,25 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
         <a data-section="catalogs" href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
-        <div>
+        <nav class="header-tools" aria-label="Atalhos externos">
+          <a
+            class="button button-secondary button-small header-tool-link"
+            href="https://github.com/repose"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+          <a
+            class="button button-secondary button-small header-tool-link"
+            href="https://search.google.com/search-console"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Search Console
+          </a>
+        </nav>
+        <div class="account-identity">
           <strong>${displayName}</strong>
           <span>${email}</span>
         </div>
