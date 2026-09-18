@@ -1041,3 +1041,63 @@
     min-width: 80px;
   }
 }
+
+
+/* Anchored advanced-filter disclosure */
+.advanced-filters-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 12px;
+  color: #374151;
+  background: #f3f4f6;
+  border: 0;
+  border-radius: 9px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.advanced-filters-toggle:hover {
+  background: #e5e7eb;
+}
+
+.advanced-filters-chevron {
+  color: #6b7280;
+  font-size: 0.72rem;
+  transition: transform 120ms ease;
+}
+
+.advanced-filters-toggle[aria-expanded="true"] .advanced-filters-chevron {
+  transform: rotate(180deg);
+}
+
+.advanced-filter-panel {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eef0f2;
+}
+
+.advanced-filter-panel[hidden] {
+  display: none;
+}
+
+.advanced-filter-panel .advanced-filter-grid {
+  padding-top: 0;
+  border-top: 0;
+}
+
+@media (max-width: 700px) {
+  .advanced-filters-toggle {
+    justify-self: stretch;
+  }
+}
+
+@media (max-width: 520px) {
+  .advanced-filters-toggle {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
