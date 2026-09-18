@@ -218,8 +218,7 @@ function searchConsoleIcon() {
 function portfolioSealIcon() {
   return `
     <svg class="portfolio-seal-mark" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 2.5 14.2 5l3.2-.3 1.2 3 2.9 1.5-.8 3.1 2 2.5-2 2.5.8 3.1-2.9 1.5-1.2 3-3.2-.3L12 27l-2.2-2.4-3.2.3-1.2-3-2.9-1.5.8-3.1-2-2.5 2-2.5-.8-3.1 2.9-1.5 1.2-3 3.2.3L12 2.5Z" transform="translate(0 -2.5)" fill="currentColor" stroke="none"></path>
-      <path d="m8.1 12.1 2.3 2.3 5.4-5.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="m5 12.5 4.2 4.2L19 7.5"></path>
     </svg>
   `;
 }
@@ -361,9 +360,8 @@ async function renderProjectList(
     ].filter(Boolean).length;
 
     container.innerHTML = `
-      <section class="page-header">
+      <section class="page-header project-list-page-header">
         <div>
-          <p class="eyebrow">Projetos</p>
           <h1>${archived ? "Projetos arquivados" : "Seus projetos"}</h1>
           <p>${archived ? "Consulte ou restaure projetos arquivados." : "Acompanhe código, deploy, cliente e status em um só lugar."}</p>
         </div>
@@ -487,7 +485,12 @@ async function renderProjectList(
 
                       <div class="project-cell project-name-cell" data-label="Nome do Projeto" role="cell">
                         <a class="project-name-link" href="#/projects/${encodeURIComponent(project.id)}">
-                          ${escapeHtml(project.name)}
+                          <span>${escapeHtml(project.name)}</span>
+                          ${
+                            project.has_open_pending
+                              ? '<span class="project-pending-dot" aria-label="Possui pendências não concluídas" title="Possui pendências não concluídas"></span>'
+                              : ""
+                          }
                         </a>
                         ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
                       </div>
