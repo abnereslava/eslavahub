@@ -34,6 +34,7 @@ const QUICK_STATUS_CODES = new Set([
   "FUNCTIONAL",
   "IN_DEVELOPMENT",
   "IDEALIZED",
+  "PAUSED",
   "ABANDONED"
 ]);
 
@@ -42,6 +43,7 @@ const QUICK_STATUS_LABELS = Object.freeze({
   FUNCTIONAL: "Funcional",
   IN_DEVELOPMENT: "Desenvolvendo",
   IDEALIZED: "Idealizado",
+  PAUSED: "Pausado",
   ABANDONED: "Abandonado"
 });
 
@@ -211,6 +213,21 @@ function searchConsoleIcon() {
       <rect x="7" y="7" width="5" height="1.6" rx=".8" fill="#fff" stroke="none" opacity=".9"></rect>
     </svg>
   `;
+}
+
+function portfolioSealIcon() {
+  return `
+    <svg class="portfolio-seal-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2.5 14.2 5l3.2-.3 1.2 3 2.9 1.5-.8 3.1 2 2.5-2 2.5.8 3.1-2.9 1.5-1.2 3-3.2-.3L12 27l-2.2-2.4-3.2.3-1.2-3-2.9-1.5.8-3.1-2-2.5 2-2.5-.8-3.1 2.9-1.5 1.2-3 3.2.3L12 2.5Z" transform="translate(0 -2.5)" fill="currentColor" stroke="none"></path>
+      <path d="m8.1 12.1 2.3 2.3 5.4-5.4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  `;
+}
+
+function renderPortfolioSeal(project) {
+  return project.portfolio_visible
+    ? `<span class="portfolio-seal is-active" title="Exibido no portfólio" aria-label="Exibido no portfólio">${portfolioSealIcon()}</span>`
+    : `<span class="portfolio-seal is-disabled" title="Não exibido no portfólio" aria-label="Não exibido no portfólio">${portfolioSealIcon()}</span>`;
 }
 
 function renderProjectLinks(project) {
@@ -456,6 +473,7 @@ async function renderProjectList(
                 <div role="columnheader">${renderSortableHeader("ID", filters, "number-asc", "number-desc")}</div>
                 <div role="columnheader">${renderSortableHeader("Nome do Projeto", filters, "project-name-asc", "project-name-desc")}</div>
                 <div role="columnheader">${renderSortableHeader("Status", filters, "status-cycle", "status-cycle-desc")}</div>
+                <div role="columnheader" class="portfolio-column-header">Portfólio</div>
                 <div role="columnheader">Links</div>
                 <div role="columnheader">${renderSortableHeader("Domínio", filters, "expiration-asc", "expiration-desc")}</div>
               </div>
@@ -493,6 +511,10 @@ async function renderProjectList(
                             )
                             .join("")}
                         </select>
+                      </div>
+
+                      <div class="project-cell project-portfolio-cell" data-label="Portfólio" role="cell">
+                        ${renderPortfolioSeal(project)}
                       </div>
 
                       <div class="project-cell project-links-cell" data-label="Links" role="cell">
@@ -692,6 +714,15 @@ async function renderProjectForm(container, uid, { projectId = null } = {}) {
           <input name="deploy_url" type="text" inputmode="url" placeholder="exemplo.com.br" value="${escapeHtml(project?.deploy_url || "")}" />
         </label>
 
+        <label class="checkbox-item field-span-2 project-portfolio-field">
+          <input
+            type="checkbox"
+            name="portfolio_visible"
+            ${project?.portfolio_visible ? "checked" : ""}
+          />
+          <span>Exibir este projeto no portfólio da Eslava Soluções Digitais</span>
+        </label>
+
         <fieldset class="field field-span-2">
           <legend>Tecnologias</legend>
           ${renderTechnologyOptions(options.technologies, selectedTechnologyIds)}
@@ -730,6 +761,7 @@ async function renderProjectForm(container, uid, { projectId = null } = {}) {
         repository_url: formData.get("repository_url"),
         deploy_url: formData.get("deploy_url"),
         quick_notes: formData.get("quick_notes"),
+        portfolio_visible: formData.get("portfolio_visible") === "on",
         technology_ids: formData.getAll("technology_ids")
       };
 
