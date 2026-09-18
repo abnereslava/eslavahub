@@ -23,6 +23,17 @@ function escapeHtml(value = "") {
 }
 
 
+function renderAppLoading(message = "Carregando EslavaHub…") {
+  appElement.className = "app-shell loading-shell";
+  appElement.innerHTML = `
+    <section class="app-loading" role="status" aria-live="polite">
+      <div class="app-loading-mark" aria-hidden="true">E</div>
+      <div class="app-loading-spinner" aria-hidden="true"></div>
+      <p>${escapeHtml(message)}</p>
+    </section>
+  `;
+}
+
 function updateActiveNavigation() {
   const section = (window.location.hash || "#/dashboard").replace(/^#\//, "").split(/[/?]/)[0] || "dashboard";
 
@@ -186,6 +197,8 @@ window.addEventListener("hashchange", () => {
   void renderAuthenticatedRoute();
 });
 
+renderAppLoading();
+
 observeAuthState(async (user) => {
   currentUser = user;
 
@@ -193,6 +206,8 @@ observeAuthState(async (user) => {
     renderSignedOut();
     return;
   }
+
+  renderAppLoading("Preparando seu workspace…");
 
   let bootstrapError = null;
 
