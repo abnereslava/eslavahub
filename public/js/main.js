@@ -171,7 +171,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
             >
               <img
                 class="header-links-favicon header-links-favicon-search-console"
-                src="https://www.gstatic.com/search-console/scfe/logo_search_console.svg"
+                src="https://images.seeklogo.com/logo-png/62/1/google-search-console-icon-logo-png_seeklogo-624699.png"
                 alt=""
                 width="18"
                 height="18"
