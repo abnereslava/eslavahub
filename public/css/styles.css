@@ -207,8 +207,10 @@ button:disabled {
   background: #f9fafb;
 }
 
-.project-row strong,
-.project-row span {
+.project-name-cell strong,
+.project-name-cell > span,
+.project-domain-cell strong,
+.project-domain-cell > span {
   display: block;
 }
 
