@@ -141,40 +141,50 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
         <a data-section="catalogs" href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
-        <nav class="header-tools" aria-label="Atalhos externos">
-          <a
-            class="button button-secondary button-small header-tool-link"
-            href="https://github.com/repos"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-          <a
-            class="button button-secondary button-small header-tool-link"
-            href="https://search.google.com/search-console"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Search Console
-          </a>
-          <a
-            class="button button-secondary button-small header-tool-link"
-            href="https://eslavasolucoesdigitais.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Eslava
-          </a>
-        </nav>
+        <details class="header-links-menu">
+          <summary class="button button-secondary button-small header-links-trigger">
+            <span>Links</span>
+            <span class="header-links-arrow" aria-hidden="true">↘</span>
+          </summary>
+          <nav class="header-links-popover" aria-label="Atalhos externos">
+            <a
+              class="header-links-item"
+              href="https://github.com/repos"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <a
+              class="header-links-item"
+              href="https://search.google.com/search-console"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Search Console
+            </a>
+            <a
+              class="header-links-item"
+              href="https://eslavasolucoesdigitais.com.br"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Eslava
+            </a>
+          </nav>
+        </details>
         <span id="connection-state" class="connection-state" hidden>Offline</span>
         <button
           id="refresh-workspace"
           class="button button-secondary button-small header-refresh"
           type="button"
           title="Forçar atualização dos dados"
+          aria-label="Atualizar dados"
         >
-          Atualizar
+          <svg class="header-refresh-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 11a8 8 0 1 0-2.35 5.65"></path>
+            <path d="M20 4v7h-7"></path>
+          </svg>
         </button>
         <div class="account-identity">
           <strong>${displayName}</strong>
@@ -194,15 +204,23 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
     button.disabled = true;
-    button.textContent = "Atualizando…";
+    button.classList.add("is-refreshing");
+    button.setAttribute("aria-busy", "true");
 
     try {
       forceWorkspaceRefresh(user.uid);
       await renderAuthenticatedRoute();
     } finally {
       button.disabled = false;
-      button.textContent = "Atualizar";
+      button.classList.remove("is-refreshing");
+      button.removeAttribute("aria-busy");
     }
+  });
+
+  document.querySelectorAll(".header-links-item").forEach((link) => {
+    link.addEventListener("click", () => {
+      link.closest("details")?.removeAttribute("open");
+    });
   });
 
   document.querySelector("#sign-out").addEventListener("click", async () => {
