@@ -153,7 +153,15 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              GitHub
+              <img
+                class="header-links-favicon"
+                src="https://github.githubassets.com/favicons/favicon.svg"
+                alt=""
+                width="18"
+                height="18"
+                aria-hidden="true"
+              />
+              <span>GitHub</span>
             </a>
             <a
               class="header-links-item"
@@ -161,7 +169,15 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Search Console
+              <img
+                class="header-links-favicon"
+                src="https://www.google.com/favicon.ico"
+                alt=""
+                width="18"
+                height="18"
+                aria-hidden="true"
+              />
+              <span>Google Search Console</span>
             </a>
             <a
               class="header-links-item"
@@ -169,7 +185,15 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Eslava
+              <img
+                class="header-links-favicon"
+                src="./img/eslava-mark.svg"
+                alt=""
+                width="18"
+                height="18"
+                aria-hidden="true"
+              />
+              <span>Eslava Soluções Digitais</span>
             </a>
           </nav>
         </details>
