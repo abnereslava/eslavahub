@@ -3,6 +3,11 @@ import {
   serverTimestamp,
   setDoc
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+  beginPendingWrite,
+  endPendingWrite,
+  incrementMetric
+} from "../domain/firestore-metrics.js";
 import { FirestoreRepository } from "./firestore-repository.js";
 import { USER_COLLECTIONS } from "./user-paths.js";
 
@@ -27,15 +32,22 @@ class WorkspaceMetadataRepository extends FirestoreRepository {
   }
 
   async saveWorkspace(uid, data) {
-    await setDoc(
-      this.documentRef(uid, WORKSPACE_METADATA_ID),
-      {
-        ...data,
-        updated_at: serverTimestamp()
-      },
-      { merge: true }
-    );
-    this.invalidateCache(uid);
+    beginPendingWrite();
+
+    try {
+      await setDoc(
+        this.documentRef(uid, WORKSPACE_METADATA_ID),
+        {
+          ...data,
+          updated_at: serverTimestamp()
+        },
+        { merge: true }
+      );
+      incrementMetric("writes");
+      this.invalidateCache(uid);
+    } finally {
+      endPendingWrite();
+    }
   }
 }
 
