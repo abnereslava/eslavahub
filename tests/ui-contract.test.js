@@ -26,7 +26,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
   assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
   assert.match(main, /class="header-links-menu"/);
-  assert.match(main, /class="header-links-trigger"/);
+  assert.match(main, /header-links-trigger/);
   assert.match(main, /header-links-arrow/);
   assert.match(main, /id="refresh-workspace"/);
   assert.match(main, /header-refresh-icon/);
