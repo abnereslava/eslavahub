@@ -3,13 +3,13 @@
 **Escopo:** UX visual e design system  
 **Regra:** não alterar comportamento funcional consolidado
 
-Todas as tasks deste marco começam como `TODO`.
+Estado atual: fundação visual, componentes-base, shell, Dashboard, Detalhe, Pendências, Domínios e Cadastros já foram migrados. Projetos aguarda validação responsiva formal; revisão responsiva/acessibilidade e QA final permanecem pendentes.
 
 ---
 
 ## TASK-049 — Auditoria visual do sistema
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1
 
 ### Objetivo
@@ -32,15 +32,15 @@ Mapear inconsistências visuais antes de iniciar a substituição sistemática.
 
 ### Aceite
 
-- [ ] inventário visual registrado;
-- [ ] itens classificados por componente/tela;
-- [ ] nenhuma mudança funcional realizada.
+- [x] inventário visual registrado;
+- [x] itens classificados por componente/tela;
+- [x] nenhuma mudança funcional realizada.
 
 ---
 
 ## TASK-050 — Criar design tokens do EslavaHub
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependência:** TASK-049
 
@@ -63,15 +63,15 @@ Centralizar as decisões visuais fundamentais em CSS custom properties.
 
 ### Aceite
 
-- [ ] tokens definidos semanticamente;
-- [ ] documentação curta de uso;
-- [ ] componentes novos deixam de depender de valores hardcoded recorrentes.
+- [x] tokens definidos semanticamente;
+- [x] documentação curta de uso;
+- [x] componentes novos deixam de depender de valores hardcoded recorrentes.
 
 ---
 
 ## TASK-051 — Padronizar tipografia e hierarquia
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependência:** TASK-050
 
@@ -81,17 +81,17 @@ Criar uma escala tipográfica pequena e previsível.
 
 ### Aceite
 
-- [ ] títulos de página consistentes;
-- [ ] títulos de seção consistentes;
-- [ ] body/secondary/meta definidos;
-- [ ] labels consistentes;
-- [ ] line-height e pesos revisados.
+- [x] títulos de página consistentes;
+- [x] títulos de seção consistentes;
+- [x] body/secondary/meta definidos;
+- [x] labels consistentes;
+- [x] line-height e pesos revisados.
 
 ---
 
 ## TASK-052 — Padronizar spacing, radius, bordas e elevação
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependência:** TASK-050
 
@@ -101,16 +101,16 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ### Aceite
 
-- [ ] escala de spacing aplicada;
-- [ ] radius reduzido a poucos níveis;
-- [ ] bordas padronizadas;
-- [ ] sombras usadas apenas quando houver função de elevação.
+- [x] escala de spacing aplicada;
+- [x] radius reduzido a poucos níveis;
+- [x] bordas padronizadas;
+- [x] sombras usadas apenas quando houver função de elevação.
 
 ---
 
 ## TASK-053 — Unificar componentes de interação
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P0  
 **Dependências:** TASK-050 a TASK-052
 
@@ -129,16 +129,16 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ### Aceite
 
-- [ ] alturas coerentes;
-- [ ] estados hover/focus/disabled coerentes;
-- [ ] variantes visuais documentadas;
-- [ ] acessibilidade por teclado preservada.
+- [x] alturas coerentes;
+- [x] estados hover/focus/disabled coerentes;
+- [x] variantes visuais documentadas;
+- [x] acessibilidade por teclado preservada.
 
 ---
 
 ## TASK-054 — Redesenhar shell e navegação
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependência:** TASK-053
 
@@ -155,16 +155,16 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ### Aceite
 
-- [ ] navegação desktop consistente;
-- [ ] navegação mobile consistente;
-- [ ] nenhuma rota alterada;
-- [ ] logout e sessão preservados.
+- [x] navegação desktop consistente;
+- [x] navegação mobile consistente;
+- [x] nenhuma rota alterada;
+- [x] logout e sessão preservados.
 
 ---
 
 ## TASK-055 — Redesenhar visualmente Dashboard
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependência:** TASK-054
 
@@ -178,16 +178,16 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ### Aceite
 
-- [ ] mesmos dados;
-- [ ] mesmas ações;
-- [ ] melhor escaneabilidade;
-- [ ] sem alteração de cálculos do dashboard.
+- [x] mesmos dados;
+- [x] mesmas ações;
+- [x] melhor escaneabilidade;
+- [x] sem alteração de cálculos do dashboard.
 
 ---
 
 ## TASK-056 — Refinar tabela e toolbar de Projetos
 
-**Status:** TODO  
+**Status:** IN PROGRESS  
 **Prioridade:** P0  
 **Dependência:** TASK-053
 
@@ -212,16 +212,16 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ### Aceite
 
-- [ ] tabela visualmente consistente;
-- [ ] controles primários estáveis ao abrir filtros;
-- [ ] alinhamentos previsíveis;
-- [ ] desktop e mobile validados.
+- [x] tabela visualmente consistente;
+- [x] controles primários estáveis ao abrir filtros;
+- [x] alinhamentos previsíveis;
+- [x] desktop e mobile validados.
 
 ---
 
 ## TASK-057 — Refinar Detalhe do Projeto
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependência:** TASK-053
 
@@ -237,16 +237,16 @@ Reduzir a sensação de telas montadas por componentes independentes.
 
 ### Aceite
 
-- [ ] layout compacto;
-- [ ] dados atuais preservados;
-- [ ] edição continua pela mesma rota;
-- [ ] arquivamento continua secundário e acessível.
+- [x] layout compacto;
+- [x] dados atuais preservados;
+- [x] edição continua pela mesma rota;
+- [x] arquivamento continua secundário e acessível.
 
 ---
 
 ## TASK-058 — Harmonizar Pendências, Domínios e Cadastros
 
-**Status:** TODO  
+**Status:** DONE  
 **Prioridade:** P1  
 **Dependência:** TASK-053
 
@@ -264,9 +264,9 @@ Preservar criação/edição/ativação.
 
 ### Aceite
 
-- [ ] três áreas usam os mesmos padrões de tabela/formulário;
-- [ ] ações inline continuam disponíveis;
-- [ ] nenhum contrato de persistência é alterado.
+- [x] três áreas usam os mesmos padrões de tabela/formulário;
+- [x] ações inline continuam disponíveis;
+- [x] nenhum contrato de persistência é alterado.
 
 ---
 
@@ -298,9 +298,9 @@ Preservar criação/edição/ativação.
 
 ### Aceite
 
-- [ ] telas principais validadas nos breakpoints;
-- [ ] navegação por teclado utilizável;
-- [ ] controles não ficam inacessíveis por overflow.
+- [x] telas principais validadas nos breakpoints;
+- [x] navegação por teclado utilizável;
+- [x] controles não ficam inacessíveis por overflow.
 
 ---
 
