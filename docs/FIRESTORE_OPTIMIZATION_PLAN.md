@@ -1,6 +1,6 @@
 # Plano de otimização de leituras e escritas — Firestore
 
-**Estado:** em execução  
+**Estado:** implementação concluída; medição oficial em observação  
 **Implementação:** bootstrap versionado, cache em memória, IndexedDB persistente, cache-first e redução de writes implementados  
 **Objetivo:** reduzir leituras/escritas desnecessárias no Cloud Firestore mantendo simplicidade, consistência e funcionamento offline.
 
@@ -255,6 +255,12 @@ Ela:
 ### Indicador offline
 
 Quando `navigator.onLine` indica ausência de rede, o header mostra `Offline`.
+
+### Invalidação multiaba
+
+As abas abertas compartilham o IndexedDB do Firestore e agora também notificam umas às outras via `BroadcastChannel` quando uma coleção sofre write.
+
+Isso evita que uma segunda aba continue exibindo uma cópia em memória antiga até o fim do TTL, sem criar qualquer nova operação no Firebase.
 
 ### Redução de writes
 
