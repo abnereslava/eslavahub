@@ -119,11 +119,11 @@ Detalhes: [Configuração Firebase](docs/SETUP_FIREBASE.md)
 
 Backlog atual: **61 tasks**, sendo 48 do MVP funcional, 12 do marco separado de redesign visual e 1 de enriquecimento de dados.
 
-- 14 concluídas;
-- 33 em progresso;
-- 14 ainda não iniciadas.
+- 23 concluídas;
+- 34 em progresso;
+- 4 ainda não iniciadas.
 
-A única task ainda não iniciada é a suíte de testes end-to-end dos fluxos principais. A maioria das tasks em progresso já possui implementação e aguarda validação em navegador contra Firebase Authentication e Firestore reais.
+O redesign visual já concluiu auditoria, tokens, tipografia, spacing, componentes-base, shell, Dashboard, Detalhe e harmonização de Pendências/Domínios/Cadastros. Permanecem pendentes a validação responsiva/acessibilidade, o QA visual final, o E2E funcional e o enriquecimento dos links de repositórios.
 
 ## Migração da planilha
 
@@ -141,6 +141,9 @@ Detalhes: [Plano de migração](docs/MIGRATION_PLAN.md).
 - [Desenvolvimento local](docs/DEVELOPMENT.md)
 - [Configuração Firebase](docs/SETUP_FIREBASE.md)
 - [Plano de redesign visual](docs/UX_REDESIGN_PLAN.md)
+- [Auditoria visual](docs/VISUAL_AUDIT.md)
+- [Design tokens](docs/DESIGN_TOKENS.md)
+- [Componentes visuais](docs/UI_COMPONENTS.md)
 - [Tasks do redesign visual](docs/tasks/08-redesign-visual.md)
 - [Task de vínculos com repositórios GitHub](docs/tasks/09-repository-links.md)
 
