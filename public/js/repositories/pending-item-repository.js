@@ -24,6 +24,9 @@ class PendingItemRepository extends FirestoreRepository {
       priority: data.priority ?? null,
       due_date: data.due_date ?? null,
       notes: data.notes ?? null,
+      source_key: data.source_key ?? null,
+      source_repository: data.source_repository ?? null,
+      source_path: data.source_path ?? null,
       completed_at: null
     };
 
