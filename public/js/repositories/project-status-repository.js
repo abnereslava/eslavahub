@@ -8,11 +8,13 @@ class ProjectStatusRepository extends FirestoreRepository {
   }
 
   async ensureDefaults(uid) {
+    const existing = await this.list(uid);
+    const ids = new Set(existing.map((item) => item.id));
+
     for (const status of DEFAULT_PROJECT_STATUSES) {
       const id = status.code.toLowerCase();
-      const existing = await this.get(uid, id);
 
-      if (!existing) {
+      if (!ids.has(id)) {
         await this.create(
           uid,
           {
