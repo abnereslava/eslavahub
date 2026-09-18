@@ -4,7 +4,10 @@ import {
   signOutCurrentUser
 } from "./services/auth-service.js";
 import { initializeUserWorkspace } from "./services/bootstrap-service.js";
-import { clearWorkspaceSessionCache } from "./services/workspace-cache-service.js";
+import {
+  clearWorkspaceSessionCache,
+  forceWorkspaceRefresh
+} from "./services/workspace-cache-service.js";
 import { renderCatalog } from "./ui/catalogs-ui.js";
 import { renderDashboard } from "./ui/dashboard-ui.js";
 import { renderDomainsPage } from "./ui/domains-ui.js";
@@ -133,6 +136,14 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
             Eslava
           </a>
         </nav>
+        <button
+          id="refresh-workspace"
+          class="button button-secondary button-small header-refresh"
+          type="button"
+          title="Forçar atualização dos dados"
+        >
+          Atualizar
+        </button>
         <div class="account-identity">
           <strong>${displayName}</strong>
           <span>${email}</span>
@@ -145,6 +156,20 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   `;
 
   updateActiveNavigation();
+
+  document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    button.textContent = "Atualizando…";
+
+    try {
+      forceWorkspaceRefresh(user.uid);
+      await renderAuthenticatedRoute();
+    } finally {
+      button.disabled = false;
+      button.textContent = "Atualizar";
+    }
+  });
 
   document.querySelector("#sign-out").addEventListener("click", async () => {
     await signOutCurrentUser();
