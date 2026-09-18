@@ -348,14 +348,15 @@ button:disabled {
 }
 
 .header-refresh {
-  width: var(--control-compact);
-  min-width: var(--control-compact);
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
   padding: 0;
 }
 
 .header-refresh-icon {
-  width: 18px;
-  height: 18px;
+  width: 23px;
+  height: 23px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.9;
@@ -384,6 +385,10 @@ button:disabled {
   border-radius: var(--radius-pill);
   font-size: var(--font-size-caption);
   font-weight: 800;
+}
+
+.connection-state[hidden] {
+  display: none;
 }
 
 .connection-state.is-syncing {
