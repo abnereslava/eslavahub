@@ -297,6 +297,16 @@ function projectListHash(filters, overrides = {}) {
 function renderProjectRow(project, statuses) {
   return `
     <div class="project-row ${projectRowTone(project.status?.code)}" role="row">
+      <button
+        class="project-card-expand"
+        type="button"
+        data-action="toggle-project-card"
+        aria-expanded="false"
+        aria-label="Mostrar mais detalhes de ${escapeHtml(project.name)}"
+        title="Mostrar detalhes"
+      >
+        <span aria-hidden="true">⌄</span>
+      </button>
       <div class="project-cell project-number-cell" data-label="ID" role="cell">
         ${escapeHtml(project.project_number ?? "—")}
       </div>
@@ -313,7 +323,7 @@ function renderProjectRow(project, statuses) {
         ${project.client_name ? `<span>${escapeHtml(project.client_name)}</span>` : ""}
       </div>
 
-      <div class="project-cell" data-label="Status" role="cell">
+      <div class="project-cell project-status-cell" data-label="Status" role="cell">
         <select
           class="quick-status-select ${projectStatusTone(project.status?.code)}"
           data-project-id="${escapeHtml(project.id)}"
@@ -502,6 +512,33 @@ async function renderProjectList(
     const listErrorElement = container.querySelector("#project-list-error");
     const projectList = container.querySelector(".project-list");
 
+    projectList?.addEventListener("click", (event) => {
+      if (!window.matchMedia("(max-width: 768px)").matches) return;
+
+      const row = event.target.closest(".project-row");
+      if (!row) return;
+
+      const explicitToggle = event.target.closest('[data-action="toggle-project-card"]');
+      const interactiveTarget = event.target.closest(
+        "a, button, input, select, textarea, label"
+      );
+
+      if (!explicitToggle && interactiveTarget) return;
+
+      const expanded = !row.classList.contains("is-expanded");
+      row.classList.toggle("is-expanded", expanded);
+
+      const toggle = row.querySelector('[data-action="toggle-project-card"]');
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", String(expanded));
+        toggle.setAttribute(
+          "aria-label",
+          `${expanded ? "Ocultar" : "Mostrar mais"} detalhes de ${row.querySelector(".project-name-text")?.textContent || "projeto"}`
+        );
+        toggle.title = expanded ? "Ocultar detalhes" : "Mostrar detalhes";
+      }
+    });
+
     projectList?.addEventListener("change", async (event) => {
       const select = event.target.closest(".quick-status-select");
       if (!select) return;
@@ -584,25 +621,15 @@ async function renderProjectList(
       });
     }
 
-    hideMenu?.addEventListener("pointerenter", () => {
-      hideMenu.setAttribute("open", "");
-    });
-
-    hideMenu?.addEventListener("pointerleave", () => {
-      if (!hideMenu.matches(":focus-within")) hideMenu.removeAttribute("open");
-    });
-
-    hideMenu?.addEventListener("focusin", () => {
-      hideMenu.setAttribute("open", "");
-    });
-
-    hideMenu?.addEventListener("focusout", () => {
-      window.requestAnimationFrame(() => {
-        if (!hideMenu.matches(":hover, :focus-within")) {
-          hideMenu.removeAttribute("open");
-        }
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      hideMenu?.addEventListener("pointerenter", () => {
+        hideMenu.setAttribute("open", "");
       });
-    });
+
+      hideMenu?.addEventListener("pointerleave", () => {
+        if (!hideMenu.matches(":focus-within")) hideMenu.removeAttribute("open");
+      });
+    }
 
     hideMenu?.addEventListener("toggle", () => {
       if (!hideMenu.open) applyHiddenStatusSelection();

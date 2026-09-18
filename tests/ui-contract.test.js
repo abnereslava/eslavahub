@@ -53,6 +53,9 @@ test("primary application routes remain available", () => {
 
   assert.match(main, /parts\[1\] === "new"/);
   assert.match(main, /parts\[2\] === "edit"/);
+  assert.match(main, /MOBILE_TAB_ROUTES/);
+  assert.match(main, /setupMobileTabSwipe/);
+  assert.match(main, /pendingMobileTabEntry/);
 });
 
 test("Eslava branding is reused in shell and loading states", () => {
@@ -85,6 +88,11 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /\.project-hide-clear/);
   assert.match(projectStyles, /project-hide-option input:checked \+ span/);
   assert.match(projectStyles, /\.project-toolbar-archive/);
+  assert.match(projectStyles, /#project-list-rows/);
+  assert.match(projectStyles, /project-row:not\(\.is-expanded\)/);
+  assert.match(projectStyles, /\.project-card-expand/);
+  assert.match(styles, /tab-swipe-in-next/);
+  assert.match(styles, /touch-action: pan-y/);
 });
 
 test("consolidated project interactions remain present", () => {
@@ -109,6 +117,9 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /hiddenStatusCodes/);
   assert.match(projects, /applyHiddenStatusSelection/);
   assert.match(projects, /hideMenu\.open/);
+  assert.match(projects, /\(hover: hover\) and \(pointer: fine\)/);
+  assert.match(projects, /toggle-project-card/);
+  assert.match(projects, /is-expanded/);
   assert.match(projects, /\+ Novo projeto/);
   assert.match(projects, /project-toolbar-divider/);
   assert.doesNotMatch(projects, /aria-label="Paginação de projetos"/);

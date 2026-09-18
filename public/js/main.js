@@ -22,6 +22,14 @@ import { renderProjectForm, renderProjectList } from "./ui/projects-ui.js";
 const appElement = document.querySelector("#app");
 let currentUser = null;
 
+const MOBILE_TAB_ROUTES = Object.freeze([
+  { section: "dashboard", hash: "#/dashboard" },
+  { section: "projects", hash: "#/projects" },
+  { section: "domains", hash: "#/domains" },
+  { section: "catalogs", hash: "#/catalogs/categories" }
+]);
+let pendingMobileTabEntry = null;
+
 function escapeHtml(value = "") {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -100,6 +108,107 @@ function updateActiveNavigation() {
       link.removeAttribute("aria-current");
     }
   });
+}
+
+function currentMobileTabIndex() {
+  const section =
+    (window.location.hash || "#/dashboard").replace(/^#\//, "").split(/[/?]/)[0] ||
+    "dashboard";
+  return MOBILE_TAB_ROUTES.findIndex((route) => route.section === section);
+}
+
+function animatePendingMobileTabEntry(container) {
+  if (!pendingMobileTabEntry || !container) return;
+
+  const className =
+    pendingMobileTabEntry === "next"
+      ? "tab-swipe-enter-next"
+      : "tab-swipe-enter-previous";
+
+  pendingMobileTabEntry = null;
+  container.classList.remove(
+    "tab-swipe-exit-next",
+    "tab-swipe-exit-previous",
+    "tab-swipe-enter-next",
+    "tab-swipe-enter-previous"
+  );
+  void container.offsetWidth;
+  container.classList.add(className);
+  container.addEventListener(
+    "animationend",
+    () => container.classList.remove(className),
+    { once: true }
+  );
+}
+
+function setupMobileTabSwipe(container) {
+  if (!container || container.dataset.swipeTabsReady === "true") return;
+  container.dataset.swipeTabsReady = "true";
+
+  let pointerId = null;
+  let startX = 0;
+  let startY = 0;
+
+  function resetSwipe() {
+    pointerId = null;
+    startX = 0;
+    startY = 0;
+  }
+
+  function navigate(direction) {
+    const currentIndex = currentMobileTabIndex();
+    if (currentIndex < 0) return;
+
+    const nextIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
+    const nextRoute = MOBILE_TAB_ROUTES[nextIndex];
+    if (!nextRoute) return;
+
+    const exitClass =
+      direction === "next" ? "tab-swipe-exit-next" : "tab-swipe-exit-previous";
+
+    container.classList.add(exitClass);
+
+    window.setTimeout(() => {
+      pendingMobileTabEntry = direction;
+      container.classList.remove(exitClass);
+      window.location.hash = nextRoute.hash;
+    }, 130);
+  }
+
+  container.addEventListener("pointerdown", (event) => {
+    if (
+      event.pointerType !== "touch" ||
+      !window.matchMedia("(max-width: 768px)").matches ||
+      event.target.closest(
+        "a, button, input, select, textarea, summary, label, [contenteditable='true']"
+      )
+    ) {
+      return;
+    }
+
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+  });
+
+  container.addEventListener("pointerup", (event) => {
+    if (event.pointerId !== pointerId) return;
+
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+    resetSwipe();
+
+    if (
+      Math.abs(deltaX) < 64 ||
+      Math.abs(deltaX) < Math.abs(deltaY) * 1.25
+    ) {
+      return;
+    }
+
+    navigate(deltaX < 0 ? "next" : "previous");
+  });
+
+  container.addEventListener("pointercancel", resetSwipe);
 }
 
 function renderSignedOut() {
@@ -244,6 +353,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   updateActiveNavigation();
   updateConnectionState();
   updateFirebaseUsageHint();
+  setupMobileTabSwipe(document.querySelector("#page-content"));
 
   document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
@@ -300,6 +410,7 @@ async function renderAuthenticatedRoute() {
 
   if (parts[0] === "dashboard") {
     await renderDashboard(container, currentUser.uid);
+    animatePendingMobileTabEntry(container);
     return;
   }
 
@@ -307,11 +418,13 @@ async function renderAuthenticatedRoute() {
     await renderDomainsPage(container, currentUser.uid, {
       filter: query.get("filter") || "all"
     });
+    animatePendingMobileTabEntry(container);
     return;
   }
 
   if (parts[0] === "catalogs") {
     await renderCatalog(container, currentUser.uid, parts[1] || "categories");
+    animatePendingMobileTabEntry(container);
     return;
   }
 
@@ -328,11 +441,13 @@ async function renderAuthenticatedRoute() {
       hiddenStatusCodes: query.getAll("hideStatus"),
       sort: query.has("sort") ? query.get("sort") : null
     });
+    animatePendingMobileTabEntry(container);
     return;
   }
 
   if (parts[1] === "new") {
     await renderProjectForm(container, currentUser.uid);
+    animatePendingMobileTabEntry(container);
     return;
   }
 
@@ -340,10 +455,12 @@ async function renderAuthenticatedRoute() {
 
   if (parts[2] === "edit") {
     await renderProjectForm(container, currentUser.uid, { projectId });
+    animatePendingMobileTabEntry(container);
     return;
   }
 
   await renderProjectDetailPage(container, currentUser.uid, projectId);
+  animatePendingMobileTabEntry(container);
 }
 
 window.addEventListener("online", updateConnectionState);
