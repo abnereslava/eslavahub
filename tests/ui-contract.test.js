@@ -71,6 +71,8 @@ test("Eslava branding is reused in shell and loading states", () => {
   assert.match(styles, /\.brand-logo/);
   assert.match(styles, /\.app-loading-logo/);
   assert.match(styles, /\.header-links-popover/);
+  assert.match(styles, /\.account-menu \.header-links-menu/);
+  assert.match(styles, /order: 20/);
   assert.match(styles, /header-refresh-spin/);
   assert.match(styles, /\.connection-state\[hidden\]/);
 });

@@ -799,6 +799,15 @@ button:disabled {
     font-size: var(--font-size-caption);
   }
 
+  .account-menu .header-links-trigger {
+    min-height: 38px;
+    padding-inline: 10px;
+  }
+
+  .account-menu .header-links-arrow {
+    display: none;
+  }
+
   .header-links-popover {
     min-width: 230px;
   }
@@ -964,9 +973,26 @@ button[disabled],
     padding-top: max(var(--space-2), env(safe-area-inset-top));
   }
 
+  .brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .account-menu {
+    grid-column: 2;
+    grid-row: 1;
     min-width: 0;
     justify-content: flex-end;
+  }
+
+  .account-menu .header-links-menu {
+    order: 20;
+    flex: 0 0 auto;
+  }
+
+  .account-menu .header-links-trigger {
+    min-width: 0;
+    white-space: nowrap;
   }
 
   .main-nav {
