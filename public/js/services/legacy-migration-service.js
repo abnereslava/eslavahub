@@ -26,6 +26,21 @@ async function migrateProject(uid, legacyProject, refs, existing) {
   let project = existing.projectsByKey.get(migrationKey);
 
   if (!project) {
+    const sameName = existing.projectsByName.get(normalizedName(legacyProject.name));
+
+    if (sameName) {
+      await projectRepository.update(uid, sameName.id, {
+        legacy_id: legacyProject.legacy_id,
+        legacy_deploy_provider: legacyProject.deploy_provider,
+        legacy_import_key: migrationKey,
+        legacy_source: LEGACY_MIGRATION_SOURCE
+      });
+      project = { ...sameName, legacy_import_key: migrationKey };
+      existing.projectsByKey.set(migrationKey, project);
+    }
+  }
+
+  if (!project) {
     const category = assertReference(
       refs.categories.get(normalizedName(legacyProject.category)),
       legacyProject.category
@@ -57,8 +72,13 @@ async function migrateProject(uid, legacyProject, refs, existing) {
       legacy_source: LEGACY_MIGRATION_SOURCE
     });
 
-    project = { id: projectId, legacy_import_key: migrationKey };
+    project = {
+      id: projectId,
+      name: legacyProject.name,
+      legacy_import_key: migrationKey
+    };
     existing.projectsByKey.set(migrationKey, project);
+    existing.projectsByName.set(normalizedName(legacyProject.name), project);
   }
 
   if (legacyProject.domain) {
@@ -126,6 +146,11 @@ async function migrateLegacySpreadsheet(uid) {
       projects
         .filter((item) => item.legacy_import_key)
         .map((item) => [item.legacy_import_key, item])
+    ),
+    projectsByName: new Map(
+      projects
+        .filter((item) => item.name)
+        .map((item) => [normalizedName(item.name), item])
     ),
     domainKeys: new Set(domains.map((item) => item.legacy_import_key).filter(Boolean)),
     pendingKeys: new Set(
