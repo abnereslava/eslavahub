@@ -117,6 +117,7 @@ async function queryProjects(
     client = "",
     technologyId = "",
     hasOpenPending = false,
+    hiddenStatusCodes = [],
     sort = "name-asc",
     page = 1,
     pageSize = 30
@@ -174,6 +175,10 @@ async function queryProjects(
   if (client) filtered = filtered.filter((project) => project.client_name === client);
   if (technologyId) filtered = filtered.filter((project) => (project.technology_ids || []).includes(technologyId));
   if (hasOpenPending) filtered = filtered.filter((project) => openPendingProjectIds.has(project.id));
+  if (hiddenStatusCodes.length) {
+    const hiddenStatuses = new Set(hiddenStatusCodes);
+    filtered = filtered.filter((project) => !hiddenStatuses.has(project.status?.code));
+  }
 
   filtered.sort((a, b) => {
     const projectNameAsc = () => a.name.localeCompare(b.name, "pt-BR");
