@@ -136,15 +136,15 @@ Detalhes: [`tasks/07-qualidade-e-entrega.md`](tasks/07-qualidade-e-entrega.md)
 ### Redesign visual
 
 - [x] TASK-049 — Auditoria visual do sistema — **DONE**
-- [x] TASK-050 — Criar design tokens do EslavaHub — **TODO**
-- [x] TASK-051 — Padronizar tipografia e hierarquia — **TODO**
-- [x] TASK-052 — Padronizar spacing, radius, bordas e elevação — **TODO**
-- [x] TASK-053 — Unificar componentes de interação — **TODO**
-- [x] TASK-054 — Redesenhar shell e navegação — **TODO**
-- [x] TASK-055 — Redesenhar visualmente Dashboard — **TODO**
+- [x] TASK-050 — Criar design tokens do EslavaHub — **DONE**
+- [x] TASK-051 — Padronizar tipografia e hierarquia — **DONE**
+- [x] TASK-052 — Padronizar spacing, radius, bordas e elevação — **DONE**
+- [x] TASK-053 — Unificar componentes de interação — **DONE**
+- [x] TASK-054 — Redesenhar shell e navegação — **DONE**
+- [x] TASK-055 — Redesenhar visualmente Dashboard — **DONE**
 - [ ] TASK-056 — Refinar tabela e toolbar de Projetos — **IN PROGRESS**
-- [x] TASK-057 — Refinar Detalhe do Projeto — **TODO**
-- [x] TASK-058 — Harmonizar Pendências, Domínios e Cadastros — **TODO**
+- [x] TASK-057 — Refinar Detalhe do Projeto — **DONE**
+- [x] TASK-058 — Harmonizar Pendências, Domínios e Cadastros — **DONE**
 - [ ] TASK-059 — Revisão responsiva e acessibilidade visual — **TODO**
 - [ ] TASK-060 — QA visual e regressão funcional do redesign — **TODO**
 
@@ -172,7 +172,7 @@ Revisar desktop/mobile/acessibilidade
         ↓
 Executar TASK-046 (E2E)
         ↓
-Deploy Firebase Hosting
+Validar deploy GitHub Pages
 ```
 
 ## Migração
