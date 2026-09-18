@@ -288,6 +288,7 @@ function projectListHash(filters, overrides = {}) {
   for (const code of values.hiddenStatusCodes || []) {
     if (code) params.append("hideStatus", code);
   }
+  if (values.statusCode) params.set("status", values.statusCode);
   if (values.sort) params.set("sort", normalizedSort(values.sort));
 
   const query = params.toString();
@@ -373,6 +374,7 @@ async function renderProjectList(
     search = "",
     hasOpenPending = false,
     hiddenStatusCodes = [],
+    statusCode = "",
     sort = null
   } = {}
 ) {
@@ -389,6 +391,7 @@ async function renderProjectList(
       search,
       hasOpenPending,
       hiddenStatusCodes,
+      statusCode,
       sort: effectiveSort
     };
     const result = await queryProjects(uid, {
@@ -397,6 +400,9 @@ async function renderProjectList(
       pageSize: PROJECT_LIST_BATCH_SIZE
     });
     const hasSearch = Boolean(search);
+    const hasActiveFilters = Boolean(
+      search || hasOpenPending || statusCode || hiddenStatusCodes.length
+    );
 
     container.innerHTML = `
       <section class="page-header project-list-page-header">
@@ -470,6 +476,37 @@ async function renderProjectList(
             ${archived ? "Ver ativos" : "Ver arquivados"}
           </a>
 
+          <details class="mobile-status-filter">
+            <summary class="button button-secondary mobile-status-filter-trigger ${statusCode ? "is-active" : ""}">
+              <span>Filtrar por status</span>
+              <span class="mobile-status-filter-arrow" aria-hidden="true">▾</span>
+            </summary>
+            <nav class="mobile-status-filter-popover" aria-label="Filtrar projetos por status">
+              <a
+                class="mobile-status-filter-option ${statusCode ? "" : "is-selected"}"
+                href="${projectListHash(filters, { statusCode: "", hiddenStatusCodes: [] })}"
+              >
+                Todos
+              </a>
+              ${result.statuses
+                .filter((status) => QUICK_STATUS_CODES.has(status.code))
+                .map(
+                  (status) => `
+                    <a
+                      class="mobile-status-filter-option ${statusCode === status.code ? "is-selected" : ""}"
+                      href="${projectListHash(filters, {
+                        statusCode: status.code,
+                        hiddenStatusCodes: []
+                      })}"
+                    >
+                      ${escapeHtml(QUICK_STATUS_LABELS[status.code] || status.name)}
+                    </a>
+                  `
+                )
+                .join("")}
+            </nav>
+          </details>
+
           <a class="button button-primary project-toolbar-new" href="#/projects/new">+ Novo projeto</a>
         </div>
       </form>
@@ -502,11 +539,11 @@ async function renderProjectList(
             ></div>
             <p id="project-load-more-status" class="project-load-more-status" aria-live="polite"></p>`
           : `<section class="empty-state">
-              <h2>${hasSearch || hasOpenPending ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
-              <p>${hasSearch || hasOpenPending ? "Altere a busca ou o filtro de pendências para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
+              <h2>${hasActiveFilters ? "Nenhum projeto encontrado" : archived ? "Nenhum projeto arquivado" : "Nenhum projeto cadastrado"}</h2>
+              <p>${hasActiveFilters ? "Altere a busca ou os filtros para tentar novamente." : archived ? "Projetos arquivados aparecerão aqui." : "Cadastre o primeiro projeto para começar a organizar o EslavaHub."}</p>
               ${
-                hasSearch || hasOpenPending
-                  ? `<a class="button button-secondary" href="${projectListHash(filters, { search: "", hasOpenPending: false })}">Limpar busca e filtro</a>`
+                hasActiveFilters
+                  ? `<a class="button button-secondary" href="${projectListHash(filters, { search: "", hasOpenPending: false, hiddenStatusCodes: [], statusCode: "" })}">Limpar busca e filtros</a>`
                   : archived
                     ? ""
                     : '<a class="button button-primary" href="#/projects/new">Criar projeto</a>'

@@ -59,6 +59,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /input, select, textarea/);
   assert.match(main, /suppressClickUntil/);
   assert.match(main, /pendingMobileTabEntry/);
+  assert.match(main, /query\.get\("status"\)/);
 });
 
 test("Eslava branding is reused in shell and loading states", () => {
@@ -95,6 +96,8 @@ test("responsive and reduced-motion guards remain present", () => {
   assert.match(projectStyles, /project-row:not\(\.is-expanded\)/);
   assert.match(projectStyles, /\.project-card-expand/);
   assert.match(projectStyles, /\.project-card-expand-icon/);
+  assert.match(projectStyles, /Mobile status filter/);
+  assert.match(projectStyles, /\.mobile-status-filter-popover/);
   assert.match(projects, /project-card-expand-icon/);
   assert.match(styles, /tab-swipe-in-next/);
   assert.match(styles, /touch-action: pan-y/);
@@ -127,6 +130,10 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /is-expanded/);
   assert.match(projects, /\+ Novo projeto/);
   assert.match(projects, /project-toolbar-divider/);
+  assert.match(projects, /mobile-status-filter/);
+  assert.match(projects, /Filtrar por status/);
+  assert.match(projects, /statusCode/);
+  assert.match(projects, /params\.set\("status"/);
   assert.doesNotMatch(projects, /aria-label="Paginação de projetos"/);
   assert.doesNotMatch(projects, /compact-filter-sort/);
   assert.match(projects, /project-links-inner/);
