@@ -51,6 +51,8 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /toggle-advanced-filters/);
   assert.match(projects, /project-links-inner/);
   assert.match(projects, /renderProjectDomain/);
+  assert.match(projects, /status-cycle/);
+  assert.match(projects, /class="unstyled-link"/);
 });
 
 test("pending items remain inline-editable", () => {
