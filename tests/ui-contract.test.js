@@ -22,6 +22,9 @@ const projectStyles = readFileSync(
 );
 
 test("primary application routes remain available", () => {
+  assert.match(main, /href="https:\/\/github\.com\/repose"/);
+  assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
+
   for (const route of ["dashboard", "projects", "domains", "catalogs"]) {
     assert.match(main, new RegExp(`data-section="${route}"`));
   }
