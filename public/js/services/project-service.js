@@ -165,9 +165,18 @@ async function queryProjects(
 
   if (normalizedSearch) {
     filtered = filtered.filter((project) =>
-      [project.name, project.client_name, project.quick_notes]
-        .filter(Boolean)
-        .some((value) => value.toLocaleLowerCase("pt-BR").includes(normalizedSearch))
+      [
+        project.name,
+        project.client_name,
+        project.quick_notes,
+        project.project_number,
+        project.legacy_id,
+        project.id
+      ]
+        .filter((value) => value !== undefined && value !== null && value !== "")
+        .some((value) =>
+          String(value).toLocaleLowerCase("pt-BR").includes(normalizedSearch)
+        )
     );
   }
   if (categoryId) filtered = filtered.filter((project) => project.category_id === categoryId);

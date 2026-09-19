@@ -56,6 +56,8 @@ const PROJECT_STATUS_TONES = Object.freeze({
 });
 
 const PROJECT_LIST_BATCH_SIZE = 30;
+const PROJECT_SEARCH_DEBOUNCE_MS = 180;
+let restoreProjectSearchFocus = false;
 
 const PROJECT_ROW_TONES = Object.freeze({
   IDEALIZED: "status-row-idealized",
@@ -414,11 +416,10 @@ async function renderProjectList(
               name="search"
               type="search"
               value="${escapeHtml(search)}"
-              placeholder="Buscar projeto, cliente ou observação"
+              placeholder="Buscar por nome, cliente, observação, nº ou ID"
+              autocomplete="off"
             />
           </label>
-
-          <button class="button button-secondary compact-filter-apply" type="submit">Buscar</button>
 
           <button
             id="toggle-pending-projects"
@@ -594,13 +595,41 @@ async function renderProjectList(
       }
     });
 
-    container.querySelector("#project-search").addEventListener("submit", (event) => {
+    const searchForm = container.querySelector("#project-search");
+    const searchInput = searchForm?.querySelector('input[name="search"]');
+    let searchTimer = null;
+
+    function applyLiveSearch() {
+      if (!searchInput) return;
+
+      const nextSearch = searchInput.value.trim();
+      if (nextSearch === search) return;
+
+      restoreProjectSearchFocus = true;
+      window.location.replace(
+        projectListHash(filters, {
+          search: nextSearch
+        })
+      );
+    }
+
+    searchForm?.addEventListener("submit", (event) => {
       event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      window.location.hash = projectListHash(filters, {
-        search: data.get("search")?.trim() || ""
-      });
+      if (searchTimer) window.clearTimeout(searchTimer);
+      applyLiveSearch();
     });
+
+    searchInput?.addEventListener("input", () => {
+      if (searchTimer) window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(applyLiveSearch, PROJECT_SEARCH_DEBOUNCE_MS);
+    });
+
+    if (restoreProjectSearchFocus && searchInput) {
+      restoreProjectSearchFocus = false;
+      searchInput.focus({ preventScroll: true });
+      const caret = searchInput.value.length;
+      searchInput.setSelectionRange(caret, caret);
+    }
 
     container.querySelector("#toggle-pending-projects")?.addEventListener("click", () => {
       const searchValue =

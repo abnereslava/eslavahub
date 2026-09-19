@@ -310,7 +310,7 @@
 
 .project-filter-toolbar {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto auto auto auto auto auto;
+  grid-template-columns: minmax(260px, 1fr) auto auto auto auto auto;
   align-items: center;
   gap: var(--space-2);
 }
@@ -329,11 +329,6 @@
 .compact-filter-search input:focus {
   border-color: var(--color-focus);
   box-shadow: 0 0 0 3px rgb(107 114 128 / 12%);
-}
-
-.compact-filter-apply {
-  min-height: var(--control-default);
-  padding-block: var(--space-2);
 }
 
 .project-filter-toolbar,
@@ -793,7 +788,7 @@
   }
 
   .project-filter-toolbar {
-    grid-template-columns: minmax(220px, 1fr) auto auto auto auto auto auto;
+    grid-template-columns: minmax(220px, 1fr) auto auto auto auto auto;
   }
 
   .advanced-filter-grid {
@@ -941,7 +936,6 @@
     grid-column: 1 / -1;
   }
 
-  .compact-filter-apply,
   .project-pending-toggle,
   .project-hide-trigger,
   .project-toolbar-archive,

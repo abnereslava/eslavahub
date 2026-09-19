@@ -24,6 +24,10 @@ const pendingStyles = readFileSync(
   new URL("../public/css/pending-items.css", import.meta.url),
   "utf8"
 );
+const projectService = readFileSync(
+  new URL("../public/js/services/project-service.js", import.meta.url),
+  "utf8"
+);
 
 test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
@@ -130,6 +134,11 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /readPersistedProjectSort/);
   assert.match(projects, /persistProjectSort/);
   assert.match(projects, /id="project-search"/);
+  assert.doesNotMatch(projects, /compact-filter-apply/);
+  assert.match(projects, /PROJECT_SEARCH_DEBOUNCE_MS/);
+  assert.match(projects, /addEventListener\("input"/);
+  assert.match(projects, /window\.location\.replace/);
+  assert.match(projects, /Buscar por nome, cliente, observação, nº ou ID/);
   assert.match(projects, /project-toolbar-archive/);
   assert.match(projects, /PROJECT_LIST_BATCH_SIZE = 30/);
   assert.match(projects, /IntersectionObserver/);
@@ -169,6 +178,9 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /has_open_pending/);
   assert.match(projects, /PAUSED/);
   assert.match(projects, /class="unstyled-link"/);
+  assert.match(projectService, /project\.project_number/);
+  assert.match(projectService, /project\.legacy_id/);
+  assert.match(projectService, /project\.id/);
 });
 
 test("pending items remain inline-editable", () => {
