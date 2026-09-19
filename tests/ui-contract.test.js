@@ -61,6 +61,10 @@ test("primary application routes remain available", () => {
   assert.match(main, /setupMobileTabSwipe/);
   assert.match(main, /mountMobilePageLinks/);
   assert.match(main, /mobile-page-links-menu/);
+  assert.match(main, /mobile-page-title-row/);
+  assert.match(main, /setupDismissibleDetailsMenus/);
+  assert.match(main, /project-hide-menu\[open\]/);
+  assert.match(main, /menu\.removeAttribute\("open"\)/);
   assert.match(main, /finalizeRenderedRoute/);
   assert.match(main, /setupMobileTabSwipe\(appElement\)/);
   assert.match(main, /input, select, textarea/);

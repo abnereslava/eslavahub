@@ -1143,13 +1143,17 @@ button[disabled],
 
 
 /* Mobile page-level external links */
+.mobile-page-title-row {
+  display: contents;
+}
+
 .mobile-page-links-menu {
   display: none;
 }
 
 @media (max-width: 768px) {
   .page-header {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
   }
 
@@ -1157,12 +1161,23 @@ button[disabled],
     min-width: 0;
   }
 
+  .mobile-page-title-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: 6px;
+  }
+
+  .mobile-page-title-row h1 {
+    min-width: 0;
+    margin-bottom: 0;
+  }
+
   .mobile-page-links-menu {
     position: relative;
     display: block;
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: end;
+    flex: 0 0 auto;
   }
 
   .mobile-page-links-trigger {
@@ -1191,6 +1206,10 @@ button[disabled],
 @media (max-width: 480px) {
   .page-header {
     gap: var(--space-3);
+  }
+
+  .mobile-page-title-row {
+    gap: var(--space-2);
   }
 
   .mobile-page-links-trigger {

@@ -236,9 +236,17 @@ function mountMobilePageLinks(container) {
   const pageHeader = container?.querySelector(".page-header");
   if (!pageHeader || pageHeader.querySelector(".mobile-page-links-menu")) return;
 
-  pageHeader.insertAdjacentHTML("beforeend", renderMobilePageLinksMenu());
+  const titleBlock = pageHeader.firstElementChild;
+  const title = titleBlock?.querySelector("h1");
+  if (!title) return;
 
-  pageHeader.querySelectorAll(".mobile-page-links-menu .header-links-item").forEach((link) => {
+  const titleRow = document.createElement("div");
+  titleRow.className = "mobile-page-title-row";
+  title.before(titleRow);
+  titleRow.append(title);
+  titleRow.insertAdjacentHTML("beforeend", renderMobilePageLinksMenu());
+
+  titleRow.querySelectorAll(".mobile-page-links-menu .header-links-item").forEach((link) => {
     link.addEventListener("click", () => {
       link.closest("details")?.removeAttribute("open");
     });
@@ -395,6 +403,27 @@ function setupMobileTabSwipe(container) {
       if (window.performance.now() >= suppressClickUntil) return;
       event.preventDefault();
       event.stopPropagation();
+    },
+    true
+  );
+}
+
+function setupDismissibleDetailsMenus() {
+  if (document.documentElement.dataset.dismissibleDetailsReady === "true") return;
+  document.documentElement.dataset.dismissibleDetailsReady = "true";
+
+  document.addEventListener(
+    "pointerdown",
+    (event) => {
+      document
+        .querySelectorAll(
+          ".mobile-page-links-menu[open], .header-links-menu[open], .project-hide-menu[open]"
+        )
+        .forEach((menu) => {
+          if (!menu.contains(event.target)) {
+            menu.removeAttribute("open");
+          }
+        });
     },
     true
   );
@@ -680,6 +709,7 @@ window.addEventListener("hashchange", () => {
 });
 
 setupPwaInstallPrompt();
+setupDismissibleDetailsMenus();
 registerServiceWorker();
 renderAppLoading();
 
