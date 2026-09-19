@@ -36,6 +36,9 @@ test("primary application routes remain available", () => {
   assert.match(main, /\.\/img\/search-console\.png/);
   assert.match(main, /header-links-favicon/);
   assert.match(main, /header-links-trigger/);
+  assert.match(main, /mobilePageLinksMarkup/);
+  assert.match(main, /setupMobilePageLinks/);
+  assert.match(main, /MutationObserver/);
   assert.match(main, /header-links-arrow/);
   assert.match(main, /mouseenter/);
   assert.match(main, /mouseleave/);
@@ -76,8 +79,9 @@ test("Eslava branding is reused in shell and loading states", () => {
   assert.match(styles, /\.header-links-popover/);
   assert.match(styles, /\.mobile-page-links-menu/);
   assert.match(styles, /\.mobile-page-links-trigger/);
-  assert.match(styles, /\.account-menu \.header-links-menu/);
-  assert.match(styles, /order: 20/);
+  assert.match(styles, /\.mobile-page-links/);
+  assert.match(styles, /\.page-header > \.mobile-page-links/);
+  assert.match(styles, /\.account-menu > \.header-links-menu/);
   assert.match(styles, /header-refresh-spin/);
   assert.match(styles, /\.connection-state\[hidden\]/);
 });

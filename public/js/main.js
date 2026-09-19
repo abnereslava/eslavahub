@@ -400,6 +400,47 @@ function setupMobileTabSwipe(container) {
   );
 }
 
+function mobilePageLinksMarkup() {
+  return `
+    <details class="mobile-page-links">
+      <summary class="button button-secondary button-small mobile-page-links-trigger">Links</summary>
+      <nav class="header-links-popover mobile-page-links-popover" aria-label="Atalhos externos">
+        <a class="header-links-item" href="https://github.com/repos" target="_blank" rel="noopener noreferrer">
+          <img class="header-links-favicon" src="https://github.githubassets.com/favicons/favicon.svg" alt="" width="18" height="18" aria-hidden="true" />
+          <span>GitHub</span>
+        </a>
+        <a class="header-links-item" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">
+          <img class="header-links-favicon header-links-favicon-search-console" src="./img/search-console.png" alt="" width="18" height="18" aria-hidden="true" />
+          <span>Google Search Console</span>
+        </a>
+        <a class="header-links-item" href="https://eslavasolucoesdigitais.com.br" target="_blank" rel="noopener noreferrer">
+          <img class="header-links-favicon" src="./img/eslava-mark.svg" alt="" width="18" height="18" aria-hidden="true" />
+          <span>Eslava Soluções Digitais</span>
+        </a>
+      </nav>
+    </details>
+  `;
+}
+
+function mountMobilePageLinks(container) {
+  const header = container?.querySelector(".page-header");
+  if (!header || header.querySelector(".mobile-page-links")) return;
+  header.insertAdjacentHTML("beforeend", mobilePageLinksMarkup());
+}
+
+function setupMobilePageLinks(container) {
+  if (!container || container.dataset.mobileLinksReady === "true") return;
+  container.dataset.mobileLinksReady = "true";
+
+  mountMobilePageLinks(container);
+
+  const observer = new MutationObserver(() => {
+    mountMobilePageLinks(container);
+  });
+
+  observer.observe(container, { childList: true, subtree: true });
+}
+
 function renderSignedOut() {
   appElement.className = "app-shell auth-shell";
   appElement.innerHTML = `
@@ -559,6 +600,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
   updateConnectionState();
   updateFirebaseUsageHint();
   setupMobileTabSwipe(appElement);
+  setupMobilePageLinks(document.querySelector("#page-content"));
   syncInstallButtons();
 
   document.querySelector("#refresh-workspace")?.addEventListener("click", async (event) => {

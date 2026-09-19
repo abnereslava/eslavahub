@@ -799,13 +799,10 @@ button:disabled {
     font-size: var(--font-size-caption);
   }
 
-  .account-menu .header-links-trigger {
+  .mobile-page-links-trigger {
     min-height: 38px;
     padding-inline: 10px;
-  }
-
-  .account-menu .header-links-arrow {
-    display: none;
+    font-size: var(--font-size-caption);
   }
 
   .header-links-popover {
@@ -966,6 +963,10 @@ button[disabled],
 }
 
 
+.mobile-page-links {
+  display: none;
+}
+
 /* Mobile app shell */
 @media (max-width: 768px) {
   .topbar {
@@ -985,14 +986,41 @@ button[disabled],
     justify-content: flex-end;
   }
 
-  .account-menu .header-links-menu {
-    order: 20;
-    flex: 0 0 auto;
+  .account-menu > .header-links-menu {
+    display: none;
   }
 
-  .account-menu .header-links-trigger {
+  .page-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .page-header > :first-child {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .page-header > .mobile-page-links {
+    grid-column: 2;
+    grid-row: 1;
+    display: block;
+    position: relative;
+    align-self: start;
+  }
+
+  .mobile-page-links-trigger {
     min-width: 0;
     white-space: nowrap;
+  }
+
+  .mobile-page-links-popover {
+    right: 0;
+    left: auto;
+  }
+
+  .page-header > :not(:first-child):not(.mobile-page-links) {
+    grid-column: 1 / -1;
   }
 
   .main-nav {
