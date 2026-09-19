@@ -55,6 +55,9 @@ test("primary application routes remain available", () => {
   assert.match(main, /parts\[2\] === "edit"/);
   assert.match(main, /MOBILE_TAB_ROUTES/);
   assert.match(main, /setupMobileTabSwipe/);
+  assert.match(main, /mountMobilePageLinks/);
+  assert.match(main, /mobile-page-links-menu/);
+  assert.match(main, /finalizeRenderedRoute/);
   assert.match(main, /setupMobileTabSwipe\(appElement\)/);
   assert.match(main, /input, select, textarea/);
   assert.match(main, /\.pending-sheet-scroll/);
@@ -71,6 +74,8 @@ test("Eslava branding is reused in shell and loading states", () => {
   assert.match(styles, /\.brand-logo/);
   assert.match(styles, /\.app-loading-logo/);
   assert.match(styles, /\.header-links-popover/);
+  assert.match(styles, /\.mobile-page-links-menu/);
+  assert.match(styles, /\.mobile-page-links-trigger/);
   assert.match(styles, /\.account-menu \.header-links-menu/);
   assert.match(styles, /order: 20/);
   assert.match(styles, /header-refresh-spin/);

@@ -172,6 +172,84 @@ function currentMobileTabIndex() {
   return MOBILE_TAB_ROUTES.findIndex((route) => route.section === section);
 }
 
+function renderMobilePageLinksMenu() {
+  return `
+    <details class="mobile-page-links-menu">
+      <summary class="button button-secondary button-small mobile-page-links-trigger">
+        Links
+      </summary>
+      <nav class="header-links-popover mobile-page-links-popover" aria-label="Atalhos externos">
+        <a
+          class="header-links-item"
+          href="https://github.com/repos"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="header-links-favicon"
+            src="https://github.githubassets.com/favicons/favicon.svg"
+            alt=""
+            width="18"
+            height="18"
+            aria-hidden="true"
+          />
+          <span>GitHub</span>
+        </a>
+        <a
+          class="header-links-item"
+          href="https://search.google.com/search-console"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="header-links-favicon header-links-favicon-search-console"
+            src="./img/search-console.png"
+            alt=""
+            width="18"
+            height="18"
+            aria-hidden="true"
+          />
+          <span>Google Search Console</span>
+        </a>
+        <a
+          class="header-links-item"
+          href="https://eslavasolucoesdigitais.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="header-links-favicon"
+            src="./img/eslava-mark.svg"
+            alt=""
+            width="18"
+            height="18"
+            aria-hidden="true"
+          />
+          <span>Eslava Soluções Digitais</span>
+        </a>
+      </nav>
+    </details>
+  `;
+}
+
+function mountMobilePageLinks(container) {
+  const pageHeader = container?.querySelector(".page-header");
+  if (!pageHeader || pageHeader.querySelector(".mobile-page-links-menu")) return;
+
+  pageHeader.insertAdjacentHTML("beforeend", renderMobilePageLinksMenu());
+
+  pageHeader.querySelectorAll(".mobile-page-links-menu .header-links-item").forEach((link) => {
+    link.addEventListener("click", () => {
+      link.closest("details")?.removeAttribute("open");
+    });
+  });
+}
+
+function finalizeRenderedRoute(container) {
+  mountMobilePageLinks(container);
+  finalizeRenderedRoute(container);
+}
+
 function animatePendingMobileTabEntry(container) {
   if (!pendingMobileTabEntry || !container) return;
 
@@ -538,7 +616,7 @@ async function renderAuthenticatedRoute() {
 
   if (parts[0] === "dashboard") {
     await renderDashboard(container, currentUser.uid);
-    animatePendingMobileTabEntry(container);
+    finalizeRenderedRoute(container);
     return;
   }
 
@@ -546,13 +624,13 @@ async function renderAuthenticatedRoute() {
     await renderDomainsPage(container, currentUser.uid, {
       filter: query.get("filter") || "all"
     });
-    animatePendingMobileTabEntry(container);
+    finalizeRenderedRoute(container);
     return;
   }
 
   if (parts[0] === "catalogs") {
     await renderCatalog(container, currentUser.uid, parts[1] || "categories");
-    animatePendingMobileTabEntry(container);
+    finalizeRenderedRoute(container);
     return;
   }
 
@@ -569,13 +647,13 @@ async function renderAuthenticatedRoute() {
       hiddenStatusCodes: query.getAll("hideStatus"),
       sort: query.has("sort") ? query.get("sort") : null
     });
-    animatePendingMobileTabEntry(container);
+    finalizeRenderedRoute(container);
     return;
   }
 
   if (parts[1] === "new") {
     await renderProjectForm(container, currentUser.uid);
-    animatePendingMobileTabEntry(container);
+    finalizeRenderedRoute(container);
     return;
   }
 
@@ -583,7 +661,7 @@ async function renderAuthenticatedRoute() {
 
   if (parts[2] === "edit") {
     await renderProjectForm(container, currentUser.uid, { projectId });
-    animatePendingMobileTabEntry(container);
+    finalizeRenderedRoute(container);
     return;
   }
 

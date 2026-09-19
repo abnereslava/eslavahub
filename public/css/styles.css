@@ -1153,3 +1153,65 @@ button[disabled],
     font-size: var(--font-size-caption);
   }
 }
+
+
+/* Mobile page-level external links */
+.mobile-page-links-menu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .page-header > :first-child {
+    min-width: 0;
+  }
+
+  .mobile-page-links-menu {
+    position: relative;
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .mobile-page-links-trigger {
+    min-height: var(--control-compact);
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+    list-style: none;
+  }
+
+  .mobile-page-links-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-page-links-popover {
+    top: calc(100% + 6px);
+    right: 0;
+    width: min(260px, calc(100vw - 28px));
+    min-width: 220px;
+  }
+
+  .account-menu .header-links-menu {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    gap: var(--space-3);
+  }
+
+  .mobile-page-links-trigger {
+    min-height: 40px;
+    padding-inline: 12px;
+  }
+
+  .mobile-page-links-popover {
+    width: min(250px, calc(100vw - 20px));
+  }
+}
