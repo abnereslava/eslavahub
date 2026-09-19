@@ -185,6 +185,13 @@ test("pending items remain inline-editable", () => {
   assert.match(pending, /pending-sort-header/);
   assert.match(pending, /data-sort-field/);
   assert.match(pending, /data-field="due_date"/);
+  assert.match(pending, /data-field="responsible"/);
+  assert.match(pending, /renderAuditTimestamp/);
+  assert.match(pending, /item\.created_at/);
+  assert.match(pending, /item\.completed_at/);
+  assert.doesNotMatch(pending, /data-field="notes"/);
+  assert.match(pending, /pending-due-soon/);
+  assert.match(pending, /pending-due-expired/);
   assert.match(pendingStyles, /\.pending-priority-low/);
   assert.match(pendingStyles, /\.pending-priority-medium/);
   assert.match(pendingStyles, /\.pending-priority-high/);
@@ -193,7 +200,10 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-sheet-scroll/);
   assert.match(pendingStyles, /contain: inline-size/);
   assert.match(pendingStyles, /touch-action: pan-x pan-y/);
-  assert.match(pendingStyles, /min-width: 806px/);
+  assert.match(pendingStyles, /min-width: 984px/);
+  assert.match(pendingStyles, /\.pending-audit-stamp/);
+  assert.match(pendingStyles, /\.pending-due-cell\.pending-due-soon/);
+  assert.match(pendingStyles, /\.pending-due-cell\.pending-due-expired/);
   assert.match(pendingStyles, /\.pending-sheet-header,/);
   assert.match(projectStyles, /@media \(max-width: 480px\)/);
 });

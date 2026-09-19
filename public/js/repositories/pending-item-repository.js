@@ -21,6 +21,7 @@ class PendingItemRepository extends FirestoreRepository {
       description: data.description,
       status: data.status || PENDING_STATUS.PENDING,
       area: data.area ?? null,
+      responsible: data.responsible ?? null,
       priority: data.priority ?? null,
       due_date: data.due_date ?? null,
       notes: data.notes ?? null,
@@ -36,6 +37,10 @@ class PendingItemRepository extends FirestoreRepository {
       ...payload,
       description: payload.description.trim(),
       area: typeof payload.area === "string" ? payload.area.trim() || null : payload.area,
+      responsible:
+        typeof payload.responsible === "string"
+          ? payload.responsible.trim() || null
+          : payload.responsible,
       notes: typeof payload.notes === "string" ? payload.notes.trim() || null : payload.notes
     });
   }
@@ -46,6 +51,9 @@ class PendingItemRepository extends FirestoreRepository {
 
     if (typeof data.description === "string") payload.description = data.description.trim();
     if (typeof data.area === "string") payload.area = data.area.trim() || null;
+    if (typeof data.responsible === "string") {
+      payload.responsible = data.responsible.trim() || null;
+    }
     if (typeof data.notes === "string") payload.notes = data.notes.trim() || null;
 
     if (Object.hasOwn(data, "status")) {

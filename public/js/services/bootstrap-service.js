@@ -6,6 +6,7 @@ import {
   WORKSPACE_BOOTSTRAP_VERSIONS,
   needsVersion
 } from "../domain/workspace-bootstrap.js";
+import { importCuratedProjects } from "./curated-project-import-service.js";
 import { migrateLegacySpreadsheet } from "./legacy-migration-service.js";
 import { ensureProjectNumbers } from "./project-number-service.js";
 import { enrichProjectRepositoryLinks } from "./repository-link-enrichment-service.js";
@@ -21,6 +22,7 @@ async function runFullBootstrap(uid) {
   ]);
 
   await migrateLegacySpreadsheet(uid);
+  await importCuratedProjects(uid);
   await enrichProjectRepositoryLinks(uid);
   await enrichProjectSearchConsoleLinks(uid);
   await enrichProjectPortfolioFlags(uid);
@@ -51,6 +53,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "legacy_migration_version")) {
     await migrateLegacySpreadsheet(uid);
+  }
+
+  if (needsVersion(metadata, "curated_projects_version")) {
+    await importCuratedProjects(uid);
   }
 
   if (needsVersion(metadata, "repository_links_version")) {

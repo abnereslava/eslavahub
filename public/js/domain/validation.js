@@ -146,6 +146,9 @@ function validatePendingItem(data, { partial = false } = {}) {
   }
 
   if (!isOptionalString(data.area)) throw new Error("Área da pendência deve ser texto.");
+  if (!isOptionalString(data.responsible)) {
+    throw new Error("Responsável da pendência deve ser texto.");
+  }
   if (!isOptionalString(data.notes)) throw new Error("Notas da pendência devem ser texto.");
 }
 

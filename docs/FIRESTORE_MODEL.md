@@ -1,6 +1,6 @@
 # Modelo de Persistência — Cloud Firestore
 
-**Versão:** 0.2  
+**Versão:** 0.3  
 **Escopo:** MVP do EslavaHub
 
 Este documento registra como o modelo conceitual do SDD é persistido no Cloud Firestore.
@@ -129,15 +129,17 @@ project_id: string
 description: string
 status: PENDING | IN_PROGRESS | WAITING | COMPLETED | DISCARDED
 area: string | null
+responsible: string | null
 priority: LOW | MEDIUM | HIGH | null
 due_date: YYYY-MM-DD | null
-notes: string | null
 completed_at: timestamp | null
 created_at: timestamp
 updated_at: timestamp
 ```
 
-Ao concluir uma pendência, `completed_at` recebe timestamp do servidor. Ao reabrir ou descartar, `completed_at` volta a `null`.
+Ao concluir uma pendência, `completed_at` recebe timestamp do servidor. Ao reabrir ou descartar, `completed_at` volta a `null`; se ela for concluída novamente, a nova data/hora substitui a anterior.
+
+`created_at` e `completed_at` são campos documentais e não são editáveis pela interface. O campo legado `notes` pode continuar presente em documentos antigos para compatibilidade, mas deixou de fazer parte da planilha de pendências da UI.
 
 ## Bootstrap inicial
 

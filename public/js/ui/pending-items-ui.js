@@ -68,6 +68,67 @@ function dateInputValue(value) {
   return "";
 }
 
+function timestampDate(value) {
+  if (!value) return null;
+  if (typeof value.toDate === "function") return value.toDate();
+  if (value instanceof Date) return value;
+
+  if (typeof value?.seconds === "number") {
+    return new Date(
+      value.seconds * 1000 + Math.floor((value.nanoseconds || 0) / 1_000_000)
+    );
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function timestampParts(value) {
+  const date = timestampDate(value);
+  if (!date) return { date: "—", time: "" };
+
+  return {
+    date: new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }).format(date),
+    time: new Intl.DateTimeFormat("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(date)
+  };
+}
+
+function renderAuditTimestamp(value, label) {
+  const parts = timestampParts(value);
+
+  return `
+    <div class="pending-audit-stamp" aria-label="${label}: ${parts.date}${parts.time ? ` às ${parts.time}` : ""}">
+      <span>${parts.date}</span>
+      <small>${parts.time || "—"}</small>
+    </div>
+  `;
+}
+
+function dueDateTone(item) {
+  if (!isOpen(item)) return "";
+
+  const value = dateInputValue(item.due_date);
+  if (!value) return "";
+
+  const [year, month, day] = value.split("-").map(Number);
+  const due = new Date(year, month - 1, day);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const daysUntilDue = Math.round((due.getTime() - today.getTime()) / 86_400_000);
+
+  if (daysUntilDue < 0) return "pending-due-expired";
+  if (daysUntilDue <= 3) return "pending-due-soon";
+  return "";
+}
+
 function isOpen(item) {
   return ![PENDING_STATUS.COMPLETED, PENDING_STATUS.DISCARDED].includes(item.status);
 }
@@ -104,6 +165,9 @@ function sortPendingItems(items, sort = "default") {
   return items.slice().sort((a, b) => {
     if (field === "description") return compareText(a.description, b.description) * multiplier;
     if (field === "area") return compareText(a.area, b.area) * multiplier;
+    if (field === "responsible") {
+      return compareText(a.responsible, b.responsible) * multiplier;
+    }
     if (field === "status") return (statusWeight(a.status) - statusWeight(b.status)) * multiplier;
     if (field === "priority") {
       return (priorityWeight(a.priority) - priorityWeight(b.priority)) * multiplier;
@@ -113,7 +177,6 @@ function sortPendingItems(items, sort = "default") {
       const bDate = dateInputValue(b.due_date) || "9999-12-31";
       return aDate.localeCompare(bDate) * multiplier;
     }
-    if (field === "notes") return compareText(a.notes, b.notes) * multiplier;
 
     if (isOpen(a) !== isOpen(b)) return isOpen(a) ? -1 : 1;
 
@@ -178,6 +241,7 @@ function trashIcon() {
 function pendingRow(item) {
   const closed = !isOpen(item);
   const checked = item.status === PENDING_STATUS.COMPLETED;
+  const dueTone = dueDateTone(item);
 
   return `
     <div
@@ -223,6 +287,17 @@ function pendingRow(item) {
         />
       </div>
 
+      <div class="pending-sheet-cell" data-label="Responsável" role="cell">
+        <input
+          class="pending-inline-input"
+          data-field="responsible"
+          data-original="${escapeHtml(item.responsible || "")}"
+          value="${escapeHtml(item.responsible || "")}"
+          placeholder="—"
+          aria-label="Responsável pela pendência"
+        />
+      </div>
+
       <div class="pending-sheet-cell" data-label="Status" role="cell">
         <select
           class="pending-inline-select pending-status-select ${STATUS_TONES[item.status] || ""}"
@@ -247,7 +322,11 @@ function pendingRow(item) {
         </select>
       </div>
 
-      <div class="pending-sheet-cell" data-label="Prazo" role="cell">
+      <div
+        class="pending-sheet-cell pending-due-cell ${dueTone}"
+        data-label="Prazo"
+        role="cell"
+      >
         <input
           class="pending-inline-input pending-date-input"
           data-field="due_date"
@@ -257,15 +336,12 @@ function pendingRow(item) {
         />
       </div>
 
-      <div class="pending-sheet-cell" data-label="Notas" role="cell">
-        <input
-          class="pending-inline-input"
-          data-field="notes"
-          data-original="${escapeHtml(item.notes || "")}"
-          value="${escapeHtml(item.notes || "")}"
-          placeholder="—"
-          aria-label="Notas da pendência"
-        />
+      <div class="pending-sheet-cell pending-audit-cell" data-label="Criada em" role="cell">
+        ${renderAuditTimestamp(item.created_at, "Criada em")}
+      </div>
+
+      <div class="pending-sheet-cell pending-audit-cell" data-label="Concluída em" role="cell">
+        ${renderAuditTimestamp(item.completed_at, "Concluída em")}
       </div>
 
       <div class="pending-sheet-cell pending-actions-cell" data-label="Ações" role="cell">
@@ -326,10 +402,12 @@ async function renderPendingItems(container, uid, projectId) {
                 <div role="columnheader" aria-label="Concluir"></div>
                 <div role="columnheader">${renderPendingSortHeader("Descrição", "description", currentSort)}</div>
                 <div role="columnheader">${renderPendingSortHeader("Área", "area", currentSort)}</div>
+                <div role="columnheader">${renderPendingSortHeader("Responsável", "responsible", currentSort)}</div>
                 <div role="columnheader">${renderPendingSortHeader("Status", "status", currentSort)}</div>
                 <div role="columnheader">${renderPendingSortHeader("Prioridade", "priority", currentSort)}</div>
                 <div role="columnheader">${renderPendingSortHeader("Prazo", "due_date", currentSort)}</div>
-                <div role="columnheader">${renderPendingSortHeader("Notas", "notes", currentSort)}</div>
+                <div class="pending-audit-header" role="columnheader">Criada em</div>
+                <div class="pending-audit-header" role="columnheader">Concluída em</div>
                 <div role="columnheader">Ações</div>
               </div>
                 ${items.map(pendingRow).join("")}
@@ -366,9 +444,9 @@ async function renderPendingItems(container, uid, projectId) {
           description: descriptionInput.value,
           status: PENDING_STATUS.PENDING,
           area: null,
+          responsible: null,
           priority: null,
-          due_date: null,
-          notes: null
+          due_date: null
         });
 
         await renderPendingItems(container, uid, projectId);
@@ -446,7 +524,7 @@ async function renderPendingItems(container, uid, projectId) {
         }
       });
 
-      for (const input of row.querySelectorAll('input[data-field="description"], input[data-field="area"], input[data-field="notes"]')) {
+      for (const input of row.querySelectorAll('input[data-field="description"], input[data-field="area"], input[data-field="responsible"]')) {
         input.addEventListener("keydown", (event) => {
           if (event.key === "Enter") input.blur();
           if (event.key === "Escape") {

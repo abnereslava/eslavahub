@@ -1,4 +1,4 @@
-const CACHE_NAME = "eslavahub-shell-2026-09-18-v3";
+const CACHE_NAME = "eslavahub-shell-2026-09-19-v4";
 
 const APP_SHELL = [
   "./",
@@ -18,6 +18,7 @@ const APP_SHELL = [
   "./img/pwa-maskable-512.png",
   "./js/main.js",
   "./js/config/firebase.js",
+  "./js/data/curated-projects.js",
   "./js/data/legacy-projects.js",
   "./js/data/project-portfolio-flags.js",
   "./js/data/project-repository-links.js",
@@ -41,6 +42,7 @@ const APP_SHELL = [
   "./js/repositories/workspace-metadata-repository.js",
   "./js/services/auth-service.js",
   "./js/services/bootstrap-service.js",
+  "./js/services/curated-project-import-service.js",
   "./js/services/dashboard-service.js",
   "./js/services/legacy-migration-service.js",
   "./js/services/portfolio-enrichment-service.js",

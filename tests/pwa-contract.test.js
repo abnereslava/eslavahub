@@ -33,6 +33,8 @@ test("service worker keeps app shell local and supports Firebase SDK reuse", () 
   assert.match(main, /deferredInstallPrompt/);
   assert.match(main, /appinstalled/);
   assert.match(serviceWorker, /APP_SHELL/);
+  assert.match(serviceWorker, /\.\/js\/data\/curated-projects\.js/);
+  assert.match(serviceWorker, /\.\/js\/services\/curated-project-import-service\.js/);
   assert.match(serviceWorker, /\.\/img\/search-console\.png/);
   assert.match(serviceWorker, /\.\/img\/deploy-link\.webp/);
   assert.match(serviceWorker, /requestUrl\.origin === self\.location\.origin/);

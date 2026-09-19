@@ -83,6 +83,7 @@ async function importRepositoryPendingItems(uid) {
         description: item.description,
         status: item.status,
         area: item.area ?? null,
+        responsible: item.responsible ?? null,
         priority: item.priority ?? null,
         due_date: null,
         notes: item.notes ?? null,

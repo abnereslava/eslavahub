@@ -16,6 +16,24 @@ test("completing a pending item sets completed_at", () => {
   });
 });
 
+test("recompletion replaces completed_at with the latest timestamp", () => {
+  const first = { server: "first" };
+  const latest = { server: "latest" };
+
+  assert.deepEqual(pendingStatusPatch(PENDING_STATUS.COMPLETED, first), {
+    status: PENDING_STATUS.COMPLETED,
+    completed_at: first
+  });
+  assert.deepEqual(pendingStatusPatch(PENDING_STATUS.PENDING), {
+    status: PENDING_STATUS.PENDING,
+    completed_at: null
+  });
+  assert.deepEqual(pendingStatusPatch(PENDING_STATUS.COMPLETED, latest), {
+    status: PENDING_STATUS.COMPLETED,
+    completed_at: latest
+  });
+});
+
 test("leaving completed state clears completed_at", () => {
   assert.deepEqual(pendingStatusPatch(PENDING_STATUS.IN_PROGRESS), {
     status: PENDING_STATUS.IN_PROGRESS,
