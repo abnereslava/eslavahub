@@ -213,6 +213,22 @@ function renderMobilePageLinksMenu() {
         </a>
         <a
           class="header-links-item"
+          href="https://dash.cloudflare.com/c24bd05133fbe87e29298d66203a7dc6/workers-and-pages"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="header-links-favicon"
+            src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/cloudflare.png"
+            alt=""
+            width="18"
+            height="18"
+            aria-hidden="true"
+          />
+          <span>Cloudflare Pages</span>
+        </a>
+        <a
+          class="header-links-item"
           href="https://eslavasolucoesdigitais.com.br"
           target="_blank"
           rel="noopener noreferrer"
@@ -532,6 +548,22 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
                 aria-hidden="true"
               />
               <span>Google Search Console</span>
+            </a>
+            <a
+              class="header-links-item"
+              href="https://dash.cloudflare.com/c24bd05133fbe87e29298d66203a7dc6/workers-and-pages"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                class="header-links-favicon"
+                src="https://cdn.jsdelivr.net/gh/selfhst/icons/png/cloudflare.png"
+                alt=""
+                width="18"
+                height="18"
+                aria-hidden="true"
+              />
+              <span>Cloudflare Pages</span>
             </a>
             <a
               class="header-links-item"

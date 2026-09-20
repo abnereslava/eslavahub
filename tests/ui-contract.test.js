@@ -35,6 +35,9 @@ test("primary application routes remain available", () => {
   assert.match(main, /Google Search Console/);
   assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
   assert.match(main, /Eslava Soluções Digitais/);
+  assert.match(main, /Cloudflare Pages/);
+  assert.match(main, /dash\.cloudflare\.com\/c24bd05133fbe87e29298d66203a7dc6\/workers-and-pages/);
+  assert.match(main, /selfhst\/icons\/png\/cloudflare\.png/);
   assert.match(main, /class="header-links-menu"/);
   assert.match(main, /github\.githubassets\.com\/favicons\/favicon\.svg/);
   assert.match(main, /\.\/img\/search-console\.png/);
