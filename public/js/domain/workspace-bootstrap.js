@@ -6,6 +6,7 @@ const WORKSPACE_BOOTSTRAP_VERSIONS = Object.freeze({
   portfolio_flags_version: 1,
   repository_pending_import_version: 2,
   curated_projects_version: 1,
+  personal_project_clients_version: 1,
   project_numbers_version: 1
 });
 

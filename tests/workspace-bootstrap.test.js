@@ -25,9 +25,9 @@ test("current bootstrap metadata skips completed work", () => {
 test("only outdated bootstrap steps require rerun", () => {
   const metadata = {
     ...WORKSPACE_BOOTSTRAP_VERSIONS,
-    curated_projects_version: 0
+    personal_project_clients_version: 0
   };
 
-  assert.equal(needsVersion(metadata, "curated_projects_version"), true);
+  assert.equal(needsVersion(metadata, "personal_project_clients_version"), true);
   assert.equal(needsVersion(metadata, "defaults_version"), false);
 });

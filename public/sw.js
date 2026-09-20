@@ -1,4 +1,4 @@
-const CACHE_NAME = "eslavahub-shell-2026-09-19-v4";
+const CACHE_NAME = "eslavahub-shell-2026-09-20-v5";
 
 const APP_SHELL = [
   "./",
@@ -46,6 +46,7 @@ const APP_SHELL = [
   "./js/services/dashboard-service.js",
   "./js/services/legacy-migration-service.js",
   "./js/services/portfolio-enrichment-service.js",
+  "./js/services/personal-project-client-backfill-service.js",
   "./js/services/project-number-service.js",
   "./js/services/project-service.js",
   "./js/services/repository-link-enrichment-service.js",
