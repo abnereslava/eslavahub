@@ -269,14 +269,14 @@ const LEGACY_PROJECTS = Object.freeze([
     key: "0020-gerenciador-manutencoes-carro",
     legacy_id: "0020",
     category: "Aplicação WEB",
-    name: "Gerenciador Manutenções Carro",
+    name: "Carango Véio",
     status_code: "IDEALIZED",
-    repository_url: null,
+    repository_url: "https://github.com/abnereslava/manutencao_carro",
     deploy_url: null,
     deploy_provider: null,
     client_name: null,
     technology: null,
-    quick_notes: null
+    quick_notes: "Aplicação web/PWA pessoal para gerenciar manutenções preventivas e corretivas, peças, histórico, gastos, documentos, garantias e alertas do Sandero. SDD e 47 tasks de implementação já documentados; implementação ainda não iniciada."
   },
   {
     key: "0021-klein-holtz",
