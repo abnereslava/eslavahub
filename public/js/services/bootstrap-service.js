@@ -6,6 +6,7 @@ import {
   WORKSPACE_BOOTSTRAP_VERSIONS,
   needsVersion
 } from "../domain/workspace-bootstrap.js";
+import { updateCarangoVeioProject } from "./carango-project-update-service.js";
 import { importCuratedProjects } from "./curated-project-import-service.js";
 import { backfillPersonalProjectClients } from "./personal-project-client-backfill-service.js";
 import { migrateLegacySpreadsheet } from "./legacy-migration-service.js";
@@ -25,6 +26,7 @@ async function runFullBootstrap(uid) {
   await migrateLegacySpreadsheet(uid);
   await importCuratedProjects(uid);
   await backfillPersonalProjectClients(uid);
+  await updateCarangoVeioProject(uid);
   await enrichProjectRepositoryLinks(uid);
   await enrichProjectSearchConsoleLinks(uid);
   await enrichProjectPortfolioFlags(uid);
@@ -63,6 +65,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "personal_project_clients_version")) {
     await backfillPersonalProjectClients(uid);
+  }
+
+  if (needsVersion(metadata, "carango_veio_project_version")) {
+    await updateCarangoVeioProject(uid);
   }
 
   if (needsVersion(metadata, "repository_links_version")) {
