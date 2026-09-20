@@ -495,13 +495,6 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
         <a data-section="catalogs" href="#/catalogs/categories">Cadastros</a>
       </nav>
       <div class="account-menu">
-        <button
-          class="button button-secondary button-small pwa-install-button header-install"
-          type="button"
-          data-install-app
-        >
-          Instalar
-        </button>
         <details class="header-links-menu">
           <summary class="button button-secondary button-small header-links-trigger">
             <span>Links</span>

@@ -1134,12 +1134,6 @@ button[disabled],
   display: none !important;
 }
 
-@media (max-width: 480px) {
-  .header-install {
-    padding-inline: var(--space-2);
-    font-size: var(--font-size-caption);
-  }
-}
 
 
 /* Mobile page-level external links */
