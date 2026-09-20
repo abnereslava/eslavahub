@@ -20,8 +20,8 @@ const pendingRepository = readFileSync(
   "utf8"
 );
 
-test("repository backlog migration contains the six audited projects and 50 pending items", () => {
-  assert.equal(REPOSITORY_PENDING_PROJECTS.length, 6);
+test("repository backlog migration contains the audited projects and pending items", () => {
+  assert.equal(REPOSITORY_PENDING_PROJECTS.length, 7);
 
   const items = REPOSITORY_PENDING_PROJECTS.flatMap((group) =>
     group.items.map((item) => ({
@@ -31,7 +31,7 @@ test("repository backlog migration contains the six audited projects and 50 pend
     }))
   );
 
-  assert.equal(items.length, 50);
+  assert.equal(items.length, 52);
   assert.ok(items.every((item) => ["PENDING", "IN_PROGRESS", "WAITING"].includes(item.status)));
 
   const sourceKeys = items.map(
@@ -46,7 +46,7 @@ test("repository backlog migration is versioned and idempotent", () => {
     new URL("../public/js/domain/workspace-bootstrap.js", import.meta.url),
     "utf8"
   );
-  assert.match(versions, /repository_pending_import_version: 2/);
+  assert.match(versions, /repository_pending_import_version: 3/);
   assert.match(bootstrap, /importRepositoryPendingItems/);
   assert.match(importer, /existingSourceKeys/);
   assert.match(importer, /existingDescriptions/);
