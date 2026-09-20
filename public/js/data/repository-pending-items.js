@@ -315,6 +315,24 @@ const REPOSITORY_PENDING_PROJECTS = Object.freeze([
     ]
   },
   {
+    legacy_key: "0020-gerenciador-manutencoes-carro",
+    project_name: "Carango Véio",
+    repository: "abnereslava/manutencao_carro",
+    default_source_path: "tasks/README.md",
+    items: [
+      {
+        key: "criar-firebase",
+        description: "criar firebase para o projeto",
+        status: "PENDING"
+      },
+      {
+        key: "executar-tasks",
+        description: "executar tasks (toda a documentação já está pronta)",
+        status: "PENDING"
+      }
+    ]
+  },
+  {
     legacy_key: "0014-blizpay",
     project_name: "Blizpay",
     repository: "abnereslava/Blizpay",
