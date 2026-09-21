@@ -50,6 +50,7 @@
 
   /* Project status surfaces */
   --status-idealized-surface: #f6f7f8;
+  --status-documented-surface: #ecfeff;
   --status-development-surface: #fff7dc;
   --status-functional-surface: #eef6ff;
   --status-finished-surface: #eef9f1;
