@@ -1,6 +1,5 @@
 import { LEGACY_MIGRATION_TARGET_UID, LEGACY_MIGRATION_SOURCE } from "../data/legacy-projects.js";
 import { normalizedName } from "../domain/validation.js";
-import { pendingItemRepository } from "../repositories/pending-item-repository.js";
 import { projectRepository } from "../repositories/project-repository.js";
 import { projectStatusRepository } from "../repositories/project-status-repository.js";
 
