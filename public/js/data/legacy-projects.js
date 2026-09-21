@@ -272,8 +272,8 @@ const LEGACY_PROJECTS = Object.freeze([
     name: "Carango Véio",
     status_code: "IDEALIZED",
     repository_url: "https://github.com/abnereslava/manutencao_carro",
-    deploy_url: null,
-    deploy_provider: null,
+    deploy_url: "https://abnereslava.github.io/manutencao_carro/",
+    deploy_provider: "Github Pages",
     client_name: null,
     technology: null,
     quick_notes: "Aplicação web/PWA pessoal para gerenciar manutenções preventivas e corretivas, peças, histórico, gastos, documentos, garantias e alertas do Sandero. SDD e 47 tasks de implementação já documentados; implementação ainda não iniciada."
