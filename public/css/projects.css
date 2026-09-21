@@ -159,6 +159,12 @@
   border-color: var(--color-border-strong);
 }
 
+.status-tone-documented {
+  color: #0f766e;
+  background: #f0fdfa;
+  border-color: #99f6e4;
+}
+
 .status-tone-development {
   color: var(--color-warning);
   background: var(--color-warning-surface);
@@ -194,6 +200,10 @@
   background: var(--status-idealized-surface);
 }
 
+.project-row.status-row-documented {
+  background: var(--status-documented-surface);
+}
+
 .project-row.status-row-development {
   background: var(--status-development-surface);
 }
@@ -216,6 +226,10 @@
 
 .project-row.status-row-idealized:hover {
   background: #eef0f2;
+}
+
+.project-row.status-row-documented:hover {
+  background: #cffafe;
 }
 
 .project-row.status-row-development:hover {
