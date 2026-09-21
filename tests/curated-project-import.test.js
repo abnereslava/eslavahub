@@ -37,11 +37,12 @@ test("Apartamento Portinari is registered as a curated personal project", () => 
   assert.equal(project.category, "Landing Page");
   assert.equal(project.technology, "Typescript");
   assert.equal(project.repository_url, "https://github.com/abnereslava/anuncio_apartamento");
-  assert.equal(project.deploy_url, null);
+  assert.equal(project.deploy_url, "https://anuncio-apartamento.abner-eslava.workers.dev");
   assert.equal(project.deploy_provider, "Cloudflare Workers");
 });
 
 test("curated project import is versioned and bootstrapped", () => {
   assert.match(bootstrap, /importCuratedProjects/);
-  assert.match(versions, /curated_projects_version: 2/);
+  assert.match(versions, /curated_projects_version: 3/);
+  assert.match(versions, /carango_veio_project_version: 3/);
 });
