@@ -10,6 +10,7 @@ const CARANGO_IMPORT_KEY = `${LEGACY_MIGRATION_SOURCE}:${CARANGO_LEGACY_KEY}`;
 const CARANGO_OLD_NAME = "Gerenciador Manutenções Carro";
 const CARANGO_NAME = "Carango Véio";
 const CARANGO_REPOSITORY = "https://github.com/abnereslava/manutencao_carro";
+const CARANGO_DEPLOY_URL = "https://abnereslava.github.io/manutencao_carro/";
 const CARANGO_NOTES =
   "Aplicação web/PWA pessoal para gerenciar manutenções preventivas e corretivas, peças, histórico, gastos, documentos, garantias e alertas do Sandero. SDD e 47 tasks de implementação já documentados; implementação ainda não iniciada.";
 const FIREBASE_PENDING_SOURCE_KEY =
@@ -44,6 +45,7 @@ async function updateCarangoVeioProject(uid) {
   await projectRepository.updateProject(uid, project.id, {
     name: CARANGO_NAME,
     repository_url: CARANGO_REPOSITORY,
+    deploy_url: CARANGO_DEPLOY_URL,
     quick_notes: CARANGO_NOTES,
     ...(idealizedStatus ? { status_id: idealizedStatus.id } : {})
   });
@@ -67,6 +69,7 @@ async function updateCarangoVeioProject(uid) {
 }
 
 export {
+  CARANGO_DEPLOY_URL,
   CARANGO_IMPORT_KEY,
   CARANGO_NAME,
   CARANGO_REPOSITORY,
