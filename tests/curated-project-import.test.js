@@ -27,7 +27,21 @@ test("CM Quality is registered as a curated project", () => {
   assert.equal(project.deploy_url, "https://cmquality.abner-eslava.workers.dev/");
 });
 
+test("Apartamento Portinari is registered as a curated personal project", () => {
+  const project = CURATED_PROJECTS.find((item) => item.key === "apartamento-portinari");
+
+  assert.ok(project);
+  assert.equal(project.name, "Apartamento Portinari");
+  assert.equal(project.client_name, "Projeto Pessoal");
+  assert.equal(project.status_code, "FUNCTIONAL");
+  assert.equal(project.category, "Landing Page");
+  assert.equal(project.technology, "Typescript");
+  assert.equal(project.repository_url, "https://github.com/abnereslava/anuncio_apartamento");
+  assert.equal(project.deploy_url, null);
+  assert.equal(project.deploy_provider, "Cloudflare Workers");
+});
+
 test("curated project import is versioned and bootstrapped", () => {
   assert.match(bootstrap, /importCuratedProjects/);
-  assert.match(versions, /curated_projects_version: 1/);
+  assert.match(versions, /curated_projects_version: 2/);
 });
