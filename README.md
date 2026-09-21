@@ -79,7 +79,7 @@ O bootstrap inicial utiliza dados confirmados na planilha legada:
 
 - categorias: `Aplicação WEB`, `Jogo`, `Landing Page`, `Plataforma web` e `Programa`;
 - tecnologias: `Html`, `Python` e `Typescript`;
-- status internos: `IDEALIZED`, `IN_DEVELOPMENT`, `FUNCTIONAL`, `FINISHED`, `PAUSED` e `ABANDONED`.
+- status internos: `IDEALIZED`, `DOCUMENTED`, `IN_DEVELOPMENT`, `FUNCTIONAL`, `FINISHED`, `PAUSED` e `ABANDONED`.
 
 ## Executar localmente
 
