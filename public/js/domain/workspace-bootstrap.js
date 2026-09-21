@@ -7,7 +7,7 @@ const WORKSPACE_BOOTSTRAP_VERSIONS = Object.freeze({
   repository_pending_import_version: 3,
   curated_projects_version: 1,
   personal_project_clients_version: 1,
-  carango_veio_project_version: 1,
+  carango_veio_project_version: 2,
   project_numbers_version: 1
 });
 
