@@ -19,7 +19,7 @@ const CURATED_PROJECTS = Object.freeze([
     name: "Apartamento Portinari",
     status_code: "FUNCTIONAL",
     repository_url: "https://github.com/abnereslava/anuncio_apartamento",
-    deploy_url: null,
+    deploy_url: "https://anuncio-apartamento.abner-eslava.workers.dev",
     deploy_provider: "Cloudflare Workers",
     client_name: "Projeto Pessoal",
     technology: "Typescript",
