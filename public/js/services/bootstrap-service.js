@@ -26,11 +26,11 @@ async function runFullBootstrap(uid) {
   await migrateLegacySpreadsheet(uid);
   await importCuratedProjects(uid);
   await backfillPersonalProjectClients(uid);
-  await updateCarangoVeioProject(uid);
   await enrichProjectRepositoryLinks(uid);
   await enrichProjectSearchConsoleLinks(uid);
   await enrichProjectPortfolioFlags(uid);
   await importRepositoryPendingItems(uid);
+  await updateCarangoVeioProject(uid);
   await ensureProjectNumbers(uid);
 }
 
@@ -67,10 +67,6 @@ async function initializeUserWorkspace(uid) {
     await backfillPersonalProjectClients(uid);
   }
 
-  if (needsVersion(metadata, "carango_veio_project_version")) {
-    await updateCarangoVeioProject(uid);
-  }
-
   if (needsVersion(metadata, "repository_links_version")) {
     await enrichProjectRepositoryLinks(uid);
   }
@@ -85,6 +81,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "repository_pending_import_version")) {
     await importRepositoryPendingItems(uid);
+  }
+
+  if (needsVersion(metadata, "carango_veio_project_version")) {
+    await updateCarangoVeioProject(uid);
   }
 
   if (needsVersion(metadata, "project_numbers_version")) {
