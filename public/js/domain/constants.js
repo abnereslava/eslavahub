@@ -1,5 +1,6 @@
 const PROJECT_STATUS_CODES = Object.freeze({
   IDEALIZED: "IDEALIZED",
+  DOCUMENTED: "DOCUMENTED",
   IN_DEVELOPMENT: "IN_DEVELOPMENT",
   FUNCTIONAL: "FUNCTIONAL",
   FINISHED: "FINISHED",
@@ -9,11 +10,12 @@ const PROJECT_STATUS_CODES = Object.freeze({
 
 const DEFAULT_PROJECT_STATUSES = Object.freeze([
   { code: PROJECT_STATUS_CODES.IDEALIZED, name: "Idealizado", sort_order: 10 },
-  { code: PROJECT_STATUS_CODES.IN_DEVELOPMENT, name: "Em desenvolvimento", sort_order: 20 },
-  { code: PROJECT_STATUS_CODES.FUNCTIONAL, name: "Funcional", sort_order: 30 },
-  { code: PROJECT_STATUS_CODES.FINISHED, name: "Finalizado", sort_order: 40 },
-  { code: PROJECT_STATUS_CODES.PAUSED, name: "Pausado", sort_order: 50 },
-  { code: PROJECT_STATUS_CODES.ABANDONED, name: "Abandonado", sort_order: 60 }
+  { code: PROJECT_STATUS_CODES.DOCUMENTED, name: "Documentado", sort_order: 20 },
+  { code: PROJECT_STATUS_CODES.IN_DEVELOPMENT, name: "Em desenvolvimento", sort_order: 30 },
+  { code: PROJECT_STATUS_CODES.FUNCTIONAL, name: "Funcional", sort_order: 40 },
+  { code: PROJECT_STATUS_CODES.FINISHED, name: "Finalizado", sort_order: 50 },
+  { code: PROJECT_STATUS_CODES.PAUSED, name: "Pausado", sort_order: 60 },
+  { code: PROJECT_STATUS_CODES.ABANDONED, name: "Abandonado", sort_order: 70 }
 ]);
 
 const DEFAULT_CATEGORIES = Object.freeze([
