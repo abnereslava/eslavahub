@@ -32,6 +32,7 @@ const QUICK_STATUS_CODES = new Set([
   "FINISHED",
   "FUNCTIONAL",
   "IN_DEVELOPMENT",
+  "DOCUMENTED",
   "IDEALIZED",
   "PAUSED",
   "ABANDONED"
@@ -41,6 +42,7 @@ const QUICK_STATUS_LABELS = Object.freeze({
   FINISHED: "Finalizado",
   FUNCTIONAL: "Funcional",
   IN_DEVELOPMENT: "Desenvolvendo",
+  DOCUMENTED: "Documentado",
   IDEALIZED: "Idealizado",
   PAUSED: "Pausado",
   ABANDONED: "Abandonado"
@@ -48,6 +50,7 @@ const QUICK_STATUS_LABELS = Object.freeze({
 
 const PROJECT_STATUS_TONES = Object.freeze({
   IDEALIZED: "status-tone-idealized",
+  DOCUMENTED: "status-tone-documented",
   IN_DEVELOPMENT: "status-tone-development",
   FUNCTIONAL: "status-tone-functional",
   FINISHED: "status-tone-finished",
@@ -61,6 +64,7 @@ let restoreProjectSearchFocus = false;
 
 const PROJECT_ROW_TONES = Object.freeze({
   IDEALIZED: "status-row-idealized",
+  DOCUMENTED: "status-row-documented",
   IN_DEVELOPMENT: "status-row-development",
   FUNCTIONAL: "status-row-functional",
   FINISHED: "status-row-finished",
