@@ -324,8 +324,8 @@ const LEGACY_PROJECTS = Object.freeze([
     name: "Recreaeduca",
     status_code: "IN_DEVELOPMENT",
     repository_url: null,
-    deploy_url: null,
-    deploy_provider: null,
+    deploy_url: "https://recreaeduca.abner-eslava.workers.dev",
+    deploy_provider: "Cloudflare Workers",
     client_name: null,
     technology: null,
     quick_notes: null
