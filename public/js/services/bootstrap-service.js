@@ -7,6 +7,7 @@ import {
   needsVersion
 } from "../domain/workspace-bootstrap.js";
 import { updateCarangoVeioProject } from "./carango-project-update-service.js";
+import { updateRecreaEducaProject } from "./recreaeduca-project-update-service.js";
 import { importCuratedProjects } from "./curated-project-import-service.js";
 import { backfillPersonalProjectClients } from "./personal-project-client-backfill-service.js";
 import { migrateLegacySpreadsheet } from "./legacy-migration-service.js";
@@ -31,6 +32,7 @@ async function runFullBootstrap(uid) {
   await enrichProjectPortfolioFlags(uid);
   await importRepositoryPendingItems(uid);
   await updateCarangoVeioProject(uid);
+  await updateRecreaEducaProject(uid);
   await ensureProjectNumbers(uid);
 }
 
@@ -85,6 +87,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "carango_veio_project_version")) {
     await updateCarangoVeioProject(uid);
+  }
+
+  if (needsVersion(metadata, "recreaeduca_project_version")) {
+    await updateRecreaEducaProject(uid);
   }
 
   if (needsVersion(metadata, "project_numbers_version")) {
