@@ -173,7 +173,7 @@ test("consolidated project interactions remain present", () => {
   assert.match(projects, /SEARCH_CONSOLE_ICON_URL/);
   assert.match(projects, /WEB_LINK_ICON_URL/);
   assert.match(projects, /\.\/img\/deploy-link\.webp/);
-  assert.match(projects, /\.\/img\/search-console\.png/);
+  assert.match(projects, /gstatic\.com\/search-console\/scfe\/logo_search_console\.svg/);
   assert.match(projects, /renderProjectDomain/);
   assert.match(projects, /status-cycle/);
   assert.match(projects, /portfolio_visible/);
@@ -217,6 +217,8 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-priority-high/);
   assert.match(pendingStyles, /\.pending-sort-header/);
   assert.match(pendingStyles, /\.pending-hide-completed-toggle/);
+  assert.match(pendingStyles, /\.pending-hide-completed-toggle input/);
+  assert.match(pendingStyles, /input\[name="description"\]/);
   assert.match(pendingStyles, /pending-hide-completed-toggle > input/);
   assert.match(pendingStyles, /overscroll-behavior-inline: contain/);
   assert.match(pendingStyles, /\.pending-sheet-scroll/);
