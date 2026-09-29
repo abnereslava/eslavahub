@@ -197,6 +197,10 @@ test("pending items remain inline-editable", () => {
   assert.match(pending, /data-field="priority"/);
   assert.match(pending, /PRIORITY_TONES/);
   assert.match(pending, /PENDING_SORT_KEY_PREFIX/);
+  assert.match(pending, /PENDING_HIDE_COMPLETED_KEY_PREFIX/);
+  assert.match(pending, /hide-completed-pending/);
+  assert.match(pending, /Ocultar concluídas/);
+  assert.match(pending, /PENDING_STATUS\.COMPLETED/);
   assert.match(pending, /pending-sort-header/);
   assert.match(pending, /data-sort-field/);
   assert.match(pending, /data-field="due_date"/);
@@ -211,6 +215,7 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-priority-medium/);
   assert.match(pendingStyles, /\.pending-priority-high/);
   assert.match(pendingStyles, /\.pending-sort-header/);
+  assert.match(pendingStyles, /\.pending-hide-completed-toggle/);
   assert.match(pendingStyles, /overscroll-behavior-inline: contain/);
   assert.match(pendingStyles, /\.pending-sheet-scroll/);
   assert.match(pendingStyles, /contain: inline-size/);
