@@ -41,7 +41,7 @@ test("primary application routes remain available", () => {
   assert.match(main, /selfhst\/icons\/png\/cloudflare\.png/);
   assert.match(main, /class="header-links-menu"/);
   assert.match(main, /github\.githubassets\.com\/favicons\/favicon\.svg/);
-  assert.match(main, /\.\/img\/search-console\.png/);
+  assert.match(main, /gstatic\.com\/search-console\/scfe\/logo_search_console\.svg/);
   assert.match(main, /header-links-favicon/);
   assert.match(main, /header-links-trigger/);
   assert.match(main, /renderMobilePageLinksMenu/);
@@ -217,6 +217,7 @@ test("pending items remain inline-editable", () => {
   assert.match(pendingStyles, /\.pending-priority-high/);
   assert.match(pendingStyles, /\.pending-sort-header/);
   assert.match(pendingStyles, /\.pending-hide-completed-toggle/);
+  assert.match(pendingStyles, /pending-hide-completed-toggle > input/);
   assert.match(pendingStyles, /overscroll-behavior-inline: contain/);
   assert.match(pendingStyles, /\.pending-sheet-scroll/);
   assert.match(pendingStyles, /contain: inline-size/);
