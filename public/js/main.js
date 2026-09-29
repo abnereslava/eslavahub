@@ -203,7 +203,7 @@ function renderMobilePageLinksMenu() {
         >
           <img
             class="header-links-favicon header-links-favicon-search-console"
-            src="./img/search-console.png"
+            src="https://gstatic.com/search-console/scfe/logo_search_console.svg"
             alt=""
             width="18"
             height="18"
@@ -541,7 +541,7 @@ function renderAuthenticatedShell(user, bootstrapError = null) {
             >
               <img
                 class="header-links-favicon header-links-favicon-search-console"
-                src="./img/search-console.png"
+                src="https://gstatic.com/search-console/scfe/logo_search_console.svg"
                 alt=""
                 width="18"
                 height="18"
