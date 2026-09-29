@@ -32,6 +32,7 @@ const projectService = readFileSync(
 test("primary application routes remain available", () => {
   assert.match(main, /href="https:\/\/github\.com\/repos"/);
   assert.match(main, /href="https:\/\/search\.google\.com\/search-console"/);
+  assert.match(main, /gstatic\.com\/search-console\/scfe\/logo_search_console\.svg/);
   assert.match(main, /Google Search Console/);
   assert.match(main, /href="https:\/\/eslavasolucoesdigitais\.com\.br"/);
   assert.match(main, /Eslava Soluções Digitais/);
