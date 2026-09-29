@@ -557,6 +557,12 @@
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
+  .pending-hide-completed-toggle {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-height: var(--control-touch);
+  }
+
   .pending-quick-add .button {
     width: auto;
     min-width: 92px;
@@ -598,8 +604,13 @@
     gap: 6px;
   }
 
-  .pending-quick-add input {
+  .pending-quick-add > input {
     min-width: 0;
+  }
+
+  .pending-hide-completed-toggle {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .pending-quick-add .button {
