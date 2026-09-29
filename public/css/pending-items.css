@@ -59,6 +59,31 @@
   font-size: var(--font-size-label);
 }
 
+.pending-hide-completed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pending-hide-completed-toggle > input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-brand);
+}
+
+.pending-hide-completed-toggle > span {
+  min-width: 0;
+  white-space: nowrap;
+}
+
 .pending-sheet-scroll {
   display: block;
   width: 100%;
@@ -559,8 +584,17 @@
 
   .pending-hide-completed-toggle {
     grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
     justify-self: start;
+    gap: 8px;
     min-height: var(--control-touch);
+  }
+
+  .pending-hide-completed-toggle > input {
+    grid-column: auto;
+    width: 20px;
+    height: 20px;
   }
 
   .pending-quick-add .button {
@@ -615,7 +649,7 @@
   }
 
   .pending-hide-completed-toggle span {
-    white-space: normal;
+    white-space: nowrap;
   }
 
   .pending-quick-add .button {
