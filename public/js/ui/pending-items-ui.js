@@ -30,9 +30,33 @@ const PRIORITY_TONES = Object.freeze({
 });
 
 const PENDING_SORT_KEY_PREFIX = "eslavahub:pending-sort";
+const PENDING_HIDE_COMPLETED_KEY_PREFIX = "eslavahub:pending-hide-completed";
 
 function pendingSortKey(uid, projectId) {
   return `${PENDING_SORT_KEY_PREFIX}:${uid}:${projectId}`;
+}
+
+function pendingHideCompletedKey(uid, projectId) {
+  return `${PENDING_HIDE_COMPLETED_KEY_PREFIX}:${uid}:${projectId}`;
+}
+
+function readHideCompleted(uid, projectId) {
+  try {
+    return window.localStorage.getItem(pendingHideCompletedKey(uid, projectId)) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function persistHideCompleted(uid, projectId, value) {
+  try {
+    window.localStorage.setItem(
+      pendingHideCompletedKey(uid, projectId),
+      value ? "1" : "0"
+    );
+  } catch {
+    // Visibility preference is optional.
+  }
 }
 
 function readPendingSort(uid, projectId) {
@@ -366,8 +390,12 @@ async function renderPendingItems(container, uid, projectId) {
 
   try {
     const currentSort = readPendingSort(uid, projectId);
+    const hideCompleted = readHideCompleted(uid, projectId);
     const rawItems = await pendingItemRepository.listByProject(uid, projectId);
     const items = sortPendingItems(rawItems, currentSort);
+    const visibleItems = hideCompleted
+      ? items.filter((item) => item.status !== PENDING_STATUS.COMPLETED)
+      : items;
     const openCount = items.filter(isOpen).length;
 
     container.innerHTML = `
@@ -386,11 +414,19 @@ async function renderPendingItems(container, uid, projectId) {
           aria-label="Descrição da nova pendência"
         />
         <button class="button button-primary button-small" type="submit">Adicionar</button>
+        <label class="pending-hide-completed-toggle">
+          <input
+            id="hide-completed-pending"
+            type="checkbox"
+            ${hideCompleted ? "checked" : ""}
+          />
+          <span>Ocultar concluídas</span>
+        </label>
         <p class="error-message" data-add-error role="alert"></p>
       </form>
 
       ${
-        items.length
+        visibleItems.length
           ? `<div
               class="pending-sheet-scroll"
               role="region"
@@ -410,12 +446,17 @@ async function renderPendingItems(container, uid, projectId) {
                 <div class="pending-audit-header" role="columnheader">Concluída em</div>
                 <div role="columnheader">Ações</div>
               </div>
-                ${items.map(pendingRow).join("")}
+                ${visibleItems.map(pendingRow).join("")}
               </div>
             </div>`
-          : '<div class="pending-empty"><p class="muted">Nenhuma pendência cadastrada para este projeto.</p></div>'
+          : `<div class="pending-empty"><p class="muted">${items.length && hideCompleted ? "Todas as pendências concluídas estão ocultas." : "Nenhuma pendência cadastrada para este projeto."}</p></div>`
       }
     `;
+
+    container.querySelector("#hide-completed-pending")?.addEventListener("change", async (event) => {
+      persistHideCompleted(uid, projectId, event.currentTarget.checked);
+      await renderPendingItems(container, uid, projectId);
+    });
 
     container.querySelectorAll(".pending-sort-header").forEach((button) => {
       button.addEventListener("click", async () => {
