@@ -52,6 +52,36 @@
   box-shadow: 0 0 0 3px rgb(107 114 128 / 12%);
 }
 
+.pending-hide-completed-toggle {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: var(--control-compact);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pending-hide-completed-toggle input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  accent-color: var(--color-brand);
+}
+
+.pending-hide-completed-toggle span {
+  min-width: 0;
+  white-space: nowrap;
+}
+
 .pending-quick-add .error-message {
   grid-column: 1 / -1;
   min-height: 0;
