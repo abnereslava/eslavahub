@@ -161,7 +161,7 @@ function isExpirationUrgent(value) {
 
 const WEB_LINK_ICON_URL = "./img/deploy-link.webp";
 const GITHUB_FAVICON_URL = "https://github.githubassets.com/favicons/favicon.svg";
-const SEARCH_CONSOLE_ICON_URL = "./img/search-console.png";
+const SEARCH_CONSOLE_ICON_URL = "https://gstatic.com/search-console/scfe/logo_search_console.svg";
 
 function siteIcon() {
   return `
