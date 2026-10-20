@@ -8,7 +8,7 @@ import {
 } from "../domain/workspace-bootstrap.js";
 import { updateCarangoVeioProject } from "./carango-project-update-service.js";
 import { updateRecreaEducaProject } from "./recreaeduca-project-update-service.js";
-import { updateEscolaPetsProject } from "./escolapets-project-update-service.js";
+import { updateEscolaPetsDomain, updateEscolaPetsProject } from "./escolapets-project-update-service.js";
 import { importCuratedProjects } from "./curated-project-import-service.js";
 import { backfillPersonalProjectClients } from "./personal-project-client-backfill-service.js";
 import { migrateLegacySpreadsheet } from "./legacy-migration-service.js";
@@ -35,6 +35,7 @@ async function runFullBootstrap(uid) {
   await updateCarangoVeioProject(uid);
   await updateRecreaEducaProject(uid);
   await updateEscolaPetsProject(uid);
+  await updateEscolaPetsDomain(uid);
   await ensureProjectNumbers(uid);
 }
 
@@ -97,6 +98,10 @@ async function initializeUserWorkspace(uid) {
 
   if (needsVersion(metadata, "escolapets_project_version")) {
     await updateEscolaPetsProject(uid);
+  }
+
+  if (needsVersion(metadata, "escolapets_domain_version")) {
+    await updateEscolaPetsDomain(uid);
   }
 
   if (needsVersion(metadata, "project_numbers_version")) {
