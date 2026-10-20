@@ -3,6 +3,8 @@ import { normalizedName } from "./validation.js";
 const ESCOLAPETS_LEGACY_NAME = "Campeonato InterPets";
 const ESCOLAPETS_NAME = "EscolaPets";
 const ESCOLAPETS_DEPLOY_URL = "https://escolapets.abner-eslava.workers.dev";
+const ESCOLAPETS_DOMAIN_HOSTNAME = "escolapets.com.br";
+const ESCOLAPETS_DOMAIN_EXPIRATION_DATE = "2027-10-20";
 
 function isProjectNamed(project, name) {
   return (
@@ -30,6 +32,8 @@ function buildEscolaPetsProjectPatch(project) {
 }
 
 export {
+  ESCOLAPETS_DOMAIN_EXPIRATION_DATE,
+  ESCOLAPETS_DOMAIN_HOSTNAME,
   ESCOLAPETS_DEPLOY_URL,
   ESCOLAPETS_LEGACY_NAME,
   ESCOLAPETS_NAME,
