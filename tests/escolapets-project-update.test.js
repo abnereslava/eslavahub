@@ -51,7 +51,7 @@ test("EscolaPets update is versioned and runs during bootstrap", () => {
     "utf8"
   );
 
-  assert.match(bootstrap, /import \{ updateEscolaPetsProject \}/);
+  assert.match(bootstrap, /import \{ updateEscolaPetsDomain, updateEscolaPetsProject \}/);
   assert.match(bootstrap, /await updateEscolaPetsProject\(uid\)/);
   assert.match(bootstrap, /needsVersion\(metadata, "escolapets_project_version"\)/);
   assert.match(versions, /escolapets_project_version: 1/);
@@ -74,10 +74,10 @@ test("registers the purchased EscolaPets domain with a one-year expected expirat
     "utf8"
   );
 
-  assert.match(bootstrap, /await updateEscolaPetsDomain\\(uid\\)/);
-  assert.match(bootstrap, /needsVersion\\(metadata, "escolapets_domain_version"\\)/);
+  assert.ok(bootstrap.includes("await updateEscolaPetsDomain(uid)"));
+  assert.ok(bootstrap.includes('needsVersion(metadata, "escolapets_domain_version")'));
   assert.match(versions, /escolapets_domain_version: 1/);
-  assert.match(domainService, /domainRepository\\.listByProject/);
-  assert.match(domainService, /domainRepository\\.createDomain/);
-  assert.match(domainService, /domainRepository\\.updateDomain/);
+  assert.ok(domainService.includes("domainRepository.listByProject"));
+  assert.ok(domainService.includes("domainRepository.createDomain"));
+  assert.ok(domainService.includes("domainRepository.updateDomain"));
 });
