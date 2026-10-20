@@ -10,6 +10,7 @@ const WORKSPACE_BOOTSTRAP_VERSIONS = Object.freeze({
   carango_veio_project_version: 3,
   recreaeduca_project_version: 1,
   escolapets_project_version: 1,
+  escolapets_domain_version: 1,
   project_numbers_version: 1
 });
 
