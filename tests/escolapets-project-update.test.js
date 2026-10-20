@@ -4,6 +4,8 @@ import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 
 import {
+  ESCOLAPETS_DOMAIN_EXPIRATION_DATE,
+  ESCOLAPETS_DOMAIN_HOSTNAME,
   ESCOLAPETS_DEPLOY_URL,
   ESCOLAPETS_NAME,
   buildEscolaPetsProjectPatch
@@ -53,4 +55,29 @@ test("EscolaPets update is versioned and runs during bootstrap", () => {
   assert.match(bootstrap, /await updateEscolaPetsProject\(uid\)/);
   assert.match(bootstrap, /needsVersion\(metadata, "escolapets_project_version"\)/);
   assert.match(versions, /escolapets_project_version: 1/);
+});
+
+test("registers the purchased EscolaPets domain with a one-year expected expiration", () => {
+  assert.equal(ESCOLAPETS_DOMAIN_HOSTNAME, "escolapets.com.br");
+  assert.equal(ESCOLAPETS_DOMAIN_EXPIRATION_DATE, "2027-10-20");
+
+  const bootstrap = readFileSync(
+    new URL("../public/js/services/bootstrap-service.js", import.meta.url),
+    "utf8"
+  );
+  const versions = readFileSync(
+    new URL("../public/js/domain/workspace-bootstrap.js", import.meta.url),
+    "utf8"
+  );
+  const domainService = readFileSync(
+    new URL("../public/js/services/escolapets-project-update-service.js", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(bootstrap, /await updateEscolaPetsDomain\\(uid\\)/);
+  assert.match(bootstrap, /needsVersion\\(metadata, "escolapets_domain_version"\\)/);
+  assert.match(versions, /escolapets_domain_version: 1/);
+  assert.match(domainService, /domainRepository\\.listByProject/);
+  assert.match(domainService, /domainRepository\\.createDomain/);
+  assert.match(domainService, /domainRepository\\.updateDomain/);
 });
