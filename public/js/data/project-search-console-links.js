@@ -24,6 +24,12 @@ const PROJECT_SEARCH_CONSOLE_LINKS = Object.freeze([
     project_name: "Sara Santos Nutricionista",
     search_console_url:
       "https://search.google.com/search-console?resource_id=sc-domain%3Asarasantosnutri.com.br"
+  },
+  {
+    project_name: "EscolaPets",
+    legacy_project_name: "Campeonato InterPets",
+    search_console_url:
+      "https://search.google.com/search-console?resource_id=sc-domain%3Aescolapets.com.br&hl=pt-BR"
   }
 ]);
 
