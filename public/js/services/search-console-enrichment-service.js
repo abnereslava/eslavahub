@@ -33,8 +33,13 @@ async function enrichProjectSearchConsoleLinks(uid) {
 
   for (const link of PROJECT_SEARCH_CONSOLE_LINKS) {
     const project =
-      byMigrationKey.get(migrationKey(link.legacy_key)) ||
-      byName.get(normalizedName(link.project_name));
+      (link.legacy_key
+        ? byMigrationKey.get(migrationKey(link.legacy_key))
+        : null) ||
+      byName.get(normalizedName(link.project_name)) ||
+      (link.legacy_project_name
+        ? byName.get(normalizedName(link.legacy_project_name))
+        : null);
 
     if (!project) {
       notFound += 1;
