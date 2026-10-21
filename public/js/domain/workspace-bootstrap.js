@@ -2,7 +2,7 @@ const WORKSPACE_BOOTSTRAP_VERSIONS = Object.freeze({
   defaults_version: 2,
   legacy_migration_version: 1,
   repository_links_version: 1,
-  search_console_links_version: 1,
+  search_console_links_version: 2,
   portfolio_flags_version: 1,
   repository_pending_import_version: 3,
   curated_projects_version: 3,
