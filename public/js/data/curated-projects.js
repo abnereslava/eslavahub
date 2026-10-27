@@ -24,6 +24,18 @@ const CURATED_PROJECTS = Object.freeze([
     client_name: "Projeto Pessoal",
     technology: "Typescript",
     quick_notes: "Site de apresentação e venda do apartamento no Residencial Portinari, em Jardim Amélia, Pinhais/PR."
+  },
+  {
+    key: "landingpage-imovel-lucimar",
+    category: "Landing Page",
+    name: "Landing Page Imóvel Lucimar",
+    status_code: "IN_DEVELOPMENT",
+    repository_url: "https://github.com/abnereslava/projeto_landingpage_imovel_lucimar",
+    deploy_url: "https://projeto-landingpage-imovel-lucimar.abner-eslava.workers.dev",
+    deploy_provider: "Cloudflare Workers",
+    client_name: "Lucimar",
+    technology: "Html",
+    quick_notes: "Landing page imobiliária para apresentar terrenos, ainda com dados demonstrativos no repositório."
   }
 ]);
 

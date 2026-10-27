@@ -5,7 +5,7 @@ const WORKSPACE_BOOTSTRAP_VERSIONS = Object.freeze({
   search_console_links_version: 2,
   portfolio_flags_version: 1,
   repository_pending_import_version: 3,
-  curated_projects_version: 3,
+  curated_projects_version: 4,
   personal_project_clients_version: 1,
   carango_veio_project_version: 3,
   recreaeduca_project_version: 1,

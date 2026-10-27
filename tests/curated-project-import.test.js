@@ -41,8 +41,24 @@ test("Apartamento Portinari is registered as a curated personal project", () => 
   assert.equal(project.deploy_provider, "Cloudflare Workers");
 });
 
+test("Lucimar's real estate landing page is registered as a curated project", () => {
+  const projects = CURATED_PROJECTS.filter(
+    (item) => item.key === "landingpage-imovel-lucimar"
+  );
+  assert.equal(projects.length, 1);
+  const [project] = projects;
+  assert.equal(project.name, "Landing Page Imóvel Lucimar");
+  assert.equal(project.category, "Landing Page");
+  assert.equal(project.client_name, "Lucimar");
+  assert.equal(project.status_code, "IN_DEVELOPMENT");
+  assert.equal(project.technology, "Html");
+  assert.equal(project.repository_url, "https://github.com/abnereslava/projeto_landingpage_imovel_lucimar");
+  assert.equal(project.deploy_url, "https://projeto-landingpage-imovel-lucimar.abner-eslava.workers.dev");
+  assert.equal(project.deploy_provider, "Cloudflare Workers");
+});
+
 test("curated project import is versioned and bootstrapped", () => {
   assert.match(bootstrap, /importCuratedProjects/);
-  assert.match(versions, /curated_projects_version: 3/);
+  assert.match(versions, /curated_projects_version: 4/);
   assert.match(versions, /carango_veio_project_version: 3/);
 });
